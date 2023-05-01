@@ -1,0 +1,52 @@
+<script setup lang="ts">
+import {Player, useGameStore} from "@/stores/game";
+import GameRosterPlayer from "@/components/GameRosterPlayer.vue";
+import {storeToRefs} from "pinia";
+import {filter} from "lodash";
+
+const {getPlayers, getTeams} = storeToRefs(useGameStore());
+
+function getPlayersOfTeam(teamName: string) {
+  return filter(getPlayers.value, (player: Player) => {
+    return player.team === teamName
+  })
+}
+</script>
+
+<template>
+  <main>
+    <div class="game-roster">
+      <div class="team" v-for="team in getTeams" :key="team.name">
+        <div class="team-name">{{ team.name }}</div>
+        <div class="team-roster">
+          <GameRosterPlayer v-for="player in getPlayersOfTeam(team.name)"
+                            :key="player.name"
+                            :name="player.name"
+                            :status="player.status"
+                            :game-seconds="player.gameSeconds"
+                            :bench-seconds="player.benchSeconds"
+                            :goals="player.goals"
+                            :passes="player.passes" />
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<style scoped>
+.team {
+  margin-top: 2em;
+}
+.team-name {
+  font-size: 2em;
+  display: block;
+  border-bottom: 2px solid black;
+  margin-bottom: 0.5em;
+}
+.team-roster {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+</style>
