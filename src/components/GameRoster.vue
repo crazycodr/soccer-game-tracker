@@ -4,7 +4,7 @@ import {storeToRefs} from "pinia";
 import {filter} from "lodash";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
-import {Player} from "@/stores/models/Player";
+import type {Player} from "@/stores/models/Player";
 
 const {getPlayers} = storeToRefs(usePlayerStore());
 const {getTeams} = storeToRefs(useTeamStore());
