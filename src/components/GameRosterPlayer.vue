@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {computed} from "vue";
-import {useGameStore} from "@/stores/game";
+import {usePlayerStore} from "@/stores/PlayerStore";
 
-const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses} = useGameStore();
+const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses} = usePlayerStore();
 
 const props = defineProps(['name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
 
 const readableTimeSince = computed(() => {
-  let referenceSeconds = 0
+  let referenceSeconds
   if (props.status === 'playing') {
     referenceSeconds = props.gameSeconds
   } else {

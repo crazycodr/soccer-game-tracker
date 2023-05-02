@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import {useGameStore} from "@/stores/game"
 import GameConfigPlayer from "@/components/GameConfigPlayer.vue"
 import GameConfigPlayerCreator from "@/components/GameConfigPlayerCreator.vue"
 import {storeToRefs} from "pinia";
 import GameConfigTeamCreator from "@/components/GameConfigTeamCreator.vue";
 import GameConfigTeam from "@/components/GameConfigTeam.vue";
+import {usePlayerStore} from "@/stores/PlayerStore";
+import {useTeamStore} from "@/stores/TeamStore";
 
-const {getPlayers, getTeams} = storeToRefs(useGameStore());
+const {getTeams} = storeToRefs(useTeamStore());
+const {getPlayers} = storeToRefs(usePlayerStore());
 
 </script>
 

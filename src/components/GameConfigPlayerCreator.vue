@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {computed, ref} from "vue"
-import {Player, PlayerAlreadyExistsException, useGameStore} from "@/stores/game";
+import {PlayerAlreadyExistsException} from "@/stores/exceptions/PlayerAlreadyExistsException";
+import {usePlayerStore} from "@/stores/PlayerStore";
+import {Player} from "@/stores/models/Player";
 
-const {addPlayer} = useGameStore();
+const {addPlayer} = usePlayerStore();
 
 const name = ref('')
 const error = ref('')

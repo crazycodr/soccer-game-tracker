@@ -2,7 +2,7 @@
 import GameScore from "@/components/GameScore.vue";
 import GameRoster from "@/components/GameRoster.vue";
 import GameTimer from "@/components/GameTimer.vue";
-import {useGameStore} from "@/stores/game";
+import {useGameStore} from "@/stores/GameStore";
 import {storeToRefs} from "pinia";
 
 const {getGame} = storeToRefs(useGameStore());

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {computed, ref} from "vue"
-import {Team, TeamAlreadyExistsException, useGameStore} from "@/stores/game";
+import {TeamAlreadyExistsException} from "@/stores/exceptions/TeamAlreadyExistsException";
+import {useTeamStore} from "@/stores/TeamStore";
+import {Team} from "@/stores/models/Team";
 
-const {addTeam} = useGameStore();
+const {addTeam} = useTeamStore();
 
 const name = ref('')
 const error = ref('')

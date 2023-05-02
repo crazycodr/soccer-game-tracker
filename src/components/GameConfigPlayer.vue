@@ -1,21 +1,17 @@
 <script setup lang="ts">
 
-import {useGameStore} from "@/stores/game";
 import {storeToRefs} from "pinia";
+import {useTeamStore} from "@/stores/TeamStore";
+import {usePlayerStore} from "@/stores/PlayerStore";
 
-const {getTeams} = storeToRefs(useGameStore());
-const {setPlayerTeam, removePlayerByName} = useGameStore();
+const {getTeams} = storeToRefs(useTeamStore());
+const {setPlayerTeam, removePlayerByName} = usePlayerStore();
 
 const props = defineProps(['name', 'inTeam'])
 
 function selectTeam(teamName: string) {
   setPlayerTeam(props.name, teamName)
 }
-
-function teamButtonStyle() {
-
-}
-
 </script>
 
 <template>

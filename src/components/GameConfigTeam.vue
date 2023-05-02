@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import {useTeamStore} from "@/stores/TeamStore";
 
-import {useGameStore} from "@/stores/game";
-
-const {removeTeamByName, setTeamColor} = useGameStore();
+const {removeTeamByName, setTeamColor} = useTeamStore();
 
 defineProps(['name', 'color'])
 </script>

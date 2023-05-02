@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed} from "vue";
-import {useGameStore} from "@/stores/game";
+import {useGameStore} from "@/stores/GameStore";
 
 const props = defineProps(['status', 'seconds'])
 

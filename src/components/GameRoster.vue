@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import {Player, useGameStore} from "@/stores/game";
 import GameRosterPlayer from "@/components/GameRosterPlayer.vue";
 import {storeToRefs} from "pinia";
 import {filter} from "lodash";
+import {usePlayerStore} from "@/stores/PlayerStore";
+import {useTeamStore} from "@/stores/TeamStore";
+import {Player} from "@/stores/models/Player";
 
-const {getPlayers, getTeams} = storeToRefs(useGameStore());
+const {getPlayers} = storeToRefs(usePlayerStore());
+const {getTeams} = storeToRefs(useTeamStore());
 
 function getPlayersOfTeam(teamName: string) {
   return filter(getPlayers.value, (player: Player) => {
