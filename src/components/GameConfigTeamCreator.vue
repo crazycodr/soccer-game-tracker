@@ -3,6 +3,7 @@ import {computed, ref} from "vue"
 import {TeamAlreadyExistsException} from "@/stores/exceptions/TeamAlreadyExistsException";
 import {useTeamStore} from "@/stores/TeamStore";
 import {Team} from "@/stores/models/Team";
+import {ElButton, ElInput} from "element-plus";
 
 const {addTeam} = useTeamStore();
 
@@ -37,9 +38,9 @@ function create() {
 
 <template>
   <main>
-    <div>
-      <input @keyup="keyupHandler" v-model="name" placeholder="Team name" />
-      <input :disabled="isEmpty" type="button" @click="create" value="Create" />
+    <div class="create-controls">
+      <el-input @keyup="keyupHandler" v-model="name" placeholder="Team name" />
+      <el-button :disabled="isEmpty" @click="create">Create</el-button>
     </div>
     <div class="error" v-if="error">
       {{error}}
@@ -48,8 +49,13 @@ function create() {
 </template>
 
 <style scoped>
-input[type="button"] {
-  margin-left: 1em;
+.create-controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.create-controls > *:first-child {
+  margin-right: 1em;
 }
 
 .error {

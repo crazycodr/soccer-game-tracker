@@ -34,13 +34,13 @@ const isBenching = computed(() => {
         <div :class="{status: true, playing: isPlaying, benching: isBenching}">
           {{ status }} ({{readableTimeSince}})
         </div>
-        <input type="button" value="Bench" v-if="isPlaying" @click="benchPlayer(name)"/>
-        <input type="button" value="Play" v-if="isBenching" @click="unbenchPlayer(name)" />
+        <el-button v-if="isPlaying" @click="benchPlayer(name)">Bench</el-button>
+        <el-button v-if="isBenching" @click="unbenchPlayer(name)">Play</el-button>
       </div>
       <div class="player-score">
-        <input type="button" :value="goals" @click="increaseGoals(name)" />
+        <el-button @click="increaseGoals(name)">{{goals}}</el-button>
         <span>/</span>
-        <input type="button" :value="passes" @click="increasePasses(name)" />
+        <el-button @click="increasePasses(name)">{{passes}}</el-button>
       </div>
     </div>
   </main>
@@ -70,7 +70,7 @@ const isBenching = computed(() => {
 .player-status .status.benching {
   color: red;
 }
-.player-status input {
+.player-status .el-button {
   width: 100%;
   height: 4em;
   margin-bottom: 1em;

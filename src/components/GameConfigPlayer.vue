@@ -19,7 +19,7 @@ function selectTeam(teamName: string) {
     <div class="info">
       <div class="name">{{name}}</div>
       <div class="commands">
-        <input type="button" @click="() => removePlayerByName(name)" value="Delete" />
+        <el-button @click="() => removePlayerByName(name)">Delete</el-button>
       </div>
     </div>
     <div class="team-selector">
@@ -42,6 +42,7 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-content: center;
 }
 
 .info {

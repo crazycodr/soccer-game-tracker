@@ -34,7 +34,7 @@ function resetAndPause() {
   <main>
     <div :class="{timer: true, playing: isPlaying}" @click="timerPress">
       {{formattedTime}}
-      <input type="button" value="Reset" class="reset" @click.stop="resetAndPause" />
+      <el-button class="reset" @click.stop="resetAndPause">Reset</el-button>
     </div>
   </main>
 </template>

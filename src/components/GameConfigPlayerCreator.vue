@@ -3,6 +3,7 @@ import {computed, ref} from "vue"
 import {PlayerAlreadyExistsException} from "@/stores/exceptions/PlayerAlreadyExistsException";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {Player} from "@/stores/models/Player";
+import {ElButton, ElInput} from "element-plus";
 
 const {addPlayer} = usePlayerStore();
 
@@ -37,9 +38,9 @@ function create() {
 
 <template>
   <main>
-    <div>
-      <input @keyup="keyupHandler" v-model="name" placeholder="Player name" />
-      <input :disabled="isEmpty" type="button" @click="create" value="Create" />
+    <div class="create-controls">
+      <el-input @keyup="keyupHandler" v-model="name" placeholder="Player name" />
+      <el-button :disabled="isEmpty" @click="create">Create</el-button>
     </div>
     <div class="error" v-if="error">
       {{error}}
@@ -48,8 +49,12 @@ function create() {
 </template>
 
 <style scoped>
-input[type="button"] {
-  margin-left: 1em;
+.create-controls {
+  display: flex;
+}
+
+.create-controls > * {
+  margin-right: 1em;
 }
 
 .error {

@@ -1,20 +1,30 @@
 <script setup lang="ts">
 import {useTeamStore} from "@/stores/TeamStore";
+import {computed} from "vue";
+import {ElColorPicker} from "element-plus";
 
 const {removeTeamByName, setTeamColor} = useTeamStore();
 
-defineProps(['name', 'color'])
+const props = defineProps(['name', 'color'])
+
+const selectedColor = computed({
+  get() {
+    console.log(props.color)
+    return props.color
+  },
+  set(value: string){
+    console.log(value)
+    setTeamColor(props.name, value)
+  }
+})
 </script>
 
 <template>
   <main>
     <div class="name">{{name}}</div>
     <div class="commands">
-      <div @click="setTeamColor(name, 'red')" style="background-color: red" :class="{colorSelector: true, selected: color === 'red'}"></div>
-      <div @click="setTeamColor(name, 'blue')" style="background-color: blue" :class="{colorSelector: true, selected: color === 'blue'}"></div>
-      <div @click="setTeamColor(name, 'green')" style="background-color: green" :class="{colorSelector: true, selected: color === 'green'}"></div>
-      <div @click="setTeamColor(name, 'yellow')" style="background-color: yellow" :class="{colorSelector: true, selected: color === 'yellow'}"></div>
-      <input type="button" @click="() => removeTeamByName(name)" value="Delete" />
+      <el-color-picker v-model="selectedColor" />
+      <el-button @click="() => removeTeamByName(name)">Delete</el-button>
     </div>
   </main>
 </template>
@@ -27,8 +37,10 @@ main {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-content: center;
 }
 .name {
+  flex-basis: 50%;
   font-size: 1.2em;
   text-transform: capitalize;
   margin-bottom: 0.5em;
@@ -36,15 +48,10 @@ main {
 }
 .commands {
   display: flex;
-  align-items: center;
+  flex-basis: 50%;
+  justify-content: space-between;
 }
-.colorSelector {
-  width: 1.5em;
-  height: 1.5em;
-  display: inline-block;
-  margin-right: 1em;
-}
-.colorSelector.selected {
-  border: 3px solid black;
+.commands > * {
+  margin-left: 1em;
 }
 </style>
