@@ -35,11 +35,14 @@ function getGoalsOfTeam(teamName: string) {
 .scores {
   display: flex;
   justify-content: space-evenly;
+  flex-wrap: wrap;
 }
 .score {
   text-align: center;
   border: 3px solid gray;
   padding: 0.5em 1.5em;
+  flex-basis: 40%;
+  margin-bottom: 1em;
 }
 .team-name {
   text-transform: capitalize;

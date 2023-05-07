@@ -70,7 +70,6 @@ const isBenching = computed(() => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1em;
   border-bottom: 1px dotted grey;
   margin-bottom: 1em;
 }

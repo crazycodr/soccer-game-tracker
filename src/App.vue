@@ -3,35 +3,25 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <nav>
+  <el-menu default-active="1" mode="horizontal">
+    <el-menu-item index="1">
       <RouterLink to="/">Game</RouterLink>
+    </el-menu-item>
+    <el-menu-item index="2">
       <RouterLink to="/config">Configure</RouterLink>
-    </nav>
-  </header>
+    </el-menu-item>
+  </el-menu>
 
-  <RouterView />
+  <div class="content">
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
-nav {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 2em;
+.el-menu {
+  margin-bottom: 1em;
 }
-
-nav a.router-link-exact-active {
-  color: var(--vt-c-white-soft);
-  font-weight: bold;
-  background-color: var(--vt-c-text-light-1);
-}
-
-nav a {
-  display: inline-block;
-  border: 1px solid black;
-  padding: 0.5em 1.5em;
-  font-size: 1em;
-  text-align: center;
-  flex-grow: 1;
+.content {
+  padding: 1em;
 }
 </style>

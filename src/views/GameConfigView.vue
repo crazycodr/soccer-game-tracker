@@ -13,7 +13,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 </script>
 
 <template>
-  <main>
+  <main class="confing-view">
     <div class="team-config">
       <h2>Teams</h2>
       <GameConfigTeamCreator />
@@ -34,6 +34,9 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 </template>
 
 <style scoped>
+.confing-view {
+  margin-bottom: 25em;
+}
 .team-config {
   margin-bottom: 2em;
 }

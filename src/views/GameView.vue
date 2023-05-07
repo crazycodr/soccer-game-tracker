@@ -9,9 +9,15 @@ const {getGame} = storeToRefs(useGameStore());
 </script>
 
 <template>
-  <main>
+  <main class="game-view">
     <GameTimer :status="getGame.status" :seconds="getGame.seconds" />
     <GameScore />
     <GameRoster />
   </main>
 </template>
+
+<style scoped>
+.game-view {
+  margin-bottom: 30em;
+}
+</style>
