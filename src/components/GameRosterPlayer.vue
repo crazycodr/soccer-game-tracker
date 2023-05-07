@@ -6,16 +6,26 @@ const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses} = usePlayerSto
 
 const props = defineProps(['name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
 
-const readableTimeSince = computed(() => {
-  let referenceSeconds
-  if (props.status === 'playing') {
-    referenceSeconds = props.gameSeconds
-  } else {
-    referenceSeconds = props.benchSeconds
-  }
+const benchTimeSince = computed(() => {
+  let referenceSeconds = props.benchSeconds
   const seconds = Math.floor(referenceSeconds % 60).toFixed(0).toString().padStart(2, '0')
   const minutes = Math.floor(referenceSeconds / 60).toFixed(0).toString().padStart(2, '0')
   return `${minutes}:${seconds}`
+})
+
+const playingTimeSince = computed(() => {
+  let referenceSeconds = props.gameSeconds
+  const seconds = Math.floor(referenceSeconds % 60).toFixed(0).toString().padStart(2, '0')
+  const minutes = Math.floor(referenceSeconds / 60).toFixed(0).toString().padStart(2, '0')
+  return `${minutes}:${seconds}`
+})
+
+const playingStatus = computed(() => {
+  return isPlaying.value ? 'Playing' : 'Played'
+})
+
+const benchingStatus = computed(() => {
+  return isBenching.value ? 'Benching' : 'Benched'
 })
 
 const isPlaying = computed(() => {
@@ -29,18 +39,27 @@ const isBenching = computed(() => {
 <template>
   <main>
     <div class="team-player">
-      <div class="player-name">{{ name }}</div>
-      <div class="player-status">
-        <div :class="{status: true, playing: isPlaying, benching: isBenching}">
-          {{ status }} ({{readableTimeSince}})
+      <div class="left-col">
+        <div class="player-name">{{ name }}</div>
+        <div :class="{status: true, playing: isPlaying}">
+          <div class="label">{{ playingStatus }}</div>
+          <div class="timer">{{ playingTimeSince }}</div>
         </div>
-        <el-button v-if="isPlaying" @click="benchPlayer(name)">Bench</el-button>
-        <el-button v-if="isBenching" @click="unbenchPlayer(name)">Play</el-button>
+        <div :class="{status: true, benching: isBenching}">
+          <div class="label">{{ benchingStatus }}</div>
+          <div class="timer">{{ benchTimeSince }}</div>
+        </div>
       </div>
-      <div class="player-score">
-        <el-button @click="increaseGoals(name)">{{goals}}</el-button>
-        <span>/</span>
-        <el-button @click="increasePasses(name)">{{passes}}</el-button>
+      <div class="right-col">
+        <div class="player-score">
+          <el-button @click="increaseGoals(name)">{{goals}}</el-button>
+          <span>/</span>
+          <el-button @click="increasePasses(name)">{{passes}}</el-button>
+        </div>
+        <div class="player-status">
+          <el-button v-if="isPlaying" @click="benchPlayer(name)">Bench</el-button>
+          <el-button v-if="isBenching" @click="unbenchPlayer(name)">Play</el-button>
+        </div>
       </div>
     </div>
   </main>
@@ -48,14 +67,24 @@ const isBenching = computed(() => {
 
 <style scoped>
 .team-player {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   padding: 1em;
-  border: 1px solid black;
+  border-bottom: 1px dotted grey;
   margin-bottom: 1em;
+}
+.left-col {
+  flex-grow: 2;
+  margin-right: 1em;
+}
+.right-col {
+  flex-grow: 1;
 }
 .player-name {
   font-size: 1.5em;
+  border-bottom: 1px solid grey;
   margin-bottom: 0.5em;
-  text-align: center;
 }
 .player-status {
 }
@@ -64,10 +93,15 @@ const isBenching = computed(() => {
   text-align: center;
   text-transform: capitalize;
 }
-.player-status .status.playing {
+.status {
+  display: flex;
+  justify-content: space-between;
+  color: darkgrey;
+}
+.status.playing {
   color: green;
 }
-.player-status .status.benching {
+.status.benching {
   color: red;
 }
 .player-status .el-button {
@@ -77,7 +111,9 @@ const isBenching = computed(() => {
   white-space: normal;
 }
 .player-score {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5em;
 }
 .player-score span {
   font-size: 1.5em;

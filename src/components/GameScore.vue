@@ -19,8 +19,8 @@ function getGoalsOfTeam(teamName: string) {
 <template>
   <main>
     <div class="scores">
-      <div class="score" v-for="team in getTeams" :key="team.name">
-        <div class="team-name">
+      <div class="score" v-for="team in getTeams" :key="team.name" :style="{'border-color': team.color}">
+        <div class="team-name" :style="{'color': team.color}">
           {{ team.name }}
         </div>
         <div class="team-score">
@@ -38,7 +38,7 @@ function getGoalsOfTeam(teamName: string) {
 }
 .score {
   text-align: center;
-  border: 1px dotted gray;
+  border: 3px solid gray;
   padding: 0.5em 1.5em;
 }
 .team-name {

@@ -20,7 +20,7 @@ function getPlayersOfTeam(teamName: string) {
   <main>
     <div class="game-roster">
       <div class="team" v-for="team in getTeams" :key="team.name">
-        <div class="team-name">{{ team.name }}</div>
+        <div class="team-name" :style="{color: team.color, 'border-bottom-color': team.color}">{{ team.name }}</div>
         <div class="team-roster">
           <GameRosterPlayer v-for="player in getPlayersOfTeam(team.name)"
                             :key="player.name"
@@ -48,7 +48,7 @@ function getPlayersOfTeam(teamName: string) {
 }
 .team-roster {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
