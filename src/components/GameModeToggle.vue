@@ -8,10 +8,10 @@ const {setToAdditionMode, setToRemovalMode, STAT_MODE_ADDITION, STAT_MODE_REMOVA
 
 const mode = computed({
   get: () => {
-    return getStatMode
+    return getStatMode.value
   },
-  set: (value) => {
-    switch (value.value) {
+  set: (value: number) => {
+    switch (value) {
       case STAT_MODE_ADDITION:
         setToAdditionMode()
         break
