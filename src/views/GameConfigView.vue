@@ -13,10 +13,12 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 </script>
 
 <template>
-  <main class="confing-view">
+  <main class="config-view">
     <div class="team-config">
-      <h2>Teams</h2>
-      <GameConfigTeamCreator />
+      <div class="section-header">
+        <h2>Teams</h2>
+        <GameConfigTeamCreator class="creator" />
+      </div>
       <div v-for="team in getTeams" :key="team.name">
         <GameConfigTeam :name="team.name" :color="team.color" />
       </div>
@@ -34,7 +36,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 </template>
 
 <style scoped>
-.confing-view {
+.config-view {
   margin-bottom: 25em;
 }
 .team-config {
@@ -42,5 +44,9 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 }
 .player-config {
   margin-bottom: 2em;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
