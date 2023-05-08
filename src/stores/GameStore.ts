@@ -63,12 +63,31 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function reset() {
+  function resetStatuses() {
+    pauseGame()
+    forEach(getPlayers.value, (player: Player) => {
+      player.status = 'playing'
+    })
+  }
+
+  function resetTimers() {
     game.value.seconds = 0
     forEach(getPlayers.value, (player: Player) => {
       player.gameSeconds = 0
       player.benchSeconds = 0
       player.status = 'playing'
+    })
+  }
+
+  function resetGoals() {
+    forEach(getPlayers.value, (player: Player) => {
+      player.goals = 0
+      player.passes = 0
+    })
+  }
+
+  function resetPasses() {
+    forEach(getPlayers.value, (player: Player) => {
       player.goals = 0
       player.passes = 0
     })
@@ -78,7 +97,10 @@ export const useGameStore = defineStore('game', () => {
     getGame,
     pauseGame,
     unpauseGame,
-    reset,
+    resetTimers,
+    resetStatuses,
+    resetGoals,
+    resetPasses,
     inAdditionMode,
     inRemovalMode,
     setToAdditionMode,

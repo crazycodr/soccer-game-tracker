@@ -4,7 +4,7 @@ import {useGameStore} from "@/stores/GameStore";
 
 const props = defineProps(['status', 'seconds'])
 
-const {reset, pauseGame, unpauseGame} = useGameStore();
+const {resetEverything, pauseGame, unpauseGame} = useGameStore();
 
 const formattedTime = computed(() => {
   const seconds = Math.floor(props.seconds % 60).toFixed(0).toString().padStart(2, '0')
@@ -23,18 +23,12 @@ function timerPress() {
     unpauseGame()
   }
 }
-
-function resetAndPause() {
-  pauseGame()
-  reset()
-}
 </script>
 
 <template>
   <main>
     <div :class="{timer: true, playing: isPlaying}" @click="timerPress">
       {{formattedTime}}
-      <el-button class="reset" @click.stop="resetAndPause">Reset</el-button>
     </div>
   </main>
 </template>

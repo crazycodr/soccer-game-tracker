@@ -1,19 +1,26 @@
 <script setup lang="ts">
 
 import GameModeToggle from "@/components/GameModeToggle.vue";
+import GameResetOperations from "@/components/GameResetOperations.vue";
 </script>
 
 <template>
-  <el-row style="margin-bottom: 1em">
+  <el-row class="section volatile-warning">
     <el-alert :closable="false" type="warning">Settings in this page do not persist. If you refresh the page, they are lost!</el-alert>
   </el-row>
   <el-row>
-    <GameModeToggle />
+    <GameModeToggle class="section" />
+  </el-row>
+  <el-row>
+    <GameResetOperations class="section" />
   </el-row>
 </template>
 
 <style scoped>
-.game-operations {
-  margin-bottom: 30em;
+.volatile-warning {
+  margin-bottom: 1em;
+}
+.section {
+  margin-bottom: 3em;
 }
 </style>
