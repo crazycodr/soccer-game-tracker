@@ -91,7 +91,9 @@ function affectPasses(name: string) {
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 2px dotted lightgrey;
-  margin-bottom: 1em;
+  padding: 0.5em;
+  margin: 0.5em -0.5em;
+  background-color: #f7f7f7;
 }
 .left-col {
   flex-grow: 2;
@@ -123,7 +125,7 @@ function affectPasses(name: string) {
 .status.benching {
   color: red;
 }
-.player-status .el-button {
+.player-status > * {
   width: 100%;
   height: 4em;
   margin-bottom: 1em;

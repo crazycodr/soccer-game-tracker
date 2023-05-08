@@ -20,10 +20,6 @@ const selectedTeam = computed({
   }
 })
 
-function selectTeam(teamName: string) {
-  setPlayerTeam(props.name, teamName)
-}
-
 const confirmDeletion = () => {
   ElMessageBox.confirm(
       `Player to be deleted: ${props.name}`,
@@ -55,6 +51,9 @@ const confirmDeletion = () => {
 .game-config-player {
   padding: 0.5em;
   margin-top: 0.5em;
+  margin-left: -0.5em;
+  margin-right: -0.5em;
+  background-color: #f7f7f7;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

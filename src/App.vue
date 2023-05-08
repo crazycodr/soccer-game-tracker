@@ -1,29 +1,20 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import {RouterView} from 'vue-router'
 </script>
 
 <template>
-  <el-menu default-active="1" mode="horizontal">
-    <el-menu-item index="1">
-      <RouterLink to="/">Game</RouterLink>
-    </el-menu-item>
-    <el-menu-item index="2">
-      <RouterLink to="/operations">Operations</RouterLink>
-    </el-menu-item>
-    <el-menu-item index="3">
-      <RouterLink to="/config">Configure</RouterLink>
-    </el-menu-item>
+  <el-menu :router="true" default-active="/game" mode="horizontal">
+    <el-menu-item index="/game">Game</el-menu-item>
+    <el-menu-item index="/operations">Operations</el-menu-item>
+    <el-menu-item index="/config">Configure</el-menu-item>
   </el-menu>
 
   <div class="content">
-    <RouterView />
+    <RouterView/>
   </div>
 </template>
 
 <style scoped>
-.el-menu {
-  margin-bottom: 1em;
-}
 .content {
   padding: 1em;
 }
