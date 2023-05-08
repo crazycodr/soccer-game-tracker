@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {computed} from "vue";
 import {useGameStore} from "@/stores/GameStore";
 import {storeToRefs} from "pinia";
@@ -11,8 +11,7 @@ const mode = computed({
     return getStatMode
   },
   set: (value) => {
-    console.log(value)
-    switch (value) {
+    switch (value.value) {
       case STAT_MODE_ADDITION:
         setToAdditionMode()
         break
