@@ -85,5 +85,44 @@ export const usePlayerStore = defineStore('player', () => {
     player.passes++
   }
 
-  return {getPlayers, increaseGoals, increasePasses, addPlayer, setPlayerTeam, removePlayerByName, benchPlayer, unbenchPlayer}
+  function decreaseGoals(name: string) {
+    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
+      return existingPlayer.name === name
+    })
+    if (matchingPlayers.length === 0) {
+      throw new PlayerNotFoundException()
+    }
+    const player = <Player>first(matchingPlayers)
+    if (player.goals === 0) {
+      return
+    }
+    player.goals--
+  }
+
+  function decreasePasses(name: string) {
+    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
+      return existingPlayer.name === name
+    })
+    if (matchingPlayers.length === 0) {
+      throw new PlayerNotFoundException()
+    }
+    const player = <Player>first(matchingPlayers)
+    if (player.passes === 0) {
+      return
+    }
+    player.passes--
+  }
+
+  return {
+    getPlayers,
+    increaseGoals,
+    increasePasses,
+    addPlayer,
+    setPlayerTeam,
+    removePlayerByName,
+    benchPlayer,
+    unbenchPlayer,
+    decreaseGoals,
+    decreasePasses
+  }
 })

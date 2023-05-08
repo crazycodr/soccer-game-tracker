@@ -1,5 +1,5 @@
 import {defineStore, storeToRefs} from 'pinia'
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useLocalStorage} from '@vueuse/core'
 import {Game} from "@/stores/models/Game";
 import {usePlayerStore} from "@/stores/PlayerStore";
@@ -10,13 +10,37 @@ export const useGameStore = defineStore('game', () => {
 
   setInterval(tick, 1000)
 
-  const game = useLocalStorage('game', new Game())
+  const STAT_MODE_ADDITION = 1;
+  const STAT_MODE_REMOVAL = 2;
 
-  const {getPlayers} = storeToRefs(usePlayerStore());
+  const game = useLocalStorage('game', new Game())
+  const statMode = ref(STAT_MODE_ADDITION)
+
+  const {getPlayers} = storeToRefs(usePlayerStore())
 
   const getGame = computed((): Game => {
     return game.value
   })
+
+  const getStatMode = computed(() => {
+    return statMode.value
+  })
+
+  const inAdditionMode = computed((): boolean => {
+    return statMode.value === STAT_MODE_ADDITION
+  })
+
+  const inRemovalMode = computed((): boolean => {
+    return statMode.value === STAT_MODE_REMOVAL
+  })
+
+  function setToAdditionMode() {
+    statMode.value = STAT_MODE_ADDITION;
+  }
+
+  function setToRemovalMode() {
+    statMode.value = STAT_MODE_REMOVAL;
+  }
 
   function pauseGame() {
     game.value.status = 'paused'
@@ -50,6 +74,18 @@ export const useGameStore = defineStore('game', () => {
     })
   }
 
-  return {getGame, pauseGame, unpauseGame, reset}
+  return {
+    getGame,
+    pauseGame,
+    unpauseGame,
+    reset,
+    inAdditionMode,
+    inRemovalMode,
+    setToAdditionMode,
+    setToRemovalMode,
+    getStatMode,
+    STAT_MODE_ADDITION,
+    STAT_MODE_REMOVAL
+  }
 })
 

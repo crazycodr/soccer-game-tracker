@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {computed} from "vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
+import {useGameStore} from "@/stores/GameStore";
 
-const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses} = usePlayerStore();
+const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore();
+const {inAdditionMode, inRemovalMode} = useGameStore();
 
 const props = defineProps(['name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
 
@@ -35,6 +37,24 @@ const isPlaying = computed(() => {
 const isBenching = computed(() => {
   return props.status === 'benching'
 })
+
+function affectGoals(name: string) {
+  if (inAdditionMode) {
+    increaseGoals(name)
+  }
+  if (inRemovalMode) {
+    decreaseGoals(name)
+  }
+}
+
+function affectPasses(name: string) {
+  if (inAdditionMode) {
+    increasePasses(name)
+  }
+  if (inRemovalMode) {
+    decreasePasses(name)
+  }
+}
 </script>
 <template>
   <main>
@@ -52,9 +72,9 @@ const isBenching = computed(() => {
       </div>
       <div class="right-col">
         <div class="player-score">
-          <el-button @click="increaseGoals(name)">{{goals}}</el-button>
+          <el-button @click="affectGoals(name)">{{goals}}</el-button>
           <span>/</span>
-          <el-button @click="increasePasses(name)">{{passes}}</el-button>
+          <el-button @click="affectPasses(name)">{{passes}}</el-button>
         </div>
         <div class="player-status">
           <el-button v-if="isPlaying" @click="benchPlayer(name)">Bench</el-button>
@@ -70,7 +90,7 @@ const isBenching = computed(() => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-bottom: 1px dotted grey;
+  border-bottom: 2px dotted lightgrey;
   margin-bottom: 1em;
 }
 .left-col {
@@ -82,7 +102,7 @@ const isBenching = computed(() => {
 }
 .player-name {
   font-size: 1.5em;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid lightgrey;
   margin-bottom: 0.5em;
 }
 .player-status {

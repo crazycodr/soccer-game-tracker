@@ -8,6 +8,9 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterLink to="/">Game</RouterLink>
     </el-menu-item>
     <el-menu-item index="2">
+      <RouterLink to="/operations">Operations</RouterLink>
+    </el-menu-item>
+    <el-menu-item index="3">
       <RouterLink to="/config">Configure</RouterLink>
     </el-menu-item>
   </el-menu>
