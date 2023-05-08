@@ -4,10 +4,12 @@ import GameModeToggle from "@/components/GameModeToggle.vue";
 </script>
 
 <template>
-  <main class="game-operations">
-    <el-alert type="warning">Settings in this page do not persist. If you refresh the page, they are lost!</el-alert>
+  <el-row style="margin-bottom: 1em">
+    <el-alert :closable="false" type="warning">Settings in this page do not persist. If you refresh the page, they are lost!</el-alert>
+  </el-row>
+  <el-row>
     <GameModeToggle />
-  </main>
+  </el-row>
 </template>
 
 <style scoped>
