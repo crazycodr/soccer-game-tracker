@@ -35,7 +35,7 @@ const confirmDeletion = () => {
 </script>
 
 <template>
-  <div class="game-config-player">
+  <main class="game-config-player">
     <div class="name">{{name}}</div>
     <el-select class="team" v-model="selectedTeam">
       <el-option
@@ -44,10 +44,10 @@ const confirmDeletion = () => {
           :value="team.name">{{team.name}}</el-option>
     </el-select>
     <el-button icon="RemoveFilled" @click="confirmDeletion">Delete</el-button>
-  </div>
+  </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .game-config-player {
   padding: 0.5em;
   margin-top: 0.5em;
@@ -59,15 +59,15 @@ const confirmDeletion = () => {
   justify-content: space-between;
   align-content: center;
   border-bottom: 2px dotted lightgrey;
-}
 
-.name {
-  flex-basis: 33%;
-  font-size: 1.2em;
-  text-transform: capitalize;
-}
+  .name {
+    flex-basis: 33%;
+    font-size: 1.2em;
+    text-transform: capitalize;
+  }
 
-.team {
-  flex-basis: 33%;
+  .team {
+    flex-basis: 33%;
+  }
 }
 </style>

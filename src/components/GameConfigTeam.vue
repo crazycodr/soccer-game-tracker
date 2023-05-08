@@ -31,15 +31,15 @@ const confirmDeletion = () => {
 </script>
 
 <template>
-  <main>
+  <main class="config-team">
     <div class="name">{{name}}</div>
     <el-color-picker v-model="selectedColor" />
     <el-button icon="RemoveFilled" @click="confirmDeletion">Delete</el-button>
   </main>
 </template>
 
-<style scoped>
-main {
+<style scoped lang="scss">
+.config-team {
   padding: 0.5em;
   margin-top: 0.5em;
   margin-left: -0.5em;
@@ -50,10 +50,11 @@ main {
   justify-content: space-between;
   align-content: center;
   border-bottom: 2px dotted lightgrey;
-}
-.name {
-  flex-basis: 50%;
-  font-size: 1.2em;
-  text-transform: capitalize;
+
+  .name {
+    flex-basis: 50%;
+    font-size: 1.2em;
+    text-transform: capitalize;
+  }
 }
 </style>

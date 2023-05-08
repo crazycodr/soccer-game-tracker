@@ -59,7 +59,7 @@ function create() {
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .error {
   color: red;
 }

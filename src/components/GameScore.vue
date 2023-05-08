@@ -31,24 +31,27 @@ function getGoalsOfTeam(teamName: string) {
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .scores {
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
-}
-.score {
-  text-align: center;
-  border: 3px solid gray;
-  padding: 0.5em 1.5em;
-  flex-basis: 40%;
-  margin-bottom: 1em;
-}
-.team-name {
-  text-transform: capitalize;
-  font-size: 1.5em;
-}
-.team-score {
-  font-size: 3em;
+
+  .score {
+    text-align: center;
+    border: 3px solid gray;
+    padding: 0.5em 1.5em;
+    flex-basis: 40%;
+    margin-bottom: 1em;
+
+    .team-name {
+      text-transform: capitalize;
+      font-size: 1.5em;
+    }
+
+    .team-score {
+      font-size: 3em;
+    }
+  }
 }
 </style>

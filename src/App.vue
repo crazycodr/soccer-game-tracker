@@ -14,7 +14,7 @@ import {RouterView} from 'vue-router'
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .content {
   padding: 1em;
 }

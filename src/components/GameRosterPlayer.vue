@@ -85,7 +85,7 @@ function affectPasses(name: string) {
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .team-player {
   display: flex;
   flex-direction: row;
@@ -94,53 +94,65 @@ function affectPasses(name: string) {
   padding: 0.5em;
   margin: 0.5em -0.5em;
   background-color: #f7f7f7;
-}
-.left-col {
-  flex-grow: 2;
-  margin-right: 1em;
-}
-.right-col {
-  flex-grow: 1;
-}
-.player-name {
-  font-size: 1.5em;
-  border-bottom: 1px solid lightgrey;
-  margin-bottom: 0.5em;
-}
-.player-status {
-}
-.player-status .status {
-  padding: 0.5em;
-  text-align: center;
-  text-transform: capitalize;
-}
-.status {
-  display: flex;
-  justify-content: space-between;
-  color: darkgrey;
-}
-.status.playing {
-  color: green;
-}
-.status.benching {
-  color: red;
-}
-.player-status > * {
-  width: 100%;
-  height: 4em;
-  margin-bottom: 1em;
-  white-space: normal;
-}
-.player-score {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5em;
-}
-.player-score span {
-  font-size: 1.5em;
-  margin: 0 0.5em;
-}
-.player-score input {
-  font-size: 1.5em;
+
+  .left-col {
+    flex-grow: 2;
+    margin-right: 1em;
+
+    .player-name {
+      font-size: 1.5em;
+      border-bottom: 1px solid lightgrey;
+      margin-bottom: 0.5em;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      color: darkgrey;
+
+      &.playing {
+        color: green;
+      }
+
+      &.benching {
+        color: red;
+      }
+    }
+  }
+
+  .right-col {
+    flex-grow: 1;
+
+    .player-status {
+    }
+
+    .player-status .status {
+      padding: 0.5em;
+      text-align: center;
+      text-transform: capitalize;
+    }
+
+    .player-status > * {
+      width: 100%;
+      height: 4em;
+      margin-bottom: 1em;
+      white-space: normal;
+    }
+
+    .player-score {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5em;
+    }
+
+    .player-score span {
+      font-size: 1.5em;
+      margin: 0 0.5em;
+    }
+
+    .player-score input {
+      font-size: 1.5em;
+    }
+  }
 }
 </style>

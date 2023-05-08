@@ -9,7 +9,6 @@ import {useTeamStore} from "@/stores/TeamStore";
 
 const {getTeams} = storeToRefs(useTeamStore());
 const {getPlayers} = storeToRefs(usePlayerStore());
-
 </script>
 
 <template>
@@ -23,7 +22,6 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <GameConfigTeam :name="team.name" :color="team.color" />
       </div>
     </div>
-
     <div class="player-config">
       <div class="section-header">
         <h2>Players</h2>
@@ -33,22 +31,20 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <GameConfigPlayer :name="player.name" :in-team="player.team" />
       </div>
     </div>
-
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .config-view {
   margin-bottom: 25em;
-}
-.team-config {
-  margin-bottom: 2em;
-}
-.player-config {
-  margin-bottom: 2em;
-}
-.section-header {
-  display: flex;
-  justify-content: space-between;
+
+  .team-config, .player-config {
+    margin-bottom: 2em;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 </style>

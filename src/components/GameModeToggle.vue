@@ -33,7 +33,7 @@ const mode = computed({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 h2 {
   margin-bottom: 0.5em;
 }
