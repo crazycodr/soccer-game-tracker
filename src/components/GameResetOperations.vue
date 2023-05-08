@@ -42,7 +42,7 @@ function hideSuccessTimeout (){
 
 <template>
   <main>
-    <h3>Game data</h3>
+    <h2>Game data</h2>
     <el-row class="reset-option">
       <el-checkbox label="statuses" v-model="resetStatusFlag">Game and player status (Play/Pause/Bench)</el-checkbox>
     </el-row>
@@ -65,7 +65,7 @@ function hideSuccessTimeout (){
 </template>
 
 <style scoped>
-h3 {
+h2 {
   margin-bottom: 0.5em;
 }
 .reset-option {

@@ -25,7 +25,7 @@ const mode = computed({
 
 <template>
   <main>
-    <h3>Effect of statistic buttons</h3>
+    <h2>Effect of statistic buttons</h2>
     <el-radio-group v-model="mode">
       <el-radio-button :label="STAT_MODE_ADDITION">Addition</el-radio-button>
       <el-radio-button :label="STAT_MODE_REMOVAL">Removal</el-radio-button>
@@ -34,7 +34,7 @@ const mode = computed({
 </template>
 
 <style scoped>
-h3 {
+h2 {
   margin-bottom: 0.5em;
 }
 </style>

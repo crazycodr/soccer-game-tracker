@@ -3,79 +3,72 @@
 import {storeToRefs} from "pinia";
 import {useTeamStore} from "@/stores/TeamStore";
 import {usePlayerStore} from "@/stores/PlayerStore";
+import {ElMessageBox} from "element-plus";
+import {computed} from "vue";
 
 const {getTeams} = storeToRefs(useTeamStore());
 const {setPlayerTeam, removePlayerByName} = usePlayerStore();
 
 const props = defineProps(['name', 'inTeam'])
 
+const selectedTeam = computed({
+  get: () => {
+    return props.inTeam
+  },
+  set(value: string) {
+    setPlayerTeam(props.name, value)
+  }
+})
+
 function selectTeam(teamName: string) {
   setPlayerTeam(props.name, teamName)
+}
+
+const confirmDeletion = () => {
+  ElMessageBox.confirm(
+      `Player to be deleted: ${props.name}`,
+      'Confirm deletion',
+      {
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel'
+      }
+  ).then(() => {
+    removePlayerByName(props.name)
+  })
 }
 </script>
 
 <template>
-  <main>
-    <div class="info">
-      <div class="name">{{name}}</div>
-      <div class="commands">
-        <el-button @click="() => removePlayerByName(name)">Delete</el-button>
-      </div>
-    </div>
-    <div class="team-selector">
-      <div v-for="team in getTeams" :key="team.name">
-        <div :style="{'background-color': team.name === inTeam ? team.color : 'transparent'}"
-             :class="{team: true, selected: team.name === inTeam}"
-             @click="selectTeam(team.name)">
-          {{team.name}}
-        </div>
-      </div>
-    </div>
-  </main>
+  <div class="game-config-player">
+    <div class="name">{{name}}</div>
+    <el-select class="team" v-model="selectedTeam">
+      <el-option
+          v-for="team in getTeams"
+          :key="team.name"
+          :value="team.name">{{team.name}}</el-option>
+    </el-select>
+    <el-button icon="RemoveFilled" @click="confirmDeletion">Delete</el-button>
+  </div>
 </template>
 
 <style scoped>
-main {
-  background-color: #f1f1f1;
+.game-config-player {
   padding: 0.5em;
   margin-top: 0.5em;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   align-content: center;
+  border-bottom: 2px dotted lightgrey;
 }
 
-.info {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.info .name {
+.name {
+  flex-basis: 33%;
   font-size: 1.2em;
   text-transform: capitalize;
-  margin-bottom: 0.5em;
-  font-weight: bold;
-}
-
-.team-selector {
-  display: flex;
-  flex-direction: row;
 }
 
 .team {
-  border: 1px solid black;
-  padding: 0.5em;
-  margin-right: 0.5em;
-  text-transform: capitalize;
-}
-
-.team.selected {
-  background-color: white;
-  color: black;
-}
-
-.team:hover {
-  cursor: pointer;
+  flex-basis: 33%;
 }
 </style>

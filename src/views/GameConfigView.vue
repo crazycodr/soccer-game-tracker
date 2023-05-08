@@ -25,8 +25,10 @@ const {getPlayers} = storeToRefs(usePlayerStore());
     </div>
 
     <div class="player-config">
-      <h2>Players</h2>
-      <GameConfigPlayerCreator />
+      <div class="section-header">
+        <h2>Players</h2>
+        <GameConfigPlayerCreator class="creator" />
+      </div>
       <div v-for="player in getPlayers" :key="player.name">
         <GameConfigPlayer :name="player.name" :in-team="player.team" />
       </div>

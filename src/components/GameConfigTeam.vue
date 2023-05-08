@@ -52,6 +52,5 @@ main {
   flex-basis: 50%;
   font-size: 1.2em;
   text-transform: capitalize;
-  font-weight: bold;
 }
 </style>

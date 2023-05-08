@@ -4,7 +4,6 @@ import {TeamAlreadyExistsException} from "@/stores/exceptions/TeamAlreadyExistsE
 import {useTeamStore} from "@/stores/TeamStore";
 import {Team} from "@/stores/models/Team";
 import {ElButton, ElInput} from "element-plus";
-import {CirclePlus} from "@element-plus/icons-vue";
 
 const {addTeam} = useTeamStore();
 

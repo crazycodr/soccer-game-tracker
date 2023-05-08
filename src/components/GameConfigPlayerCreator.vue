@@ -3,12 +3,13 @@ import {computed, ref} from "vue"
 import {PlayerAlreadyExistsException} from "@/stores/exceptions/PlayerAlreadyExistsException";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {Player} from "@/stores/models/Player";
-import {ElButton, ElInput} from "element-plus";
+import {ElButton, ElDialog, ElInput} from "element-plus";
 
 const {addPlayer} = usePlayerStore();
 
 const name = ref('')
 const error = ref('')
+const showDialog = ref(false)
 
 function keyupHandler(key: KeyboardEvent) {
   error.value = ''
@@ -25,6 +26,7 @@ function create() {
   try {
     addPlayer(new Player(name.value))
     name.value = ''
+    showDialog.value = false
   } catch (exception) {
     console.log(exception)
     if (exception instanceof PlayerAlreadyExistsException) {
@@ -38,25 +40,26 @@ function create() {
 
 <template>
   <main>
-    <div class="create-controls">
+    <el-dialog v-model="showDialog" title="Create player" @close="showDialog = false">
+      <h3>Player name</h3>
       <el-input @keyup="keyupHandler" v-model="name" placeholder="Player name" />
-      <el-button :disabled="isEmpty" @click="create">Create</el-button>
-    </div>
-    <div class="error" v-if="error">
-      {{error}}
-    </div>
+      <div class="error" v-if="error">
+        {{error}}
+      </div>
+      <template #footer>
+        <el-button @click="showDialog = false">Cancel</el-button>
+        <el-button :disabled="isEmpty" type="primary" @click="create">
+          Create
+        </el-button>
+      </template>
+    </el-dialog>
+    <el-button @click="showDialog = true" icon="CirclePlusFilled">
+      Create
+    </el-button>
   </main>
 </template>
 
 <style scoped>
-.create-controls {
-  display: flex;
-}
-
-.create-controls > * {
-  margin-right: 1em;
-}
-
 .error {
   color: red;
 }
