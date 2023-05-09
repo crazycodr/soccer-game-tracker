@@ -1,14 +1,20 @@
 import {defineStore} from 'pinia'
 import {computed} from 'vue'
-import {filter} from 'lodash'
-import {useLocalStorage} from '@vueuse/core'
+import {each, filter} from 'lodash'
+import {useStorage} from '@vueuse/core'
 import {TeamNotFoundException} from '@/stores/exceptions/TeamNotFoundException';
 import {TeamAlreadyExistsException} from '@/stores/exceptions/TeamAlreadyExistsException';
 import type {Team} from "@/stores/models/Team";
+import {v4, validate} from "uuid";
 
 export const useTeamStore = defineStore('team', () => {
 
-  const teams = useLocalStorage('teams', [] as Team[])
+  const teams = useStorage<Team[]>('teams', [], localStorage, {mergeDefaults: true})
+  each(teams.value, (team: Team) => {
+    if (!validate(team.uuid) || team.uuid === undefined) {
+      team.uuid = v4()
+    }
+  })
 
   const getTeams = computed((): Team[] => {
     return teams.value
@@ -34,12 +40,12 @@ export const useTeamStore = defineStore('team', () => {
     existingTeams[0].color = color
   }
 
-  function removeTeamByName(name: string) {
+  function removeTeamByUuid(name: string) {
     teams.value = filter(teams.value, (existingTeam: Team) => {
       return existingTeam.name !== name
     })
   }
 
-  return {setTeamColor, getTeams, addTeam, removeTeamByName}
+  return {setTeamColor, getTeams, addTeam, removeTeamByUuid}
 })
 

@@ -23,6 +23,7 @@ const {t} = useI18n({
 
 const {getTeams} = storeToRefs(useTeamStore());
 const {getPlayers} = storeToRefs(usePlayerStore());
+
 </script>
 
 <template>
@@ -41,8 +42,8 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('playersTitle') }}</h2>
         <GameConfigPlayerCreator class="creator" />
       </div>
-      <div v-for="player in getPlayers" :key="player.name">
-        <GameConfigPlayer :name="player.name" :in-team="player.team" />
+      <div v-for="player in getPlayers" :key="player.uuid">
+        <GameConfigPlayer :uuid="player.uuid" :name="player.name" :in-team="player.team" />
       </div>
     </div>
   </main>

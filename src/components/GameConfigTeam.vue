@@ -21,7 +21,7 @@ const {t} = useI18n({
   }
 })
 
-const {removeTeamByName, setTeamColor} = useTeamStore();
+const {removeTeamByUuid, setTeamColor} = useTeamStore();
 
 const props = defineProps(['name', 'color'])
 
@@ -43,7 +43,7 @@ const confirmDeletion = () => {
         cancelButtonText: t('cancelOption')
       }
   ).then(() => {
-    removeTeamByName(props.name)
+    removeTeamByUuid(props.name)
   }).catch(() => {
     // Do nothing
   })

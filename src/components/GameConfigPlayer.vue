@@ -6,6 +6,8 @@ import {usePlayerStore} from "@/stores/PlayerStore"
 import {ElMessageBox} from "element-plus"
 import {computed} from "vue"
 import {useI18n} from "vue-i18n"
+import {Team} from "@/stores/models/Team";
+import {find} from "lodash";
 
 const {t} = useI18n({
   messages: {
@@ -25,16 +27,18 @@ const {t} = useI18n({
 })
 
 const {getTeams} = storeToRefs(useTeamStore())
-const {setPlayerTeam, removePlayerByName} = usePlayerStore()
+const {setPlayerTeam, removePlayerByUuid} = usePlayerStore()
 
-const props = defineProps(['name', 'inTeam'])
+const props = defineProps(['uuid', 'name', 'inTeam'])
 
 const selectedTeam = computed({
-  get: () => {
-    return props.inTeam
+  get(){
+    return find(getTeams.value, (team: Team) => {
+      return team.uuid === props.inTeam
+    })
   },
-  set(value: string) {
-    setPlayerTeam(props.name, value)
+  set(team){
+    setPlayerTeam(props.uuid, team ? team.uuid : '')
   }
 })
 
@@ -47,7 +51,7 @@ const confirmDeletion = () => {
         cancelButtonText: t('cancelOption')
       }
   ).then(() => {
-    removePlayerByName(props.name)
+    removePlayerByUuid(props.uuid)
   }).catch(() => {
     // Do nothing
   })
@@ -57,11 +61,11 @@ const confirmDeletion = () => {
 <template>
   <main class="game-config-player">
     <div class="name">{{name}}</div>
-    <el-select class="team" v-model="selectedTeam">
+    <el-select class="team" v-model="selectedTeam" value-key="uuid">
       <el-option
           v-for="team in getTeams"
-          :key="team.name"
-          :value="team.name">{{team.name}}</el-option>
+          :key="team.uuid"
+          :value="team" :label="team.name" />
     </el-select>
     <el-button icon="RemoveFilled" @click="confirmDeletion">{{ t('deleteOption') }}</el-button>
   </main>

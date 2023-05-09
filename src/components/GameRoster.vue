@@ -22,7 +22,8 @@ function getPlayersOfTeam(teamName: string) {
       <div class="team-name" :style="{color: team.color, 'border-bottom-color': team.color}">{{ team.name }}</div>
       <div class="team-roster">
         <GameRosterPlayer v-for="player in getPlayersOfTeam(team.name)"
-                          :key="player.name"
+                          :key="player.uuid"
+                          :uuid="player.uuid"
                           :name="player.name"
                           :status="player.status"
                           :game-seconds="player.gameSeconds"

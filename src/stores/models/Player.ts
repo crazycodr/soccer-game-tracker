@@ -1,6 +1,9 @@
+import {v4} from "uuid";
+
 export class Player {
 
-    public readonly name: string
+    public uuid: string
+    public name: string
     public team: string = ''
     public status: string = 'playing'
     public gameSeconds: number = 0
@@ -9,6 +12,7 @@ export class Player {
     public passes: number = 0
 
     constructor(name: string) {
+        this.uuid = v4()
         this.name = name
     }
 }

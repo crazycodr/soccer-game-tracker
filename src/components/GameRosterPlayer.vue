@@ -28,7 +28,7 @@ const {t} = useI18n({
 const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore();
 const {inAdditionMode, inRemovalMode} = useGameStore();
 
-const props = defineProps(['name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
+const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
 
 const benchTimeSince = computed(() => {
   let referenceSeconds = props.benchSeconds
@@ -60,21 +60,21 @@ const isBenching = computed(() => {
   return props.status === 'benching'
 })
 
-function affectGoals(name: string) {
+function affectGoals(uuid: string) {
   if (inAdditionMode) {
-    increaseGoals(name)
+    increaseGoals(uuid)
   }
   if (inRemovalMode) {
-    decreaseGoals(name)
+    decreaseGoals(uuid)
   }
 }
 
-function affectPasses(name: string) {
+function affectPasses(uuid: string) {
   if (inAdditionMode) {
-    increasePasses(name)
+    increasePasses(uuid)
   }
   if (inRemovalMode) {
-    decreasePasses(name)
+    decreasePasses(uuid)
   }
 }
 </script>
@@ -94,13 +94,13 @@ function affectPasses(name: string) {
       </div>
       <div class="right-col">
         <div class="player-score">
-          <el-button @click="affectGoals(name)">{{goals}}</el-button>
+          <el-button @click="affectGoals(uuid)">{{goals}}</el-button>
           <span>/</span>
-          <el-button @click="affectPasses(name)">{{passes}}</el-button>
+          <el-button @click="affectPasses(uuid)">{{passes}}</el-button>
         </div>
         <div class="player-status">
-          <el-button v-if="isPlaying" @click="benchPlayer(name)">{{ t('benchAction') }}</el-button>
-          <el-button v-if="isBenching" @click="unbenchPlayer(name)">{{ t('playAction') }}</el-button>
+          <el-button v-if="isPlaying" @click="benchPlayer(uuid)">{{ t('benchAction') }}</el-button>
+          <el-button v-if="isBenching" @click="unbenchPlayer(uuid)">{{ t('playAction') }}</el-button>
         </div>
       </div>
     </div>

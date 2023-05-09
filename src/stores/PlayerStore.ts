@@ -1,14 +1,20 @@
 import {defineStore} from 'pinia'
 import {computed} from 'vue'
-import {filter, first} from 'lodash'
-import {useLocalStorage} from '@vueuse/core'
+import {each, filter, first} from 'lodash'
+import {useStorage} from '@vueuse/core'
 import {PlayerAlreadyExistsException} from '@/stores/exceptions/PlayerAlreadyExistsException'
 import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundException'
 import type {Player} from "@/stores/models/Player";
+import {v4, validate} from "uuid";
 
 export const usePlayerStore = defineStore('player', () => {
 
-  const players = useLocalStorage('players', [] as Player[])
+  const players = useStorage<Player[]>('players', [] as Player[], localStorage, {mergeDefaults: true})
+  each(players.value, (player: Player) => {
+    if (!validate(player.uuid) || player.uuid === undefined) {
+      player.uuid = v4()
+    }
+  })
 
   const getPlayers = computed((): Player[] => {
     return players.value
@@ -16,7 +22,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   function addPlayer(addedPlayer: Player) {
     const existingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === addedPlayer.name
+      return existingPlayer.uuid === addedPlayer.uuid
     })
     if (existingPlayers.length) {
       throw new PlayerAlreadyExistsException()
@@ -24,9 +30,9 @@ export const usePlayerStore = defineStore('player', () => {
     players.value.push(addedPlayer)
   }
 
-  function setPlayerTeam(name: string, team: string) {
+  function setPlayerTeam(uuid: string, team: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -35,15 +41,15 @@ export const usePlayerStore = defineStore('player', () => {
     player.team = team
   }
 
-  function removePlayerByName(name: string) {
+  function removePlayerByUuid(uuid: string) {
     players.value = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name !== name
+      return existingPlayer.uuid !== uuid
     })
   }
 
-  function benchPlayer(name: string) {
+  function benchPlayer(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -52,9 +58,9 @@ export const usePlayerStore = defineStore('player', () => {
     player.status = 'benching'
   }
 
-  function unbenchPlayer(name: string) {
+  function unbenchPlayer(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -63,9 +69,9 @@ export const usePlayerStore = defineStore('player', () => {
     player.status = 'playing'
   }
 
-  function increaseGoals(name: string) {
+  function increaseGoals(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -74,9 +80,9 @@ export const usePlayerStore = defineStore('player', () => {
     player.goals++
   }
 
-  function increasePasses(name: string) {
+  function increasePasses(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -85,9 +91,9 @@ export const usePlayerStore = defineStore('player', () => {
     player.passes++
   }
 
-  function decreaseGoals(name: string) {
+  function decreaseGoals(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -99,9 +105,9 @@ export const usePlayerStore = defineStore('player', () => {
     player.goals--
   }
 
-  function decreasePasses(name: string) {
+  function decreasePasses(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.name === name
+      return existingPlayer.uuid === uuid
     })
     if (matchingPlayers.length === 0) {
       throw new PlayerNotFoundException()
@@ -119,7 +125,7 @@ export const usePlayerStore = defineStore('player', () => {
     increasePasses,
     addPlayer,
     setPlayerTeam,
-    removePlayerByName,
+    removePlayerByUuid,
     benchPlayer,
     unbenchPlayer,
     decreaseGoals,

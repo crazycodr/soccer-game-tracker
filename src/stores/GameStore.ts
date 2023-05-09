@@ -1,6 +1,6 @@
 import {defineStore, storeToRefs} from 'pinia'
 import {computed, ref} from 'vue'
-import {useLocalStorage} from '@vueuse/core'
+import {useStorage} from '@vueuse/core'
 import {Game} from "@/stores/models/Game";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import type {Player} from "@/stores/models/Player";
@@ -13,7 +13,7 @@ export const useGameStore = defineStore('game', () => {
   const STAT_MODE_ADDITION = 1;
   const STAT_MODE_REMOVAL = 2;
 
-  const game = useLocalStorage('game', new Game())
+  const game = useStorage<Game>('game', new Game(), localStorage, {mergeDefaults: true})
   const statMode = ref(STAT_MODE_ADDITION)
 
   const {getPlayers} = storeToRefs(usePlayerStore())
