@@ -3,9 +3,16 @@ import {useI18n} from 'vue-i18n'
 import {computed, ref} from "vue"
 import {storeToRefs} from "pinia"
 import {useOptionStore} from "@/stores/OptionStore"
+import {useRouter} from "vue-router";
 
 const {getLanguage} = storeToRefs(useOptionStore())
 const {setLanguage} = useOptionStore()
+
+const router = useRouter()
+
+function reloadPage() {
+  router.go(0)
+}
 
 const languageChanged = ref(false)
 
@@ -39,26 +46,40 @@ const selectedLanguage = computed({
 
 <template>
   <main class="options-view">
-    <h2>{{ t('languageTitle') }}</h2>
-    <el-row>
-      <div class="warning-alert" v-if="languageChanged">
-        <el-alert type="warning">{{ t('changeWarning') }}</el-alert>
-      </div>
-    </el-row>
-    <el-row>
-      <el-radio-group class="languageOptions" v-model="selectedLanguage">
-        <el-radio-button label="en">{{ t('languageEn') }}</el-radio-button>
-        <el-radio-button label="fr">{{ t('languageFr') }}</el-radio-button>
-      </el-radio-group>
-    </el-row>
+    <h2 class="title">{{ t('languageTitle') }}</h2>
+    <div class="warning-alert" v-if="languageChanged">
+      <el-alert type="warning" :closable="false">
+        <el-row style="margin-bottom: 1em;" justify="space-between">
+          <el-col>{{ t('changeWarning') }}</el-col>
+        </el-row>
+        <el-row justify="space-between">
+          <el-col>
+            <el-button type="warning" @click="reloadPage">Reload</el-button>
+          </el-col>
+        </el-row>
+      </el-alert>
+    </div>
+    <el-radio-group class="languageOptions" v-model="selectedLanguage">
+      <el-radio-button label="en">{{ t('languageEn') }}</el-radio-button>
+      <el-radio-button label="fr">{{ t('languageFr') }}</el-radio-button>
+    </el-radio-group>
   </main>
 </template>
 
 <style scoped lang="scss">
 .options-view {
   margin-bottom: 30em;
-}
-.languageOptions {
-  margin-bottom: 2em;
+
+  .title {
+    margin-bottom: 1em;
+  }
+
+  .languageOptions {
+    margin-bottom: 2em;
+  }
+
+  .warning-alert {
+    margin-bottom: 1em;
+  }
 }
 </style>
