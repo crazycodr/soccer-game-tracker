@@ -6,6 +6,20 @@ import GameConfigTeamCreator from "@/components/GameConfigTeamCreator.vue";
 import GameConfigTeam from "@/components/GameConfigTeam.vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
+import {useI18n} from 'vue-i18n'
+
+const {t} = useI18n({
+  messages: {
+    en: {
+      teamsTitle: "Teams",
+      playersTitle: "Players"
+    },
+    fr: {
+      teamsTitle: "Équipes",
+      playersTitle: "Joueurs"
+    }
+  }
+})
 
 const {getTeams} = storeToRefs(useTeamStore());
 const {getPlayers} = storeToRefs(usePlayerStore());
@@ -15,7 +29,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
   <main class="config-view">
     <div class="team-config">
       <div class="section-header">
-        <h2>Teams</h2>
+        <h2>{{ t('teamsTitle') }}</h2>
         <GameConfigTeamCreator class="creator" />
       </div>
       <div v-for="team in getTeams" :key="team.name">
@@ -24,7 +38,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
     </div>
     <div class="player-config">
       <div class="section-header">
-        <h2>Players</h2>
+        <h2>{{ t('playersTitle') }}</h2>
         <GameConfigPlayerCreator class="creator" />
       </div>
       <div v-for="player in getPlayers" :key="player.name">

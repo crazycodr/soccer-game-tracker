@@ -2,6 +2,24 @@
 import {useTeamStore} from "@/stores/TeamStore";
 import {computed} from "vue";
 import {ElColorPicker, ElMessageBox} from "element-plus";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n({
+  messages: {
+    en: {
+      confirmTitle: "Confirm deletion",
+      confirmMessage: "Team to be deleted: {name}",
+      cancelOption: "Cancel",
+      deleteOption: "Delete"
+    },
+    fr: {
+      confirmTitle: "Confirmer la suppression",
+      confirmMessage: "Équipe à supprimer: {name}",
+      cancelOption: "Annuler",
+      deleteOption: "Supprimer"
+    }
+  }
+})
 
 const {removeTeamByName, setTeamColor} = useTeamStore();
 
@@ -18,14 +36,16 @@ const selectedColor = computed({
 
 const confirmDeletion = () => {
   ElMessageBox.confirm(
-      `Team to be deleted: ${props.name}`,
-      'Confirm deletion',
+      t('confirmMessage', {name: props.name}),
+      t('confirmTitle'),
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: t('deleteOption'),
+        cancelButtonText: t('cancelOption')
       }
   ).then(() => {
     removeTeamByName(props.name)
+  }).catch(() => {
+    // Do nothing
   })
 }
 </script>
@@ -34,7 +54,7 @@ const confirmDeletion = () => {
   <main class="config-team">
     <div class="name">{{name}}</div>
     <el-color-picker v-model="selectedColor" />
-    <el-button icon="RemoveFilled" @click="confirmDeletion">Delete</el-button>
+    <el-button icon="RemoveFilled" @click="confirmDeletion">{{ t('deleteOption') }}</el-button>
   </main>
 </template>
 

@@ -3,6 +3,30 @@
 import {useGameStore} from "@/stores/GameStore";
 import {ref} from "vue";
 import {useTimeout} from "@vueuse/core";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n({
+  messages: {
+    en: {
+      gameDataTitle: "Reset data",
+      gameAndPlayerStatusOption: "Game and player status",
+      gameAndPlayerTimersOption: "Game and player timers",
+      playerGoalsOption: "Player goals",
+      playerPassesOption: "Player passes",
+      resetAction: "Reset",
+      resetConfirmation: "Data has been reset!"
+    },
+    fr: {
+      gameDataTitle: "Effacer les données",
+      gameAndPlayerStatusOption: "Statuts de la partie et des joueurs",
+      gameAndPlayerTimersOption: "Temps de la partie et des joueurs",
+      playerGoalsOption: "Buts des joueurs",
+      playerPassesOption: "Passes des joueurs",
+      resetAction: "Effacer",
+      resetConfirmation: "Les données sont effacées!"
+    }
+  }
+})
 
 const resetStatusFlag = ref(false);
 const resetTimersFlag = ref(false);
@@ -42,24 +66,27 @@ function hideSuccessTimeout (){
 
 <template>
   <main>
-    <h2>Game data</h2>
+    <h2>{{ t('gameDataTitle') }}</h2>
     <el-row class="reset-option">
-      <el-checkbox label="statuses" v-model="resetStatusFlag">Game and player status (Play/Pause/Bench)</el-checkbox>
+      <el-checkbox label="statuses" v-model="resetStatusFlag">{{ t('gameAndPlayerStatusOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-checkbox label="timers" v-model="resetTimersFlag">Game and player timers</el-checkbox>
+      <el-checkbox label="timers" v-model="resetTimersFlag">{{ t('gameAndPlayerTimersOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-checkbox label="goals" v-model="resetGoalsFlag">Player goals</el-checkbox>
+      <el-checkbox label="goals" v-model="resetGoalsFlag">{{ t('playerGoalsOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-checkbox label="passes" v-model="resetPassesFlag">Player passes</el-checkbox>
+      <el-checkbox label="passes" v-model="resetPassesFlag">{{ t('playerPassesOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-button class="reset" :disabled="!(resetStatusFlag || resetTimersFlag || resetGoalsFlag || resetPassesFlag)" @click.stop="resetAndPause">Reset</el-button>
+      <el-button
+          class="reset"
+          :disabled="!(resetStatusFlag || resetTimersFlag || resetGoalsFlag || resetPassesFlag)"
+          @click.stop="resetAndPause">{{ t('resetAction') }}</el-button>
     </el-row>
     <el-alert type="success" v-if="showSuccess">
-      Data has been reset.
+      {{ t('resetConfirmation') }}
     </el-alert>
   </main>
 </template>

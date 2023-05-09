@@ -1,13 +1,31 @@
 <script setup lang="ts">
 
-import {storeToRefs} from "pinia";
-import {useTeamStore} from "@/stores/TeamStore";
-import {usePlayerStore} from "@/stores/PlayerStore";
-import {ElMessageBox} from "element-plus";
-import {computed} from "vue";
+import {storeToRefs} from "pinia"
+import {useTeamStore} from "@/stores/TeamStore"
+import {usePlayerStore} from "@/stores/PlayerStore"
+import {ElMessageBox} from "element-plus"
+import {computed} from "vue"
+import {useI18n} from "vue-i18n"
 
-const {getTeams} = storeToRefs(useTeamStore());
-const {setPlayerTeam, removePlayerByName} = usePlayerStore();
+const {t} = useI18n({
+  messages: {
+    en: {
+      confirmTitle: "Confirm deletion",
+      confirmMessage: "Player to be deleted: {name}",
+      cancelOption: "Cancel",
+      deleteOption: "Delete"
+    },
+    fr: {
+      confirmTitle: "Confirmer la suppression",
+      confirmMessage: "Joueur à supprimer: {name}",
+      cancelOption: "Annuler",
+      deleteOption: "Supprimer"
+    }
+  }
+})
+
+const {getTeams} = storeToRefs(useTeamStore())
+const {setPlayerTeam, removePlayerByName} = usePlayerStore()
 
 const props = defineProps(['name', 'inTeam'])
 
@@ -22,14 +40,16 @@ const selectedTeam = computed({
 
 const confirmDeletion = () => {
   ElMessageBox.confirm(
-      `Player to be deleted: ${props.name}`,
-      'Confirm deletion',
+      t('confirmMessage', {name: props.name}),
+      t('confirmTitle'),
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: t('deleteOption'),
+        cancelButtonText: t('cancelOption')
       }
   ).then(() => {
     removePlayerByName(props.name)
+  }).catch(() => {
+    // Do nothing
   })
 }
 </script>
@@ -43,7 +63,7 @@ const confirmDeletion = () => {
           :key="team.name"
           :value="team.name">{{team.name}}</el-option>
     </el-select>
-    <el-button icon="RemoveFilled" @click="confirmDeletion">Delete</el-button>
+    <el-button icon="RemoveFilled" @click="confirmDeletion">{{ t('deleteOption') }}</el-button>
   </main>
 </template>
 

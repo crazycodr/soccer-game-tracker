@@ -2,6 +2,28 @@
 import {computed} from "vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useGameStore} from "@/stores/GameStore";
+import {useI18n} from 'vue-i18n'
+
+const {t} = useI18n({
+  messages: {
+    en: {
+      benchingLabel: "Benching",
+      benchedLabel: "Benched",
+      playingLabel: "Playing",
+      playedLabel: "Played",
+      playAction: "Send to field",
+      benchAction: "Send to bench"
+    },
+    fr: {
+      benchingLabel: "Sur le banc",
+      benchedLabel: "Temps au banc",
+      playingLabel: "En jeu",
+      playedLabel: "Temps en jeu",
+      playAction: "Env. au jeu",
+      benchAction: "Env. au banc"
+    }
+  }
+})
 
 const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore();
 const {inAdditionMode, inRemovalMode} = useGameStore();
@@ -23,11 +45,11 @@ const playingTimeSince = computed(() => {
 })
 
 const playingStatus = computed(() => {
-  return isPlaying.value ? 'Playing' : 'Played'
+  return isPlaying.value ? t('playingLabel') : t('playedLabel')
 })
 
 const benchingStatus = computed(() => {
-  return isBenching.value ? 'Benching' : 'Benched'
+  return isBenching.value ? t('benchingLabel') : t('benchedLabel')
 })
 
 const isPlaying = computed(() => {
@@ -77,8 +99,8 @@ function affectPasses(name: string) {
           <el-button @click="affectPasses(name)">{{passes}}</el-button>
         </div>
         <div class="player-status">
-          <el-button v-if="isPlaying" @click="benchPlayer(name)">Bench</el-button>
-          <el-button v-if="isBenching" @click="unbenchPlayer(name)">Play</el-button>
+          <el-button v-if="isPlaying" @click="benchPlayer(name)">{{ t('benchAction') }}</el-button>
+          <el-button v-if="isBenching" @click="unbenchPlayer(name)">{{ t('playAction') }}</el-button>
         </div>
       </div>
     </div>

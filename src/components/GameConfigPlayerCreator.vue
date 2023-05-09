@@ -1,9 +1,28 @@
 <script setup lang="ts">
 import {computed, ref} from "vue"
-import {PlayerAlreadyExistsException} from "@/stores/exceptions/PlayerAlreadyExistsException";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {Player} from "@/stores/models/Player";
 import {ElButton, ElDialog, ElInput} from "element-plus";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n({
+  messages: {
+    en: {
+      modalTitle: "Create player",
+      playerNamePlaceholder: "Player name",
+      cancelOption: "Cancel",
+      createOption: "Create",
+      errorLabel: "Player name already exists!"
+    },
+    fr: {
+      modalTitle: "Créer un joueur",
+      playerNamePlaceholder: "Nom du joueur",
+      cancelOption: "Annuler",
+      createOption: "Créer",
+      errorLabel: "Ce joueur existe déjà!"
+    }
+  }
+})
 
 const {addPlayer} = usePlayerStore();
 
@@ -28,34 +47,25 @@ function create() {
     name.value = ''
     showDialog.value = false
   } catch (exception) {
-    console.log(exception)
-    if (exception instanceof PlayerAlreadyExistsException) {
-      error.value = exception.message
-    } else {
-      error.value = 'An error occurred'
-    }
+    error.value = t("errorLabel")
   }
 }
 </script>
 
 <template>
   <main>
-    <el-dialog v-model="showDialog" title="Create player" @close="showDialog = false">
-      <h3>Player name</h3>
-      <el-input @keyup="keyupHandler" v-model="name" placeholder="Player name" />
+    <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+      <h3>{{ t('playerNamePlaceholder') }}</h3>
+      <el-input @keyup="keyupHandler" v-model="name" :placeholder="t('playerNamePlaceholder')" />
       <div class="error" v-if="error">
         {{error}}
       </div>
       <template #footer>
-        <el-button @click="showDialog = false">Cancel</el-button>
-        <el-button :disabled="isEmpty" type="primary" @click="create">
-          Create
-        </el-button>
+        <el-button @click="showDialog = false">{{ t('cancelOption') }}</el-button>
+        <el-button :disabled="isEmpty" type="primary" @click="create">{{ t('createOption') }}</el-button>
       </template>
     </el-dialog>
-    <el-button @click="showDialog = true" icon="CirclePlusFilled">
-      Create
-    </el-button>
+    <el-button @click="showDialog = true" icon="CirclePlusFilled">{{ t('createOption') }}</el-button>
   </main>
 </template>
 
