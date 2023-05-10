@@ -6,7 +6,7 @@ import {usePlayerStore} from "@/stores/PlayerStore"
 import {ElMessageBox} from "element-plus"
 import {computed, ref} from "vue"
 import {useI18n} from "vue-i18n"
-import {Team} from "@/stores/models/Team";
+import type {Team} from "@/stores/models/Team";
 import {find} from "lodash";
 
 const {t} = useI18n({
