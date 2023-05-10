@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameConfigPlayer from "@/components/GameConfigPlayer.vue"
+import GameConfigPlayerEditor from "@/components/GameConfigPlayerEditor.vue"
 import GameConfigPlayerCreator from "@/components/GameConfigPlayerCreator.vue"
 import {storeToRefs} from "pinia";
 import GameConfigTeamCreator from "@/components/GameConfigTeamCreator.vue";
@@ -33,8 +33,8 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('teamsTitle') }}</h2>
         <GameConfigTeamCreator class="creator" />
       </div>
-      <div v-for="team in getTeams" :key="team.name">
-        <GameConfigTeam :name="team.name" :color="team.color" />
+      <div v-for="team in getTeams" :key="team.uuid">
+        <GameConfigTeam :uuid="team.uuid" :name="team.name" :color="team.color" />
       </div>
     </div>
     <div class="player-config">
@@ -43,7 +43,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <GameConfigPlayerCreator class="creator" />
       </div>
       <div v-for="player in getPlayers" :key="player.uuid">
-        <GameConfigPlayer :uuid="player.uuid" :name="player.name" :in-team="player.team" />
+        <GameConfigPlayerEditor :uuid="player.uuid" :name="player.name" :in-team="player.team" />
       </div>
     </div>
   </main>

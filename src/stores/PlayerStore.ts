@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {computed} from 'vue'
-import {each, filter, first} from 'lodash'
+import {each, filter, find, first} from 'lodash'
 import {useStorage} from '@vueuse/core'
 import {PlayerAlreadyExistsException} from '@/stores/exceptions/PlayerAlreadyExistsException'
 import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundException'
@@ -28,6 +28,17 @@ export const usePlayerStore = defineStore('player', () => {
       throw new PlayerAlreadyExistsException()
     }
     players.value.push(addedPlayer)
+  }
+
+  function updatePlayer(uuid: string, name: string, teamUuid: string) {
+    const player = find(players.value, (player: Player) => {
+      return player.uuid === uuid
+    })
+    if (!player) {
+      throw new PlayerNotFoundException()
+    }
+    player.name = name
+    player.team = teamUuid
   }
 
   function setPlayerTeam(uuid: string, team: string) {
@@ -121,6 +132,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   return {
     getPlayers,
+    updatePlayer,
     increaseGoals,
     increasePasses,
     addPlayer,

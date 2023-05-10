@@ -65,7 +65,7 @@ function create() {
         <el-button :disabled="isEmpty" type="primary" @click="create">{{ t('createOption') }}</el-button>
       </template>
     </el-dialog>
-    <el-button @click="showDialog = true" icon="CirclePlusFilled">{{ t('createOption') }}</el-button>
+    <el-button @click="showDialog = true" icon="CirclePlusFilled" />
   </main>
 </template>
 

@@ -1,48 +1,67 @@
 <script setup lang="ts">
-import {useTeamStore} from "@/stores/TeamStore";
-import {computed, ref} from "vue";
-import {ElColorPicker, ElMessageBox} from "element-plus";
-import {useI18n} from "vue-i18n";
+
+import {storeToRefs} from "pinia"
+import {useTeamStore} from "@/stores/TeamStore"
+import {usePlayerStore} from "@/stores/PlayerStore"
+import {ElMessageBox} from "element-plus"
+import {computed, ref} from "vue"
+import {useI18n} from "vue-i18n"
+import {Team} from "@/stores/models/Team";
+import {find} from "lodash";
 
 const {t} = useI18n({
   messages: {
     en: {
       confirmTitle: "Confirm deletion",
-      confirmMessage: "Team to be deleted: {name}",
+      confirmMessage: "Player to be deleted: {name}",
       cancelOption: "Cancel",
       deleteOption: "Delete",
-      modalTitle: "Edit team",
-      playerNamePlaceholder: "Team name",
-      color: "Color",
+      modalTitle: "Edit player",
+      playerNamePlaceholder: "Player name",
+      teamPlaceholder: "Team",
       updateOption: "Update"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
-      confirmMessage: "Équipe à supprimer: {name}",
+      confirmMessage: "Joueur à supprimer: {name}",
       cancelOption: "Annuler",
       deleteOption: "Supprimer",
-      modalTitle: "Modifier une équipe",
-      playerNamePlaceholder: "Nom de l'équipe",
-      color: "Couleur",
+      modalTitle: "Modifier le joueur",
+      playerNamePlaceholder: "Nom du joueur",
+      teamPlaceholder: "Équipe",
       updateOption: "Mettre à jour"
     }
   }
 })
 
-const {removeTeamByUuid, updateTeam, setTeamColor} = useTeamStore();
+const {getTeams} = storeToRefs(useTeamStore())
+const {setPlayerTeam, removePlayerByUuid, updatePlayer} = usePlayerStore()
 
-const props = defineProps(['uuid', 'name', 'color'])
+const props = defineProps(['uuid', 'name', 'inTeam'])
 
 const editName = ref(props.name)
-const editColor = ref(props.color)
+const editTeam = ref(props.inTeam)
 const showDialog = ref(false)
 
-const selectedColor = computed({
-  get() {
-    return props.color
+const editSelectedTeam = computed({
+  get(){
+    return find(getTeams.value, (team: Team) => {
+      return team.uuid === editTeam.value
+    })
   },
-  set(value: string) {
-    setTeamColor(props.name, value)
+  set(team){
+    editTeam.value = team ? team.uuid : ''
+  }
+})
+
+const selectedTeam = computed({
+  get(){
+    return find(getTeams.value, (team: Team) => {
+      return team.uuid === props.inTeam
+    })
+  },
+  set(team){
+    setPlayerTeam(props.uuid, team ? team.uuid : '')
   }
 })
 
@@ -57,7 +76,7 @@ const isEmpty = computed((): boolean => {
 })
 
 function update() {
-  updateTeam(props.uuid, editName.value, editColor.value)
+  updatePlayer(props.uuid, editName.value, editTeam.value)
   showDialog.value = false
 }
 
@@ -70,7 +89,7 @@ const confirmDeletion = () => {
         cancelButtonText: t('cancelOption')
       }
   ).then(() => {
-    removeTeamByUuid(props.name)
+    removePlayerByUuid(props.uuid)
   }).catch(() => {
     // Do nothing
   })
@@ -78,15 +97,25 @@ const confirmDeletion = () => {
 </script>
 
 <template>
-  <main class="config-team">
+  <main class="game-config-player">
     <div class="name">{{name}}</div>
-    <el-color-picker v-model="selectedColor" />
+    <el-select class="team" v-model="selectedTeam" value-key="uuid">
+      <el-option
+          v-for="team in getTeams"
+          :key="team.uuid"
+          :value="team" :label="team.name" />
+    </el-select>
     <el-button icon="EditPen" @click="showDialog = true" />
     <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
       <h3>{{ t('playerNamePlaceholder') }}</h3>
       <el-input @keyup="keyupHandler" v-model="editName" :placeholder="t('playerNamePlaceholder')" />
-      <h3>{{ t('color') }}</h3>
-      <el-color-picker v-model="editColor" />
+      <h3>{{ t('teamPlaceholder') }}</h3>
+      <el-select v-model="editSelectedTeam" value-key="uuid">
+        <el-option
+            v-for="team in getTeams"
+            :key="team.uuid"
+            :value="team" :label="team.name" />
+      </el-select>
       <template #footer>
         <div class="commands">
           <el-button style="justify-self: start" icon="RemoveFilled" type="danger" @click="confirmDeletion" />
@@ -99,7 +128,7 @@ const confirmDeletion = () => {
 </template>
 
 <style scoped lang="scss">
-.config-team {
+.game-config-player {
   padding: 0.5em;
   margin-top: 0.5em;
   margin-left: -0.5em;
@@ -112,9 +141,13 @@ const confirmDeletion = () => {
   border-bottom: 2px dotted lightgrey;
 
   .name {
-    flex-basis: 50%;
+    flex-basis: 33%;
     font-size: 1.2em;
     text-transform: capitalize;
+  }
+
+  .team {
+    flex-basis: 33%;
   }
 
   .commands {

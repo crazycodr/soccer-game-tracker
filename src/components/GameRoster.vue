@@ -9,19 +9,19 @@ import type {Player} from "@/stores/models/Player";
 const {getPlayers} = storeToRefs(usePlayerStore());
 const {getTeams} = storeToRefs(useTeamStore());
 
-function getPlayersOfTeam(teamName: string) {
+function getPlayersOfTeam(teamUuid: string) {
   return filter(getPlayers.value, (player: Player) => {
-    return player.team === teamName
+    return player.team === teamUuid
   })
 }
 </script>
 
 <template>
   <main>
-    <div class="team" v-for="team in getTeams" :key="team.name">
+    <div class="team" v-for="team in getTeams" :key="team.uuid">
       <div class="team-name" :style="{color: team.color, 'border-bottom-color': team.color}">{{ team.name }}</div>
       <div class="team-roster">
-        <GameRosterPlayer v-for="player in getPlayersOfTeam(team.name)"
+        <GameRosterPlayer v-for="player in getPlayersOfTeam(team.uuid)"
                           :key="player.uuid"
                           :uuid="player.uuid"
                           :name="player.name"

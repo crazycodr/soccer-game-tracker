@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {computed} from 'vue'
-import {each, filter} from 'lodash'
+import {each, filter, find} from 'lodash'
 import {useStorage} from '@vueuse/core'
 import {TeamNotFoundException} from '@/stores/exceptions/TeamNotFoundException';
 import {TeamAlreadyExistsException} from '@/stores/exceptions/TeamAlreadyExistsException';
@@ -30,6 +30,17 @@ export const useTeamStore = defineStore('team', () => {
     teams.value.push(addedTeam)
   }
 
+  function updateTeam(uuid: string, name: string, color: string) {
+    const team = find(teams.value, (team: Team) => {
+      return team.uuid === uuid
+    })
+    if (!team) {
+      throw new TeamNotFoundException()
+    }
+    team.name = name
+    team.color = color
+  }
+
   function setTeamColor(teamName: string, color: string) {
     const existingTeams: Team[] = filter(teams.value, (existingTeam: Team) => {
       return existingTeam.name === teamName
@@ -46,6 +57,6 @@ export const useTeamStore = defineStore('team', () => {
     })
   }
 
-  return {setTeamColor, getTeams, addTeam, removeTeamByUuid}
+  return {setTeamColor, updateTeam, getTeams, addTeam, removeTeamByUuid}
 })
 
