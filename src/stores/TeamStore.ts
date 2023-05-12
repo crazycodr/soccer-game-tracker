@@ -21,10 +21,8 @@ export const useTeamStore = defineStore('team', () => {
   })
 
   function addTeam(addedTeam: Team) {
-    const existingTeams: Team[] = filter(teams.value, (existingTeam: Team) => {
-      return existingTeam.name === addedTeam.name
-    })
-    if (existingTeams.length) {
+    const existingTeam = find(teams.value, (team: Team) => team.uuid === addedTeam.uuid)
+    if (existingTeam) {
       throw new TeamAlreadyExistsException()
     }
     teams.value.push(addedTeam)

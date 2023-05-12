@@ -1,69 +1,41 @@
 <script setup lang="ts">
-import {computed, ref} from "vue"
+import {ref} from "vue"
 import {useTeamStore} from "@/stores/TeamStore";
 import {Team} from "@/stores/models/Team";
-import {ElButton, ElInput} from "element-plus";
+import {ElButton} from "element-plus";
 import {useI18n} from "vue-i18n";
+import TeamEditor from "@/components/TeamEditor.vue";
 
 const {t} = useI18n({
   messages: {
     en: {
-      modalTitle: "Create team",
-      teamNamePlaceholder: "Team name",
-      cancelOption: "Cancel",
-      createOption: "Create",
-      errorLabel: "Team name already exists!"
+      modalTitle: "Create team"
     },
     fr: {
-      modalTitle: "Créer une équipe",
-      teamNamePlaceholder: "Nom de l'équipe",
-      cancelOption: "Annuler",
-      createOption: "Créer",
-      errorLabel: "Cette équipe existe déjà!"
+      modalTitle: "Créer une équipe"
     }
   }
 })
 
 const {addTeam} = useTeamStore();
 
-const name = ref('')
-const error = ref('')
 const showDialog = ref(false)
 
-function keyupHandler(key: KeyboardEvent) {
-  error.value = ''
-  if (key.key === 'Enter') {
-    create()
-  }
-}
-
-const isEmpty = computed((): boolean => {
-  return name.value.trim() === ''
-})
-
-function create() {
-  try {
-    addTeam(new Team(name.value))
-    name.value = ''
-    showDialog.value = false
-  } catch (exception) {
-    error.value = t("errorLabel")
-  }
+function create(payload: {name: string, color: string}) {
+  const team = new Team(payload.name)
+  team.color = payload.color
+  addTeam(team)
+  showDialog.value = false
 }
 </script>
 
 <template>
   <main>
     <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-      <h3>{{ t('teamNamePlaceholder') }}</h3>
-      <el-input @keyup="keyupHandler" v-model="name" :placeholder="t('teamNamePlaceholder')" />
-      <div class="error" v-if="error">
-        {{error}}
-      </div>
-      <template #footer>
-        <el-button @click="showDialog = false">{{ t('cancelOption') }}</el-button>
-        <el-button :disabled="isEmpty" type="primary" @click="create">{{ t('createOption') }}</el-button>
-      </template>
+      <team-editor
+        :can-delete="false"
+        @submit="create"
+        @cancel="showDialog = false" />
     </el-dialog>
     <el-button @click="showDialog = true" icon="CirclePlusFilled" />
   </main>

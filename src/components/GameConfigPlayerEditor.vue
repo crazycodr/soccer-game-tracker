@@ -8,6 +8,7 @@ import {computed, ref} from "vue"
 import {useI18n} from "vue-i18n"
 import type {Team} from "@/stores/models/Team";
 import {find} from "lodash";
+import PlayerEditor from "@/components/PlayerEditor.vue";
 
 const {t} = useI18n({
   messages: {
@@ -16,22 +17,14 @@ const {t} = useI18n({
       confirmMessage: "Player to be deleted: {name}",
       cancelOption: "Cancel",
       deleteOption: "Delete",
-      modalTitle: "Edit player",
-      playerNamePlaceholder: "Player name",
-      teamPlaceholder: "Team",
-      updateOption: "Update",
-      jacketNumber: "Jacket number"
+      modalTitle: "Edit player"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
       confirmMessage: "Joueur à supprimer: {name}",
       cancelOption: "Annuler",
       deleteOption: "Supprimer",
-      modalTitle: "Modifier le joueur",
-      playerNamePlaceholder: "Nom du joueur",
-      teamPlaceholder: "Équipe",
-      updateOption: "Mettre à jour",
-      jacketNumber: "Numéro de gilet"
+      modalTitle: "Modifier le joueur"
     }
   }
 })
@@ -41,21 +34,7 @@ const {setPlayerTeam, removePlayerByUuid, updatePlayer} = usePlayerStore()
 
 const props = defineProps(['uuid', 'name', 'inTeam', 'jacketNumber'])
 
-const editName = ref(props.name)
-const editTeam = ref(props.inTeam)
-const editJacketNumber = ref(props.jacketNumber)
 const showDialog = ref(false)
-
-const editSelectedTeam = computed({
-  get(){
-    return find(getTeams.value, (team: Team) => {
-      return team.uuid === editTeam.value
-    })
-  },
-  set(team){
-    editTeam.value = team ? team.uuid : ''
-  }
-})
 
 const selectedTeam = computed({
   get(){
@@ -68,18 +47,8 @@ const selectedTeam = computed({
   }
 })
 
-function keyupHandler(key: KeyboardEvent) {
-  if (key.key === 'Enter') {
-    update()
-  }
-}
-
-const isEmpty = computed((): boolean => {
-  return editName.value.trim() === ''
-})
-
-function update() {
-  updatePlayer(props.uuid, editName.value, editTeam.value, editJacketNumber.value)
+function update(payload: {name: string, team: string, jacketNumber: string}) {
+  updatePlayer(props.uuid, payload.name, payload.team, payload.jacketNumber)
   showDialog.value = false
 }
 
@@ -112,26 +81,18 @@ const confirmDeletion = () => {
           :value="team" :label="team.name" />
     </el-select>
     <el-button icon="EditPen" @click="showDialog = true" />
+
     <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-      <h3>{{ t('playerNamePlaceholder') }}</h3>
-      <el-input @keyup="keyupHandler" v-model="editName" :placeholder="t('playerNamePlaceholder')" />
-      <h3>{{ t('teamPlaceholder') }}</h3>
-      <el-select v-model="editSelectedTeam" value-key="uuid">
-        <el-option
-            v-for="team in getTeams"
-            :key="team.uuid"
-            :value="team" :label="team.name" />
-      </el-select>
-      <h3>{{ t('jacketNumber') }}</h3>
-      <el-input type="text" v-model="editJacketNumber" />
-      <template #footer>
-        <div class="commands">
-          <el-button style="justify-self: start" icon="RemoveFilled" type="danger" @click="confirmDeletion" />
-          <el-button class="push-right" @click="showDialog = false">{{ t('cancelOption') }}</el-button>
-          <el-button :disabled="isEmpty" type="primary" @click="update">{{ t('updateOption') }}</el-button>
-        </div>
-      </template>
+      <player-editor
+          :initial-name="name"
+          :initial-team="inTeam"
+          :initial-jacket-number="jacketNumber"
+          :can-delete="true"
+          @submit="update"
+          @cancel="showDialog = false"
+          @delete="confirmDeletion" />
     </el-dialog>
+
   </main>
 </template>
 
@@ -158,13 +119,8 @@ const confirmDeletion = () => {
     flex-basis: 33%;
   }
 
-  .commands {
-    display: flex;
-    justify-content: space-between;
-
-    .push-right {
-      margin-left: auto;
-    }
+  .push-right {
+    margin-left: auto;
   }
 }
 </style>

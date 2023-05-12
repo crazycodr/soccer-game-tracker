@@ -3,7 +3,7 @@ import GameConfigPlayerEditor from "@/components/GameConfigPlayerEditor.vue"
 import GameConfigPlayerCreator from "@/components/GameConfigPlayerCreator.vue"
 import {storeToRefs} from "pinia";
 import GameConfigTeamCreator from "@/components/GameConfigTeamCreator.vue";
-import GameConfigTeam from "@/components/GameConfigTeam.vue";
+import GameConfigTeam from "@/components/GameConfigTeamEditor.vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
 import {useI18n} from 'vue-i18n'

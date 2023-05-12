@@ -3,6 +3,7 @@ import {useTeamStore} from "@/stores/TeamStore";
 import {computed, ref} from "vue";
 import {ElColorPicker, ElMessageBox} from "element-plus";
 import {useI18n} from "vue-i18n";
+import TeamEditor from "@/components/TeamEditor.vue";
 
 const {t} = useI18n({
   messages: {
@@ -11,20 +12,14 @@ const {t} = useI18n({
       confirmMessage: "Team to be deleted: {name}",
       cancelOption: "Cancel",
       deleteOption: "Delete",
-      modalTitle: "Edit team",
-      playerNamePlaceholder: "Team name",
-      color: "Color",
-      updateOption: "Update"
+      modalTitle: "Edit team"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
       confirmMessage: "Équipe à supprimer: {name}",
       cancelOption: "Annuler",
       deleteOption: "Supprimer",
-      modalTitle: "Modifier une équipe",
-      playerNamePlaceholder: "Nom de l'équipe",
-      color: "Couleur",
-      updateOption: "Mettre à jour"
+      modalTitle: "Modifier une équipe"
     }
   }
 })
@@ -33,8 +28,6 @@ const {removeTeamByUuid, updateTeam, setTeamColor} = useTeamStore();
 
 const props = defineProps(['uuid', 'name', 'color'])
 
-const editName = ref(props.name)
-const editColor = ref(props.color)
 const showDialog = ref(false)
 
 const selectedColor = computed({
@@ -46,18 +39,8 @@ const selectedColor = computed({
   }
 })
 
-function keyupHandler(key: KeyboardEvent) {
-  if (key.key === 'Enter') {
-    update()
-  }
-}
-
-const isEmpty = computed((): boolean => {
-  return editName.value.trim() === ''
-})
-
-function update() {
-  updateTeam(props.uuid, editName.value, editColor.value)
+function update(payload: {name: string, color: string}) {
+  updateTeam(props.uuid, payload.name, payload.color)
   showDialog.value = false
 }
 
@@ -80,20 +63,16 @@ const confirmDeletion = () => {
 <template>
   <main class="config-team">
     <div class="name">{{name}}</div>
-    <el-color-picker v-model="selectedColor" />
+    <el-color-picker class="color" v-model="selectedColor" />
     <el-button icon="EditPen" @click="showDialog = true" />
     <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-      <h3>{{ t('playerNamePlaceholder') }}</h3>
-      <el-input @keyup="keyupHandler" v-model="editName" :placeholder="t('playerNamePlaceholder')" />
-      <h3>{{ t('color') }}</h3>
-      <el-color-picker v-model="editColor" />
-      <template #footer>
-        <div class="commands">
-          <el-button style="justify-self: start" icon="RemoveFilled" type="danger" @click="confirmDeletion" />
-          <el-button class="push-right" @click="showDialog = false">{{ t('cancelOption') }}</el-button>
-          <el-button :disabled="isEmpty" type="primary" @click="update">{{ t('updateOption') }}</el-button>
-        </div>
-      </template>
+      <team-editor
+        :initial-name="name"
+        :initial-color="color"
+        :can-delete="true"
+        @submit="update"
+        @cancel="showDialog = false"
+        @delete="confirmDeletion" />
     </el-dialog>
   </main>
 </template>
@@ -117,13 +96,8 @@ const confirmDeletion = () => {
     text-transform: capitalize;
   }
 
-  .commands {
-    display: flex;
-    justify-content: space-between;
-
-    .push-right {
-      margin-left: auto;
-    }
+  .color {
+    flex-basis: 25%;
   }
 }
 </style>
