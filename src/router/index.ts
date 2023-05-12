@@ -3,10 +3,16 @@ import GameView from "@/views/GameView.vue";
 import GameConfigView from "@/views/GameConfigView.vue";
 import GameOperations from "@/views/GameOperations.vue";
 import OptionsView from "@/views/OptionsView.vue";
+import GameMenu from "@/components/GameMenu.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/menu',
+      name: 'menu',
+      component: GameMenu
+    },
     {
       path: '/game',
       name: 'game',

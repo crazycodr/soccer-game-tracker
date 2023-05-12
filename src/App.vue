@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import {RouterView} from 'vue-router'
+import {RouterView, useRoute, useRouter} from 'vue-router'
 import {useI18n} from 'vue-i18n'
-import {useOptionStore} from "@/stores/OptionStore";
-import {storeToRefs} from "pinia";
+import {useOptionStore} from "@/stores/OptionStore"
+import {storeToRefs} from "pinia"
+
+const router = useRouter()
+const route = useRoute()
 
 const {t, locale} = useI18n({
   useScope: 'global',
   messages: {
     en: {
-      gameMenu: "Game",
-      operationsMenu: "Ops",
-      configureMenu: "Config",
-      optionsMenu: "Options"
+      menu: "Menu"
     },
     fr: {
-      gameMenu: "Partie",
-      operationsMenu: "Ops",
-      configureMenu: "Config",
-      optionsMenu: "Options"
+      menu: "Menu"
     }
   }
 })
@@ -28,13 +25,9 @@ locale.value = getLanguage.value
 </script>
 
 <template>
-  <el-menu :router="true" default-active="/game" mode="horizontal">
-    <el-menu-item index="/game">{{ t('gameMenu') }}</el-menu-item>
-    <el-menu-item index="/operations">{{ t('operationsMenu') }}</el-menu-item>
-    <el-menu-item index="/config">{{ t('configureMenu') }}</el-menu-item>
-    <el-menu-item index="/options">{{ t('optionsMenu') }}</el-menu-item>
-  </el-menu>
-
+  <div class="menu" v-if="route.name !== 'menu'">
+    <el-button icon="Grid" @click="router.push({name: 'menu'})">{{ t('menu') }}</el-button>
+  </div>
   <div class="content">
     <RouterView/>
   </div>
@@ -43,5 +36,9 @@ locale.value = getLanguage.value
 <style scoped lang="scss">
 .content {
   padding: 1em;
+}
+.menu {
+  padding: 1em;
+  text-align: right;
 }
 </style>
