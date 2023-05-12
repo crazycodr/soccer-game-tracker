@@ -10,6 +10,7 @@ export class Player {
     public benchSeconds: number = 0
     public goals: number = 0
     public passes: number = 0
+    public jacketNumber: string = ''
 
     constructor(name: string) {
         this.uuid = v4()

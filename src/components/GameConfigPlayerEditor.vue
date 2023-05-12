@@ -19,7 +19,8 @@ const {t} = useI18n({
       modalTitle: "Edit player",
       playerNamePlaceholder: "Player name",
       teamPlaceholder: "Team",
-      updateOption: "Update"
+      updateOption: "Update",
+      jacketNumber: "Jacket number"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
@@ -29,7 +30,8 @@ const {t} = useI18n({
       modalTitle: "Modifier le joueur",
       playerNamePlaceholder: "Nom du joueur",
       teamPlaceholder: "Équipe",
-      updateOption: "Mettre à jour"
+      updateOption: "Mettre à jour",
+      jacketNumber: "Numéro de gilet"
     }
   }
 })
@@ -37,10 +39,11 @@ const {t} = useI18n({
 const {getTeams} = storeToRefs(useTeamStore())
 const {setPlayerTeam, removePlayerByUuid, updatePlayer} = usePlayerStore()
 
-const props = defineProps(['uuid', 'name', 'inTeam'])
+const props = defineProps(['uuid', 'name', 'inTeam', 'jacketNumber'])
 
 const editName = ref(props.name)
 const editTeam = ref(props.inTeam)
+const editJacketNumber = ref(props.jacketNumber)
 const showDialog = ref(false)
 
 const editSelectedTeam = computed({
@@ -76,7 +79,7 @@ const isEmpty = computed((): boolean => {
 })
 
 function update() {
-  updatePlayer(props.uuid, editName.value, editTeam.value)
+  updatePlayer(props.uuid, editName.value, editTeam.value, editJacketNumber.value)
   showDialog.value = false
 }
 
@@ -98,7 +101,10 @@ const confirmDeletion = () => {
 
 <template>
   <main class="game-config-player">
-    <div class="name">{{name}}</div>
+    <div class="name">
+      {{name}}
+      <span v-if="jacketNumber !== ''"> (#{{jacketNumber}})</span>
+    </div>
     <el-select class="team" v-model="selectedTeam" value-key="uuid">
       <el-option
           v-for="team in getTeams"
@@ -116,6 +122,8 @@ const confirmDeletion = () => {
             :key="team.uuid"
             :value="team" :label="team.name" />
       </el-select>
+      <h3>{{ t('jacketNumber') }}</h3>
+      <el-input type="text" v-model="editJacketNumber" />
       <template #footer>
         <div class="commands">
           <el-button style="justify-self: start" icon="RemoveFilled" type="danger" @click="confirmDeletion" />

@@ -12,7 +12,9 @@ const {t} = useI18n({
       playingLabel: "Playing",
       playedLabel: "Played",
       playAction: "Send to field",
-      benchAction: "Send to bench"
+      benchAction: "Send to bench",
+      goalAbbreviation: "G",
+      passAbbreviation: "P"
     },
     fr: {
       benchingLabel: "Sur le banc",
@@ -20,7 +22,9 @@ const {t} = useI18n({
       playingLabel: "En jeu",
       playedLabel: "Temps en jeu",
       playAction: "Env. au jeu",
-      benchAction: "Env. au banc"
+      benchAction: "Env. au banc",
+      goalAbbreviation: "B",
+      passAbbreviation: "P"
     }
   }
 })
@@ -28,7 +32,7 @@ const {t} = useI18n({
 const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore();
 const {inAdditionMode, inRemovalMode} = useGameStore();
 
-const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes'])
+const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes', 'jacketNumber'])
 
 const benchTimeSince = computed(() => {
   let referenceSeconds = props.benchSeconds
@@ -82,7 +86,10 @@ function affectPasses(uuid: string) {
   <main>
     <div class="team-player">
       <div class="left-col">
-        <div class="player-name">{{ name }}</div>
+        <div class="player-name">
+          {{ name }}
+          <span v-if="jacketNumber !== ''"> (#{{ jacketNumber }})</span>
+        </div>
         <div :class="{status: true, playing: isPlaying}">
           <div class="label">{{ playingStatus }}</div>
           <div class="timer">{{ playingTimeSince }}</div>
@@ -94,9 +101,9 @@ function affectPasses(uuid: string) {
       </div>
       <div class="right-col">
         <div class="player-score">
-          <el-button @click="affectGoals(uuid)">{{goals}}</el-button>
+          <el-button @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
           <span>/</span>
-          <el-button @click="affectPasses(uuid)">{{passes}}</el-button>
+          <el-button @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
         </div>
         <div class="player-status">
           <el-button v-if="isPlaying" @click="benchPlayer(uuid)">{{ t('benchAction') }}</el-button>

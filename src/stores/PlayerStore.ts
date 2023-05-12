@@ -14,6 +14,9 @@ export const usePlayerStore = defineStore('player', () => {
     if (!validate(player.uuid) || player.uuid === undefined) {
       player.uuid = v4()
     }
+    if (player.jacketNumber === undefined) {
+      player.jacketNumber = ''
+    }
   })
 
   const getPlayers = computed((): Player[] => {
@@ -30,7 +33,7 @@ export const usePlayerStore = defineStore('player', () => {
     players.value.push(addedPlayer)
   }
 
-  function updatePlayer(uuid: string, name: string, teamUuid: string) {
+  function updatePlayer(uuid: string, name: string, teamUuid: string, jacketNumber: string) {
     const player = find(players.value, (player: Player) => {
       return player.uuid === uuid
     })
@@ -39,6 +42,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     player.name = name
     player.team = teamUuid
+    player.jacketNumber = jacketNumber
   }
 
   function setPlayerTeam(uuid: string, team: string) {

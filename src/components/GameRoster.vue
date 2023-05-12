@@ -29,7 +29,8 @@ function getPlayersOfTeam(teamUuid: string) {
                           :game-seconds="player.gameSeconds"
                           :bench-seconds="player.benchSeconds"
                           :goals="player.goals"
-                          :passes="player.passes" />
+                          :passes="player.passes"
+                          :jacket-number="player.jacketNumber"/>
       </div>
     </div>
   </main>
