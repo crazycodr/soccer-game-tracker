@@ -3,7 +3,7 @@
 import {computed, ref} from "vue";
 import {useI18n} from "vue-i18n";
 import {find} from "lodash";
-import {Team} from "@/stores/models/Team";
+import type {Team} from "@/stores/models/Team";
 import {storeToRefs} from "pinia";
 import {useTeamStore} from "@/stores/TeamStore";
 
@@ -16,14 +16,16 @@ const {t} = useI18n({
       playerTeam: "Team",
       playerJacketNumber: "Jacket number",
       cancelOption: "Cancel",
-      updateOption: "Update"
+      updateOption: "Update",
+      createOption: "Create"
     },
     fr: {
       playerName: "Nom",
       playerTeam: "Équipe",
       playerJacketNumber: "Numéro de gillet",
       cancelOption: "Annuler",
-      updateOption: "Mettre à jour"
+      updateOption: "Mettre à jour",
+      createOption: "Créer"
     }
   }
 })
@@ -97,9 +99,15 @@ function emitDelete() {
       <el-input @keyup="submitOnEnter" type="text" v-model="editedJacketNumber" />
     </el-form-item>
     <el-form-item>
-      <el-button icon="RemoveFilled" type="danger" @click="emitDelete" />
+      <el-button icon="RemoveFilled" type="danger" v-if="canDelete" @click="emitDelete" />
       <el-button class="push-right" @click="emitCancel">{{ t('cancelOption') }}</el-button>
-      <el-button type="primary" @click="emitSubmit">{{ t('updateOption') }}</el-button>
+      <el-button type="primary" @click="emitSubmit">{{ canDelete ? t('updateOption') : t('createOption') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
+
+<style lang="scss" scoped>
+.push-right {
+  margin-left: auto;
+}
+</style>

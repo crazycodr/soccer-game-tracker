@@ -9,13 +9,15 @@ const {t} = useI18n({
       cancelOption: "Cancel",
       nameLabel: "Team name",
       color: "Color",
-      updateOption: "Update"
+      updateOption: "Update",
+      createOption: "Create"
     },
     fr: {
       cancelOption: "Annuler",
       nameLabel: "Nom de l'équipe",
       color: "Couleur",
-      updateOption: "Mettre à jour"
+      updateOption: "Mettre à jour",
+      createOption: "Créer"
     }
   }
 })
@@ -67,7 +69,7 @@ function emitDelete() {
     <el-form-item>
       <el-button icon="RemoveFilled" v-if="canDelete" type="danger" @click="emitDelete" />
       <el-button class="push-right" @click="emitCancel">{{ t('cancelOption') }}</el-button>
-      <el-button type="primary" @click="emitSubmit">{{ t('updateOption') }}</el-button>
+      <el-button type="primary" @click="emitSubmit">{{ canDelete ? t('updateOption') : t('createOption') }}</el-button>
     </el-form-item>
   </el-form>
 </template>
