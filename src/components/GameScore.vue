@@ -8,9 +8,9 @@ import type {Player} from "@/stores/models/Player";
 const {getPlayers} = storeToRefs(usePlayerStore());
 const {getTeams} = storeToRefs(useTeamStore());
 
-function getGoalsOfTeam(teamName: string) {
+function getGoalsOfTeam(teamUuid: string) {
   const players = filter(getPlayers.value, (player: Player) => {
-    return player.team === teamName
+    return player.team === teamUuid
   })
   return sum(map(players, 'goals'))
 }
@@ -19,12 +19,12 @@ function getGoalsOfTeam(teamName: string) {
 <template>
   <main>
     <div class="scores">
-      <div class="score" v-for="team in getTeams" :key="team.name" :style="{'border-color': team.color}">
+      <div class="score" v-for="team in getTeams" :key="team.uuid" :style="{'border-color': team.color}">
         <div class="team-name" :style="{'color': team.color}">
           {{ team.name }}
         </div>
         <div class="team-score">
-          {{ getGoalsOfTeam(team.name) }}
+          {{ getGoalsOfTeam(team.uuid) }}
         </div>
       </div>
     </div>
