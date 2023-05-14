@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {usePlayerStore} from "@/stores/PlayerStore"
-import {RegistryPlayer} from "@/stores/models/RegistryPlayer";
+import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
 import {useI18n} from "vue-i18n";
 import type {PropType} from "vue";
 import {storeToRefs} from "pinia";

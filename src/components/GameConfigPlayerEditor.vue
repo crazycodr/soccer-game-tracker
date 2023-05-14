@@ -6,7 +6,7 @@ import {ref} from "vue"
 import {useI18n} from "vue-i18n"
 import PlayerEditor from "@/components/PlayerEditor.vue";
 import {useRegistryStore} from "@/stores/RegistryStore";
-import {Player} from "@/stores/models/Player";
+import type {Player} from "@/stores/models/Player";
 
 const {t} = useI18n({
   messages: {
