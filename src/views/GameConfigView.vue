@@ -42,9 +42,17 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('playersTitle') }}</h2>
         <GameConfigPlayerCreator class="creator" />
       </div>
-      <div v-for="player in getPlayers" :key="player.uuid">
-        <GameConfigPlayerEditor :uuid="player.uuid" :name="player.name" :in-team="player.team" :jacket-number="player.jacketNumber" />
-      </div>
+      <el-row gutter="10">
+        <el-col :xs="12"
+                v-for="player in getPlayers"
+                :key="player.uuid">
+          <GameConfigPlayerEditor class="player-entry"
+                                  :uuid="player.uuid"
+                                  :name="player.name"
+                                  :in-team="player.team"
+                                  :jacket-number="player.jacketNumber" />
+        </el-col>
+      </el-row>
     </div>
   </main>
 </template>
@@ -53,8 +61,16 @@ const {getPlayers} = storeToRefs(usePlayerStore());
 .config-view {
   margin-bottom: 25em;
 
+  h2 {
+    margin-bottom: 1em;
+  }
+
   .team-config, .player-config {
     margin-bottom: 2em;
+  }
+
+  .player-entry {
+    margin-bottom: 10px;
   }
 
   .section-header {

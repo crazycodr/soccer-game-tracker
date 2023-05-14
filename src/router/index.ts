@@ -3,7 +3,8 @@ import GameView from "@/views/GameView.vue";
 import GameConfigView from "@/views/GameConfigView.vue";
 import GameOperations from "@/views/GameOperations.vue";
 import OptionsView from "@/views/OptionsView.vue";
-import GameMenu from "@/components/GameMenu.vue";
+import GameMenu from "@/views/GameMenu.vue";
+import PlayerRegistry from "@/views/PlayerRegistry.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/config',
       name: 'config',
       component: GameConfigView
+    },
+    {
+      path: '/registry/players',
+      name: 'player-registry',
+      component: PlayerRegistry
     },
     {
       path: '/options',

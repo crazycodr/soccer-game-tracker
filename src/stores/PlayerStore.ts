@@ -4,8 +4,9 @@ import {each, filter, find, first} from 'lodash'
 import {useStorage} from '@vueuse/core'
 import {PlayerAlreadyExistsException} from '@/stores/exceptions/PlayerAlreadyExistsException'
 import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundException'
-import type {Player} from "@/stores/models/Player";
+import {Player} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
+import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
 
 export const usePlayerStore = defineStore('player', () => {
 
@@ -23,11 +24,17 @@ export const usePlayerStore = defineStore('player', () => {
     return players.value
   })
 
+  function getPlayerByUuid(uuid: string): Player {
+    const player = find(players.value, (player: Player) => player.uuid === uuid)
+    if (!player) {
+      throw new PlayerNotFoundException()
+    }
+    return player
+  }
+
   function addPlayer(addedPlayer: Player) {
-    const existingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.uuid === addedPlayer.uuid
-    })
-    if (existingPlayers.length) {
+    const existingPlayer = find(players.value, (player: Player) => player.uuid === addedPlayer.uuid)
+    if (existingPlayer) {
       throw new PlayerAlreadyExistsException()
     }
     players.value.push(addedPlayer)
@@ -134,9 +141,30 @@ export const usePlayerStore = defineStore('player', () => {
     player.passes--
   }
 
+  function upsertRegistryPlayerInGame(upsertedRegistryPlayer: RegistryPlayer): void {
+    try {
+      const gamePlayer = getPlayerByUuid(upsertedRegistryPlayer.uuid)
+      console.log('updating')
+      updatePlayer(
+          upsertedRegistryPlayer.uuid,
+          upsertedRegistryPlayer.name,
+          gamePlayer.team,
+          upsertedRegistryPlayer.jacketNumber
+      )
+    } catch (ex) {
+      console.log('creating')
+      const newPlayer = new Player(upsertedRegistryPlayer.name)
+      newPlayer.uuid = upsertedRegistryPlayer.uuid
+      newPlayer.jacketNumber = upsertedRegistryPlayer.jacketNumber
+      addPlayer(newPlayer)
+    }
+  }
+
   return {
     getPlayers,
+    getPlayerByUuid,
     updatePlayer,
+    upsertRegistryPlayerInGame,
     increaseGoals,
     increasePasses,
     addPlayer,

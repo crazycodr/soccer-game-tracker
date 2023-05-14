@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
-import {storeToRefs} from "pinia"
-import {useTeamStore} from "@/stores/TeamStore"
 import {usePlayerStore} from "@/stores/PlayerStore"
-import {ElMessageBox} from "element-plus"
-import {computed, ref} from "vue"
+import {ElMessageBox, ElNotification} from "element-plus"
+import {ref} from "vue"
 import {useI18n} from "vue-i18n"
-import type {Team} from "@/stores/models/Team";
-import {find} from "lodash";
 import PlayerEditor from "@/components/PlayerEditor.vue";
+import {useRegistryStore} from "@/stores/RegistryStore";
+import {Player} from "@/stores/models/Player";
 
 const {t} = useI18n({
   messages: {
@@ -17,39 +15,43 @@ const {t} = useI18n({
       confirmMessage: "Player to be deleted: {name}",
       cancelOption: "Cancel",
       deleteOption: "Delete",
-      modalTitle: "Edit player"
+      modalTitle: "Edit player",
+      notificationTitle: "Success",
+      notificationMessage: "Player added or updated in registry"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
       confirmMessage: "Joueur à supprimer: {name}",
       cancelOption: "Annuler",
       deleteOption: "Supprimer",
-      modalTitle: "Modifier le joueur"
+      modalTitle: "Modifier le joueur",
+      notificationTitle: "Succès",
+      notificationMessage: "Joueur ajouté ou mise à jour dans le registre"
     }
   }
 })
 
-const {getTeams} = storeToRefs(useTeamStore())
-const {setPlayerTeam, removePlayerByUuid, updatePlayer} = usePlayerStore()
+const {removePlayerByUuid, updatePlayer, getPlayerByUuid} = usePlayerStore()
+const {upsertPlayerInRegistry} = useRegistryStore()
 
 const props = defineProps(['uuid', 'name', 'inTeam', 'jacketNumber'])
 
 const showDialog = ref(false)
 
-const selectedTeam = computed({
-  get(){
-    return find(getTeams.value, (team: Team) => {
-      return team.uuid === props.inTeam
-    })
-  },
-  set(team){
-    setPlayerTeam(props.uuid, team ? team.uuid : '')
-  }
-})
-
-function update(payload: {name: string, team: string, jacketNumber: string}) {
+function update(payload: { name: string, team: string, jacketNumber: string }) {
   updatePlayer(props.uuid, payload.name, payload.team, payload.jacketNumber)
   showDialog.value = false
+}
+
+function sendToPlayerRegistry() {
+  const player: Player = getPlayerByUuid(props.uuid)
+  upsertPlayerInRegistry(player)
+  ElNotification({
+    title: t('notificationTitle'),
+    message: t('notificationMessage'),
+    type: 'success',
+    showClose: false
+  })
 }
 
 const confirmDeletion = () => {
@@ -69,31 +71,28 @@ const confirmDeletion = () => {
 </script>
 
 <template>
-  <main class="game-config-player">
-    <div class="name">
-      {{name}}
-      <span v-if="jacketNumber !== ''"> (#{{jacketNumber}})</span>
-    </div>
-    <el-select class="team" v-model="selectedTeam" value-key="uuid">
-      <el-option
-          v-for="team in getTeams"
-          :key="team.uuid"
-          :value="team" :label="team.name" />
-    </el-select>
-    <el-button icon="EditPen" @click="showDialog = true" />
-
-    <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-      <player-editor
-          :initial-name="name"
-          :initial-team="inTeam"
-          :initial-jacket-number="jacketNumber"
-          :can-delete="true"
-          @submit="update"
-          @cancel="showDialog = false"
-          @delete="confirmDeletion" />
-    </el-dialog>
-
-  </main>
+  <el-card>
+    <template #header>
+      <div class="name">
+        {{name}}
+        <span v-if="jacketNumber !== ''"> (#{{jacketNumber}})</span>
+      </div>
+    </template>
+    <template #default>
+      <el-button icon="EditPen" @click="showDialog = true" />
+      <el-button icon="DArrowRight" @click="sendToPlayerRegistry"/>
+      <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+        <player-editor
+            :initial-name="name"
+            :initial-team="inTeam"
+            :initial-jacket-number="jacketNumber"
+            :can-delete="true"
+            @submit="update"
+            @cancel="showDialog = false"
+            @delete="confirmDeletion" />
+      </el-dialog>
+    </template>
+  </el-card>
 </template>
 
 <style scoped lang="scss">
@@ -110,13 +109,9 @@ const confirmDeletion = () => {
   border-bottom: 2px dotted lightgrey;
 
   .name {
-    flex-basis: 33%;
+    flex-basis: 66%;
     font-size: 1.2em;
     text-transform: capitalize;
-  }
-
-  .team {
-    flex-basis: 33%;
   }
 
   .push-right {
