@@ -17,7 +17,8 @@ const {t} = useI18n({
       playerJacketNumber: "Jacket number",
       cancelOption: "Cancel",
       updateOption: "Update",
-      createOption: "Create"
+      createOption: "Create",
+      noTeam: "No team"
     },
     fr: {
       playerName: "Nom",
@@ -25,7 +26,8 @@ const {t} = useI18n({
       playerJacketNumber: "Numéro de gillet",
       cancelOption: "Annuler",
       updateOption: "Mettre à jour",
-      createOption: "Créer"
+      createOption: "Créer",
+      noTeam: "Aucune équipe"
     }
   }
 })
@@ -89,6 +91,7 @@ function emitDelete() {
     </el-form-item>
     <el-form-item :label="t('playerTeam')" required>
       <el-select v-model="editedSelectedTeam" value-key="uuid">
+        <el-option :value="{}" :label="t('noTeam')" />
         <el-option
             v-for="team in getTeams"
             :key="team.uuid"

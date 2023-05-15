@@ -3,6 +3,7 @@ import {computed} from "vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
+import {storeToRefs} from "pinia";
 
 const {t} = useI18n({
   messages: {
@@ -29,8 +30,9 @@ const {t} = useI18n({
   }
 })
 
-const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore();
-const {inAdditionMode, inRemovalMode} = useGameStore();
+const {unbenchPlayer, benchPlayer, increaseGoals, increasePasses, decreasePasses, decreaseGoals} = usePlayerStore()
+const {inAdditionMode, inRemovalMode} = useGameStore()
+const {getGame} = storeToRefs(useGameStore())
 
 const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes', 'jacketNumber'])
 
@@ -66,19 +68,19 @@ const isBenching = computed(() => {
 
 function affectGoals(uuid: string) {
   if (inAdditionMode) {
-    increaseGoals(uuid)
+    increaseGoals(getGame.value.seconds, uuid)
   }
   if (inRemovalMode) {
-    decreaseGoals(uuid)
+    decreaseGoals(getGame.value.seconds, uuid)
   }
 }
 
 function affectPasses(uuid: string) {
   if (inAdditionMode) {
-    increasePasses(uuid)
+    increasePasses(getGame.value.seconds, uuid)
   }
   if (inRemovalMode) {
-    decreasePasses(uuid)
+    decreasePasses(getGame.value.seconds, uuid)
   }
 }
 </script>

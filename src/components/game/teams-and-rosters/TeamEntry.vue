@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useTeamStore} from "@/stores/TeamStore";
-import {computed, ref} from "vue";
-import {ElColorPicker, ElMessageBox} from "element-plus";
+import {ref} from "vue";
+import {ElMessageBox} from "element-plus";
 import {useI18n} from "vue-i18n";
 import TeamEditor from "@/components/game/teams-and-rosters/TeamEditor.vue";
 
@@ -24,20 +24,11 @@ const {t} = useI18n({
   }
 })
 
-const {removeTeamByUuid, updateTeam, setTeamColor} = useTeamStore();
+const {removeTeamByUuid, updateTeam} = useTeamStore();
 
 const props = defineProps(['uuid', 'name', 'color'])
 
 const showDialog = ref(false)
-
-const selectedColor = computed({
-  get() {
-    return props.color
-  },
-  set(value: string) {
-    setTeamColor(props.name, value)
-  }
-})
 
 function update(payload: {name: string, color: string}) {
   updateTeam(props.uuid, payload.name, payload.color)
@@ -63,8 +54,8 @@ const confirmDeletion = () => {
 <template>
   <el-card>
     <template #header>
+      <div v-if="color" class="color-pin" :style="{'background-color': color}"/>
       {{name}}
-      <div v-if="color" class="color-pin" :style="{'background-color': color}" />
     </template>
     <template #default>
       <el-button icon="EditPen" @click="showDialog = true" />
@@ -83,7 +74,7 @@ const confirmDeletion = () => {
 
 <style scoped lang="scss">
 .color-pin {
-  display: inline-block;
+  float: right;
   vertical-align: middle;
   width: 1em;
   height: 1em;

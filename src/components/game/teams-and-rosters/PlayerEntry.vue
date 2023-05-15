@@ -2,11 +2,12 @@
 
 import {usePlayerStore} from "@/stores/PlayerStore"
 import {ElMessageBox, ElNotification} from "element-plus"
-import {ref} from "vue"
+import {computed, ref} from "vue"
 import {useI18n} from "vue-i18n"
 import PlayerEditor from "@/components/game/teams-and-rosters/PlayerEditor.vue";
 import {useRegistryStore} from "@/stores/RegistryStore";
 import type {Player} from "@/stores/models/Player";
+import {useTeamStore} from "@/stores/TeamStore";
 
 const {t} = useI18n({
   messages: {
@@ -17,7 +18,8 @@ const {t} = useI18n({
       deleteOption: "Delete",
       modalTitle: "Edit player",
       notificationTitle: "Success",
-      notificationMessage: "Player added or updated in registry"
+      notificationMessage: "Player added or updated in registry",
+      numberLess: "Number-less"
     },
     fr: {
       confirmTitle: "Confirmer la suppression",
@@ -26,17 +28,28 @@ const {t} = useI18n({
       deleteOption: "Supprimer",
       modalTitle: "Modifier le joueur",
       notificationTitle: "Succès",
-      notificationMessage: "Joueur ajouté ou mise à jour dans le registre"
+      notificationMessage: "Joueur ajouté ou mise à jour dans le registre",
+      numberLess: "Sans numéro"
     }
   }
 })
 
 const {removePlayerByUuid, updatePlayer, getPlayerByUuid} = usePlayerStore()
+const {getTeamByUuid} = useTeamStore()
 const {upsertPlayerInRegistry} = useRegistryStore()
 
 const props = defineProps(['uuid', 'name', 'inTeam', 'jacketNumber'])
 
 const showDialog = ref(false)
+
+const color = computed(() => {
+  try {
+    const team = getTeamByUuid(props.inTeam)
+    return team.color
+  } catch (ex) {
+    return ''
+  }
+})
 
 function update(payload: { name: string, team: string, jacketNumber: string }) {
   updatePlayer(props.uuid, payload.name, payload.team, payload.jacketNumber)
@@ -73,49 +86,42 @@ const confirmDeletion = () => {
 <template>
   <el-card>
     <template #header>
-      <div class="name">
-        {{name}}
-        <span v-if="jacketNumber !== ''"> (#{{jacketNumber}})</span>
-      </div>
+      <div v-if="color" class="color-pin" :style="{'background-color': color}" />
+      {{name}}
     </template>
     <template #default>
-      <el-button icon="EditPen" @click="showDialog = true" />
-      <el-button icon="DArrowRight" @click="sendToPlayerRegistry"/>
-      <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-        <player-editor
-            :initial-name="name"
-            :initial-team="inTeam"
-            :initial-jacket-number="jacketNumber"
-            :can-delete="true"
-            @submit="update"
-            @cancel="showDialog = false"
-            @delete="confirmDeletion" />
-      </el-dialog>
+      <el-row class="jacket-number">
+        <div v-if="jacketNumber !== ''"> #{{jacketNumber}}</div>
+        <div v-if="jacketNumber === ''"> {{ t('numberLess') }}</div>
+      </el-row>
+      <el-row>
+        <el-button icon="EditPen" @click="showDialog = true" />
+        <el-button icon="DArrowRight" @click="sendToPlayerRegistry"/>
+        <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+          <player-editor
+              :initial-name="name"
+              :initial-team="inTeam"
+              :initial-jacket-number="jacketNumber"
+              :can-delete="true"
+              @submit="update"
+              @cancel="showDialog = false"
+              @delete="confirmDeletion" />
+        </el-dialog>
+      </el-row>
     </template>
   </el-card>
 </template>
 
 <style scoped lang="scss">
-.game-config-player {
-  padding: 0.5em;
-  margin-top: 0.5em;
-  margin-left: -0.5em;
-  margin-right: -0.5em;
-  background-color: #f7f7f7;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-content: center;
-  border-bottom: 2px dotted lightgrey;
-
-  .name {
-    flex-basis: 66%;
-    font-size: 1.2em;
-    text-transform: capitalize;
-  }
-
-  .push-right {
-    margin-left: auto;
-  }
+.color-pin {
+  float: right;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  margin-left: 1em;
+  border-radius: 50%;
+}
+.jacket-number {
+  margin-bottom: 1em;
 }
 </style>

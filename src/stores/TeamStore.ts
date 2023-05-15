@@ -20,6 +20,14 @@ export const useTeamStore = defineStore('team', () => {
     return teams.value
   })
 
+  function getTeamByUuid(uuid: string): Team {
+    const team = find(teams.value, (team: Team) => team.uuid === uuid)
+    if (!team) {
+      throw new TeamNotFoundException()
+    }
+    return team
+  }
+
   function addTeam(addedTeam: Team) {
     const existingTeam = find(teams.value, (team: Team) => team.uuid === addedTeam.uuid)
     if (existingTeam) {
@@ -55,6 +63,6 @@ export const useTeamStore = defineStore('team', () => {
     })
   }
 
-  return {setTeamColor, updateTeam, getTeams, addTeam, removeTeamByUuid}
+  return {setTeamColor, updateTeam, getTeams, getTeamByUuid, addTeam, removeTeamByUuid}
 })
 

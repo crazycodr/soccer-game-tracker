@@ -7,8 +7,13 @@ import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundExcepti
 import {Player} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
 import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
+import {useEventStore} from "@/stores/GameStore";
+import {useTeamStore} from "@/stores/TeamStore";
 
 export const usePlayerStore = defineStore('player', () => {
+
+  const {addGoal, addPass, revertGoal, revertPass} = useEventStore()
+  const {getTeamByUuid} = useTeamStore()
 
   const players = useStorage<Player[]>('players', [] as Player[], localStorage, {mergeDefaults: true})
   each(players.value, (player: Player) => {
@@ -91,53 +96,47 @@ export const usePlayerStore = defineStore('player', () => {
     player.status = 'playing'
   }
 
-  function increaseGoals(uuid: string) {
-    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.uuid === uuid
-    })
-    if (matchingPlayers.length === 0) {
-      throw new PlayerNotFoundException()
-    }
-    const player = <Player>first(matchingPlayers)
+  function increaseGoals(atSeconds: number, uuid: string) {
+    const player = getPlayerByUuid(uuid)
+    const team = getTeamByUuid(player.team)
+    addGoal(
+        atSeconds,
+        team,
+        player
+    )
     player.goals++
   }
 
-  function increasePasses(uuid: string) {
-    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.uuid === uuid
-    })
-    if (matchingPlayers.length === 0) {
-      throw new PlayerNotFoundException()
-    }
-    const player = <Player>first(matchingPlayers)
+  function increasePasses(atSeconds: number, uuid: string) {
+    const player = getPlayerByUuid(uuid)
+    const team = getTeamByUuid(player.team)
+    addPass(
+        atSeconds,
+        team,
+        player
+    )
     player.passes++
   }
 
-  function decreaseGoals(uuid: string) {
-    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.uuid === uuid
-    })
-    if (matchingPlayers.length === 0) {
-      throw new PlayerNotFoundException()
-    }
-    const player = <Player>first(matchingPlayers)
-    if (player.goals === 0) {
-      return
-    }
+  function decreaseGoals(atSeconds: number, uuid: string) {
+    const player = getPlayerByUuid(uuid)
+    const team = getTeamByUuid(player.team)
+    revertGoal(
+        atSeconds,
+        team,
+        player
+    )
     player.goals--
   }
 
-  function decreasePasses(uuid: string) {
-    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
-      return existingPlayer.uuid === uuid
-    })
-    if (matchingPlayers.length === 0) {
-      throw new PlayerNotFoundException()
-    }
-    const player = <Player>first(matchingPlayers)
-    if (player.passes === 0) {
-      return
-    }
+  function decreasePasses(atSeconds: number, uuid: string) {
+    const player = getPlayerByUuid(uuid)
+    const team = getTeamByUuid(player.team)
+    revertPass(
+        atSeconds,
+        team,
+        player
+    )
     player.passes--
   }
 

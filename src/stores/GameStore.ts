@@ -3,8 +3,10 @@ import {computed, ref} from 'vue'
 import {useStorage} from '@vueuse/core'
 import {Game} from "@/stores/models/Game";
 import {usePlayerStore} from "@/stores/PlayerStore";
-import type {Player} from "@/stores/models/Player";
 import {forEach} from "lodash";
+import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
+import type {Player} from "@/stores/models/Player";
+import type {Team} from "@/stores/models/Team";
 
 export const useGameStore = defineStore('game', () => {
 
@@ -111,3 +113,55 @@ export const useGameStore = defineStore('game', () => {
   }
 })
 
+export const useEventStore = defineStore('events', () => {
+
+  const events = useStorage<GameEvent[]>('events', [] as GameEvent[], localStorage, {mergeDefaults: true})
+
+  function addGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
+    const newEvent = new GameEvent(
+        EventEnum.GOAL,
+        atSeconds,
+        forTeam.uuid,
+        byPlayer.uuid
+    )
+    events.value.push(newEvent)
+  }
+
+  function addPass(atSeconds: number, forTeam: Team, byPlayer: Player): void {
+    const newEvent = new GameEvent(
+        EventEnum.PASS,
+        atSeconds,
+        forTeam.uuid,
+        byPlayer.uuid
+    )
+    events.value.push(newEvent)
+  }
+
+  function revertGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
+    const newEvent = new GameEvent(
+        EventEnum.REVERTED_GOAL,
+        atSeconds,
+        forTeam.uuid,
+        byPlayer.uuid
+    )
+    events.value.push(newEvent)
+  }
+
+  function revertPass(atSeconds: number, forTeam: Team, byPlayer: Player): void {
+    const newEvent = new GameEvent(
+        EventEnum.REVERTED_PASS,
+        atSeconds,
+        forTeam.uuid,
+        byPlayer.uuid
+    )
+    events.value.push(newEvent)
+  }
+
+  return {
+    addGoal,
+    addPass,
+    revertGoal,
+    revertPass
+  }
+
+})
