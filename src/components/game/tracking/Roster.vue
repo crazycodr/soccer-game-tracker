@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameRosterPlayer from "@/components/GameRosterPlayer.vue";
+import GameRosterPlayer from "@/components/game/tracking/PlayerEntry.vue";
 import {storeToRefs} from "pinia";
 import {filter} from "lodash";
 import {usePlayerStore} from "@/stores/PlayerStore";

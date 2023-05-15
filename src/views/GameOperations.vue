@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import GameModeToggle from "@/components/GameModeToggle.vue";
-import GameResetOperations from "@/components/GameResetOperations.vue";
+import GameModeToggle from "@/components/game/operations/ModeToggle.vue";
+import GameResetOperations from "@/components/game/operations/ResetOperations.vue";
 import {useI18n} from 'vue-i18n'
 
 const {t} = useI18n({

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useI18n} from 'vue-i18n'
-import PlayerRegistryPlayerEntry from "@/components/PlayerRegistryPlayerEntry.vue";
+import PlayerRegistryPlayerEntry from "@/components/registries/PlayerEntry.vue";
 import {useRegistryStore} from "@/stores/RegistryStore";
 
 const {t} = useI18n({
@@ -24,8 +24,8 @@ const {getPlayersFromRegistry} = storeToRefs(useRegistryStore());
     <div class="player-registry">
       <h2>{{ t('playersRegistryTitle') }}</h2>
       <el-row gutter="10">
-        <el-col :xs="12"
-                v-for="player in getPlayersFromRegistry"
+        <el-col v-for="player in getPlayersFromRegistry"
+                :span="12"
                 :key="player.uuid">
           <PlayerRegistryPlayerEntry
               class="registry-entry"

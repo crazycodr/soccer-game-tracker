@@ -3,7 +3,7 @@ import {useTeamStore} from "@/stores/TeamStore";
 import {computed, ref} from "vue";
 import {ElColorPicker, ElMessageBox} from "element-plus";
 import {useI18n} from "vue-i18n";
-import TeamEditor from "@/components/TeamEditor.vue";
+import TeamEditor from "@/components/game/teams-and-rosters/TeamEditor.vue";
 
 const {t} = useI18n({
   messages: {
@@ -61,43 +61,33 @@ const confirmDeletion = () => {
 </script>
 
 <template>
-  <main class="config-team">
-    <div class="name">{{name}}</div>
-    <el-color-picker class="color" v-model="selectedColor" />
-    <el-button icon="EditPen" @click="showDialog = true" />
-    <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
-      <team-editor
-        :initial-name="name"
-        :initial-color="color"
-        :can-delete="true"
-        @submit="update"
-        @cancel="showDialog = false"
-        @delete="confirmDeletion" />
-    </el-dialog>
-  </main>
+  <el-card>
+    <template #header>
+      {{name}}
+      <div v-if="color" class="color-pin" :style="{'background-color': color}" />
+    </template>
+    <template #default>
+      <el-button icon="EditPen" @click="showDialog = true" />
+      <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+        <team-editor
+            :initial-name="name"
+            :initial-color="color"
+            :can-delete="true"
+            @submit="update"
+            @cancel="showDialog = false"
+            @delete="confirmDeletion" />
+      </el-dialog>
+    </template>
+  </el-card>
 </template>
 
 <style scoped lang="scss">
-.config-team {
-  padding: 0.5em;
-  margin-top: 0.5em;
-  margin-left: -0.5em;
-  margin-right: -0.5em;
-  background-color: #f7f7f7;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-content: center;
-  border-bottom: 2px dotted lightgrey;
-
-  .name {
-    flex-basis: 50%;
-    font-size: 1.2em;
-    text-transform: capitalize;
-  }
-
-  .color {
-    flex-basis: 25%;
-  }
+.color-pin {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  margin-left: 1em;
+  border-radius: 50%;
 }
 </style>

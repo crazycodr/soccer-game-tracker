@@ -4,7 +4,7 @@ import {usePlayerStore} from "@/stores/PlayerStore";
 import {Player} from "@/stores/models/Player";
 import {ElButton, ElDialog} from "element-plus";
 import {useI18n} from "vue-i18n";
-import PlayerEditor from "@/components/PlayerEditor.vue";
+import PlayerEditor from "@/components/game/teams-and-rosters/PlayerEditor.vue";
 
 const {t} = useI18n({
   messages: {

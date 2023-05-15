@@ -4,7 +4,7 @@ import {useTeamStore} from "@/stores/TeamStore";
 import {Team} from "@/stores/models/Team";
 import {ElButton} from "element-plus";
 import {useI18n} from "vue-i18n";
-import TeamEditor from "@/components/TeamEditor.vue";
+import TeamEditor from "@/components/game/teams-and-rosters/TeamEditor.vue";
 
 const {t} = useI18n({
   messages: {

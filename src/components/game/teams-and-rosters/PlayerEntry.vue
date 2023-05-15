@@ -4,7 +4,7 @@ import {usePlayerStore} from "@/stores/PlayerStore"
 import {ElMessageBox, ElNotification} from "element-plus"
 import {ref} from "vue"
 import {useI18n} from "vue-i18n"
-import PlayerEditor from "@/components/PlayerEditor.vue";
+import PlayerEditor from "@/components/game/teams-and-rosters/PlayerEditor.vue";
 import {useRegistryStore} from "@/stores/RegistryStore";
 import type {Player} from "@/stores/models/Player";
 

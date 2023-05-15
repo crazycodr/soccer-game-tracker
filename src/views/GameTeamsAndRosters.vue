@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import GameConfigPlayerEditor from "@/components/GameConfigPlayerEditor.vue"
-import GameConfigPlayerCreator from "@/components/GameConfigPlayerCreator.vue"
+import GameConfigPlayerEditor from "@/components/game/teams-and-rosters/PlayerEntry.vue"
+import GameConfigPlayerCreator from "@/components/game/teams-and-rosters/PlayerCreationHeader.vue"
 import {storeToRefs} from "pinia";
-import GameConfigTeamCreator from "@/components/GameConfigTeamCreator.vue";
-import GameConfigTeam from "@/components/GameConfigTeamEditor.vue";
+import GameConfigTeamCreator from "@/components/game/teams-and-rosters/TeamCreationHeader.vue";
+import GameConfigTeam from "@/components/game/teams-and-rosters/TeamEntry.vue";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
 import {useI18n} from 'vue-i18n'
@@ -33,9 +33,13 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('teamsTitle') }}</h2>
         <GameConfigTeamCreator class="creator" />
       </div>
-      <div v-for="team in getTeams" :key="team.uuid">
-        <GameConfigTeam :uuid="team.uuid" :name="team.name" :color="team.color" />
-      </div>
+      <el-row gutter="10">
+        <el-col :span="12"
+                v-for="team in getTeams"
+                :key="team.uuid">
+          <GameConfigTeam :uuid="team.uuid" :name="team.name" :color="team.color" />
+        </el-col>
+      </el-row>
     </div>
     <div class="player-config">
       <div class="section-header">
@@ -43,7 +47,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <GameConfigPlayerCreator class="creator" />
       </div>
       <el-row gutter="10">
-        <el-col :xs="12"
+        <el-col :span="12"
                 v-for="player in getPlayers"
                 :key="player.uuid">
           <GameConfigPlayerEditor class="player-entry"

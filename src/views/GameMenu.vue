@@ -14,8 +14,8 @@ const {t, locale} = useI18n({
       gameMenu: "Game",
       trackingMenu: "Track",
       operationsMenu: "Operations",
-      configureMenu: "Configuration",
-      registryMenu: "Registry",
+      configureMenu: "Teams & rosters",
+      registryMenu: "Registries",
       playerRegistryMenu: "Player registry",
       optionsMenu: "Options"
     },
@@ -23,8 +23,8 @@ const {t, locale} = useI18n({
       gameMenu: "Partie",
       trackingMenu: "Suivi de la partie",
       operationsMenu: "Opérations",
-      configureMenu: "Équipes et joueurs",
-      registryMenu: "Registre",
+      configureMenu: "Équipes & alignements",
+      registryMenu: "Registres",
       playerRegistryMenu: "Registre des joueurs",
       optionsMenu: "Options"
     }
