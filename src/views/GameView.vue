@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import GameScore from "@/components/game/tracking/Score.vue";
-import GameRoster from "@/components/game/tracking/Roster.vue";
-import GameTimer from "@/components/game/tracking/Timer.vue";
+import GameScore from "@/components/game/tracking/TeamScores.vue";
+import GameRoster from "@/components/game/tracking/RosterList.vue";
+import GameTimer from "@/components/game/tracking/GameTimer.vue";
 </script>
 
 <template>

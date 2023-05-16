@@ -23,10 +23,10 @@ const {getPlayersFromRegistry} = storeToRefs(useRegistryStore());
   <main class="registry">
     <div class="player-registry">
       <h2>{{ t('playersRegistryTitle') }}</h2>
-      <el-row gutter="10">
-        <el-col v-for="player in getPlayersFromRegistry"
-                :span="12"
-                :key="player.uuid">
+      <el-row :gutter="10">
+        <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
+            v-for="player in getPlayersFromRegistry"
+            :key="player.uuid">
           <PlayerRegistryPlayerEntry
               class="registry-entry"
               :registry-player="player"/>

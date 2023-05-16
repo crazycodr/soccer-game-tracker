@@ -40,7 +40,11 @@ function create(payload: {name: string, team: string, jacketNumber: string}) {
 
 <template>
   <main>
-    <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+    <el-dialog
+        v-model="showDialog"
+        style="width: 90%; max-width: 480px;"
+        :title="t('modalTitle')"
+        @close="showDialog = false">
       <player-editor
           :can-delete="false"
           @submit="create"

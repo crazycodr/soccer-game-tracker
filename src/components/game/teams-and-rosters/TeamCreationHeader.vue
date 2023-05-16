@@ -31,7 +31,11 @@ function create(payload: {name: string, color: string}) {
 
 <template>
   <main>
-    <el-dialog v-model="showDialog" width="90%" :title="t('modalTitle')" @close="showDialog = false">
+    <el-dialog
+        v-model="showDialog"
+        style="width: 90%; max-width: 480px;"
+        :title="t('modalTitle')"
+        @close="showDialog = false">
       <team-editor
         :can-delete="false"
         @submit="create"

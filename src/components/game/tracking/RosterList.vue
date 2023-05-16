@@ -21,16 +21,22 @@ function getPlayersOfTeam(teamUuid: string) {
     <div class="team" v-for="team in getTeams" :key="team.uuid">
       <div class="team-name" :style="{color: team.color, 'border-bottom-color': team.color}">{{ team.name }}</div>
       <div class="team-roster">
-        <GameRosterPlayer v-for="player in getPlayersOfTeam(team.uuid)"
-                          :key="player.uuid"
-                          :uuid="player.uuid"
-                          :name="player.name"
-                          :status="player.status"
-                          :game-seconds="player.gameSeconds"
-                          :bench-seconds="player.benchSeconds"
-                          :goals="player.goals"
-                          :passes="player.passes"
-                          :jacket-number="player.jacketNumber"/>
+        <el-row :gutter="10">
+          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8"
+              v-for="player in getPlayersOfTeam(team.uuid)"
+              :key="player.uuid">
+            <GameRosterPlayer
+                class="roster-player"
+                :uuid="player.uuid"
+                :name="player.name"
+                :status="player.status"
+                :game-seconds="player.gameSeconds"
+                :bench-seconds="player.benchSeconds"
+                :goals="player.goals"
+                :passes="player.passes"
+                :jacket-number="player.jacketNumber"/>
+          </el-col>
+        </el-row>
       </div>
     </div>
   </main>
@@ -52,6 +58,10 @@ function getPlayersOfTeam(teamUuid: string) {
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-evenly;
+  }
+
+  .roster-player {
+    margin-bottom: 1em;
   }
 }
 </style>

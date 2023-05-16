@@ -85,105 +85,60 @@ function affectPasses(uuid: string) {
 }
 </script>
 <template>
-  <main>
-    <div class="team-player">
-      <div class="left-col">
-        <div class="player-name">
-          {{ name }}
-          <span v-if="jacketNumber !== ''"> (#{{ jacketNumber }})</span>
-        </div>
-        <div :class="{status: true, playing: isPlaying}">
-          <div class="label">{{ playingStatus }}</div>
-          <div class="timer">{{ playingTimeSince }}</div>
-        </div>
-        <div :class="{status: true, benching: isBenching}">
-          <div class="label">{{ benchingStatus }}</div>
-          <div class="timer">{{ benchTimeSince }}</div>
-        </div>
+  <el-card>
+    <template #header>
+      <div class="player-name">
+        {{ name }}
+        <span v-if="jacketNumber !== ''"> (#{{ jacketNumber }})</span>
       </div>
-      <div class="right-col">
-        <div class="player-score">
-          <el-button @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
-          <span>/</span>
-          <el-button @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
-        </div>
-        <div class="player-status">
-          <el-button v-if="isPlaying" @click="benchPlayer(uuid)">{{ t('benchAction') }}</el-button>
-          <el-button v-if="isBenching" @click="unbenchPlayer(uuid)">{{ t('playAction') }}</el-button>
-        </div>
-      </div>
-    </div>
-  </main>
+    </template>
+    <template #default>
+      <el-row :gutter="20">
+        <el-col :span="14">
+          <el-row :class="{status: true, playing: isPlaying}">
+            <el-col class="label" :span="18">{{ playingStatus }}</el-col>
+            <el-col class="timer" :span="6">{{ playingTimeSince }}</el-col>
+          </el-row>
+          <el-row :class="{status: true, benching: isBenching}">
+            <el-col class="label" :span="18">{{ benchingStatus }}</el-col>
+            <el-col class="timer" :span="6">{{ benchTimeSince }}</el-col>
+          </el-row>
+          <el-row style="margin-top: 1em;">
+            <el-col>
+              <el-button v-if="isPlaying" class="status-button" @click="benchPlayer(uuid)">{{ t('benchAction') }}</el-button>
+              <el-button v-if="isBenching" class="status-button" @click="unbenchPlayer(uuid)">{{ t('playAction') }}</el-button>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="10">
+          <el-row :gutter="10">
+            <el-col :span="12"><el-button @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button></el-col>
+            <el-col :span="12"><el-button @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button></el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+    </template>
+  </el-card>
 </template>
 
 <style scoped lang="scss">
-.team-player {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 2px dotted lightgrey;
-  padding: 0.5em;
-  margin: 0.5em -0.5em;
-  background-color: #f7f7f7;
+.player-name {
+  font-size: 1.5em;
+}
 
-  .left-col {
-    flex-grow: 2;
-    margin-right: 1em;
+.status {
+  color: darkgrey;
 
-    .player-name {
-      font-size: 1.5em;
-      border-bottom: 1px solid lightgrey;
-      margin-bottom: 0.5em;
-    }
-
-    .status {
-      display: flex;
-      justify-content: space-between;
-      color: darkgrey;
-
-      &.playing {
-        color: green;
-      }
-
-      &.benching {
-        color: red;
-      }
-    }
+  &.playing {
+    color: green;
   }
 
-  .right-col {
-    flex-grow: 1;
-
-    .player-status {
-    }
-
-    .player-status .status {
-      padding: 0.5em;
-      text-align: center;
-      text-transform: capitalize;
-    }
-
-    .player-status > * {
-      width: 100%;
-      height: 4em;
-      margin-bottom: 1em;
-      white-space: normal;
-    }
-
-    .player-score {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5em;
-    }
-
-    .player-score span {
-      font-size: 1.5em;
-      margin: 0 0.5em;
-    }
-
-    .player-score input {
-      font-size: 1.5em;
-    }
+  &.benching {
+    color: red;
   }
+}
+
+.status-button {
+  width: 100%;
 }
 </style>

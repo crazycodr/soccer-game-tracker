@@ -33,8 +33,8 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('teamsTitle') }}</h2>
         <GameConfigTeamCreator class="creator" />
       </div>
-      <el-row gutter="10">
-        <el-col :span="12"
+      <el-row :gutter="10">
+        <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                 v-for="team in getTeams"
                 :key="team.uuid">
           <GameConfigTeam :uuid="team.uuid" :name="team.name" :color="team.color" />
@@ -46,8 +46,8 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <h2>{{ t('playersTitle') }}</h2>
         <GameConfigPlayerCreator class="creator" />
       </div>
-      <el-row gutter="10">
-        <el-col :span="12"
+      <el-row :gutter="10">
+        <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                 v-for="player in getPlayers"
                 :key="player.uuid">
           <GameConfigPlayerEditor class="player-entry"
