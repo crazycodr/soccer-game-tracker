@@ -8,8 +8,8 @@ import {useRegistryStore} from '@/stores/RegistryStore'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
-import {Team} from "@/stores/models/Team";
-import {RegistryPlayer} from "@/stores/models/RegistryPlayer";
+import type {Team} from "@/stores/models/Team";
+import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
 
 const {t, locale} = useI18n({
   useScope: 'global',

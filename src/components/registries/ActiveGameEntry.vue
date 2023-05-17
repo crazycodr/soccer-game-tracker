@@ -12,7 +12,7 @@ import {useTeamStore} from '@/stores/TeamStore'
 import {useGameStore} from '@/stores/GameStore'
 import {useRegistryStore} from '@/stores/RegistryStore'
 import {usePlayerStore} from "@/stores/PlayerStore";
-import {Player} from "@/stores/models/Player";
+import type {Player} from "@/stores/models/Player";
 
 const {t, locale} = useI18n({
   useScope: 'global',

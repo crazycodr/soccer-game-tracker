@@ -7,12 +7,12 @@ import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
 import {each, join, map} from 'lodash'
 import type {Team} from '@/stores/models/Team'
-import {Player} from "@/stores/models/Player";
-import {RegistryGame} from "@/stores/models/RegistryGame";
+import type {Player} from "@/stores/models/Player";
+import type {RegistryGame} from "@/stores/models/RegistryGame";
 import {useEventStore, useGameStore} from "@/stores/GameStore";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
-import {GameEvent} from "@/stores/models/GameEvent";
+import type {GameEvent} from "@/stores/models/GameEvent";
 
 const {t, locale} = useI18n({
   useScope: 'global',
