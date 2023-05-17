@@ -10,6 +10,7 @@ import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
 import type {Team} from "@/stores/models/Team";
 import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
+import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -54,9 +55,7 @@ if (props.event?.byPlayerUuid) {
 }
 
 const formattedTime = computed(() => {
-  const seconds = Math.floor(props.event?.atSeconds % 60).toFixed(0).toString().padStart(2, '0')
-  const minutes = Math.floor(props.event?.atSeconds / 60).toFixed(0).toString().padStart(2, '0')
-  return `${minutes}:${seconds}`
+  return formatTimeFromSeconds(props.event?.atSeconds)
 })
 
 const logText = computed(() => {

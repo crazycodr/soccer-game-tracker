@@ -13,6 +13,7 @@ import {useEventStore, useGameStore} from "@/stores/GameStore";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
 import type {GameEvent} from "@/stores/models/GameEvent";
+import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -61,9 +62,7 @@ const playerNameList = computed(() => {
 })
 
 const formattedTime = computed(() => {
-  const seconds = Math.floor(props.registryGame?.seconds % 60).toFixed(0).toString().padStart(2, '0')
-  const minutes = Math.floor(props.registryGame?.seconds / 60).toFixed(0).toString().padStart(2, '0')
-  return `${minutes}:${seconds}`
+  return formatTimeFromSeconds(props.registryGame?.seconds)
 })
 
 function loadGame() {

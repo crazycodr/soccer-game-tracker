@@ -2,15 +2,14 @@
 import {computed} from "vue";
 import {useGameStore} from "@/stores/GameStore";
 import {storeToRefs} from "pinia";
+import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
 
 const {pauseGame, unpauseGame} = useGameStore();
 
 const {getGame} = storeToRefs(useGameStore());
 
 const formattedTime = computed(() => {
-  const seconds = Math.floor(getGame.value.seconds % 60).toFixed(0).toString().padStart(2, '0')
-  const minutes = Math.floor(getGame.value.seconds / 60).toFixed(0).toString().padStart(2, '0')
-  return `${minutes}:${seconds}`
+  return formatTimeFromSeconds(getGame.value.seconds)
 })
 
 function timerPress() {
