@@ -1,19 +1,19 @@
 import {defineStore, storeToRefs} from 'pinia'
 import {computed, ref} from 'vue'
 import {useStorage} from '@vueuse/core'
-import {Game} from "@/stores/models/Game";
-import {usePlayerStore} from "@/stores/PlayerStore";
-import {forEach} from "lodash";
-import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
-import type {Player} from "@/stores/models/Player";
-import type {Team} from "@/stores/models/Team";
+import {Game} from '@/stores/models/Game'
+import {usePlayerStore} from '@/stores/PlayerStore'
+import {forEach} from 'lodash'
+import {EventEnum, GameEvent} from '@/stores/models/GameEvent'
+import type {Player} from '@/stores/models/Player'
+import type {Team} from '@/stores/models/Team'
 
 export const useGameStore = defineStore('game', () => {
 
   setInterval(tick, 1000)
 
-  const STAT_MODE_ADDITION = 1;
-  const STAT_MODE_REMOVAL = 2;
+  const STAT_MODE_ADDITION = 1
+  const STAT_MODE_REMOVAL = 2
 
   const game = useStorage<Game>('game', new Game(), localStorage, {mergeDefaults: true})
   const statMode = ref(STAT_MODE_ADDITION)
@@ -37,11 +37,11 @@ export const useGameStore = defineStore('game', () => {
   })
 
   function setToAdditionMode() {
-    statMode.value = STAT_MODE_ADDITION;
+    statMode.value = STAT_MODE_ADDITION
   }
 
   function setToRemovalMode() {
-    statMode.value = STAT_MODE_REMOVAL;
+    statMode.value = STAT_MODE_REMOVAL
   }
 
   function pauseGame() {
@@ -117,6 +117,8 @@ export const useEventStore = defineStore('events', () => {
 
   const events = useStorage<GameEvent[]>('events', [] as GameEvent[], localStorage, {mergeDefaults: true})
 
+  const getEvents = computed(() => events.value)
+
   function addGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
     const newEvent = new GameEvent(
         EventEnum.GOAL,
@@ -157,11 +159,17 @@ export const useEventStore = defineStore('events', () => {
     events.value.push(newEvent)
   }
 
+  function resetEvents(): void {
+    events.value = []
+  }
+
   return {
+    getEvents,
     addGoal,
     addPass,
     revertGoal,
-    revertPass
+    revertPass,
+    resetEvents
   }
 
 })

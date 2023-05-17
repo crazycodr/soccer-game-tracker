@@ -13,6 +13,7 @@ const {t, locale} = useI18n({
     en: {
       gameMenu: "Game",
       trackingMenu: "Track",
+      gameLog: "Event log",
       operationsMenu: "Operations",
       configureMenu: "Teams & rosters",
       registryMenu: "Registries",
@@ -22,6 +23,7 @@ const {t, locale} = useI18n({
     fr: {
       gameMenu: "Partie",
       trackingMenu: "Suivi de la partie",
+      gameLog: "Évènements",
       operationsMenu: "Opérations",
       configureMenu: "Équipes & alignements",
       registryMenu: "Registres",
@@ -41,6 +43,9 @@ locale.value = getLanguage.value
     <h2 class="section-title">{{ t('gameMenu') }}</h2>
     <div>
       <el-button class="section-option" icon="Memo" @click="router.push({name: 'game'})">{{ t('trackingMenu') }}</el-button>
+    </div>
+    <div>
+      <el-button class="section-option" icon="Reading" @click="router.push({name: 'game-log'})">{{ t('gameLog') }}</el-button>
     </div>
     <div>
       <el-button class="section-option" icon="Operation" @click="router.push({name: 'operations'})">{{ t('operationsMenu') }}</el-button>

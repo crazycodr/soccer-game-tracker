@@ -37,7 +37,10 @@ const {getPlayers} = storeToRefs(usePlayerStore());
         <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                 v-for="team in getTeams"
                 :key="team.uuid">
-          <GameConfigTeam :uuid="team.uuid" :name="team.name" :color="team.color" />
+          <GameConfigTeam class="team-entry"
+                          :uuid="team.uuid"
+                          :name="team.name"
+                          :color="team.color" />
         </el-col>
       </el-row>
     </div>
@@ -73,7 +76,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
     margin-bottom: 2em;
   }
 
-  .player-entry {
+  .team-entry, .player-entry {
     margin-bottom: 10px;
   }
 

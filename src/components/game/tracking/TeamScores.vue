@@ -1,25 +1,40 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {filter, map, sum} from "lodash";
-import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
-import type {Player} from "@/stores/models/Player";
+import {useEventStore} from "@/stores/GameStore";
+import type {GameEvent} from "@/stores/models/GameEvent";
+import {EventEnum} from "@/stores/models/GameEvent";
 
-const {getPlayers} = storeToRefs(usePlayerStore());
+const {getEvents} = storeToRefs(useEventStore());
 const {getTeams} = storeToRefs(useTeamStore());
 
 function getGoalsOfTeam(teamUuid: string) {
-  const players = filter(getPlayers.value, (player: Player) => {
-    return player.team === teamUuid
+  const goalEvents = filter(getEvents.value, (event: GameEvent) => {
+    return event.forTeamUuid === teamUuid && (
+        event.type === EventEnum.GOAL
+        || event.type === EventEnum.REVERTED_GOAL
+    )
   })
-  return sum(map(players, 'goals'))
+  return sum(map(goalEvents, (event: GameEvent) => {
+    switch (event.type) {
+      case EventEnum.GOAL: return 1
+      case EventEnum.REVERTED_GOAL: return -1
+      default: return 0
+    }
+  }))
 }
 </script>
 
 <template>
-  <main>
-    <div class="scores">
-      <div class="score" v-for="team in getTeams" :key="team.uuid" :style="{'border-color': team.color}">
+  <el-row class="scores" :gutter="30">
+    <el-col
+        :xs="12" :sm="6" :md="4" :lg="3" :xl="2"
+        v-for="team in getTeams"
+        class="score-container"
+        :key="team.uuid">
+      <div class="score"
+           :style="{'border-color': team.color}">
         <div class="team-name" :style="{'color': team.color}">
           {{ team.name }}
         </div>
@@ -27,30 +42,31 @@ function getGoalsOfTeam(teamUuid: string) {
           {{ getGoalsOfTeam(team.uuid) }}
         </div>
       </div>
-    </div>
-  </main>
+    </el-col>
+  </el-row>
 </template>
 
 <style scoped lang="scss">
 .scores {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
 
-  .score {
-    text-align: center;
-    border: 3px solid gray;
-    padding: 0.5em 1.5em;
-    flex-basis: 40%;
-    margin-bottom: 1em;
+  .score-container {
+    margin-bottom: 30px;
 
-    .team-name {
-      text-transform: capitalize;
-      font-size: 1.5em;
-    }
+    .score {
+      text-align: center;
+      border: 3px solid gray;
+      width: 10em;
+      height: 10em;
+      margin: 0 auto;
 
-    .team-score {
-      font-size: 3em;
+      .team-name {
+        text-transform: capitalize;
+        font-size: 1.5em;
+      }
+
+      .team-score {
+        font-size: 3em;
+      }
     }
   }
 }

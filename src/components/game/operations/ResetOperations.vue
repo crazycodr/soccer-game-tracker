@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {useGameStore} from "@/stores/GameStore";
+import {useEventStore, useGameStore} from "@/stores/GameStore";
 import {ref} from "vue";
 import {useTimeout} from "@vueuse/core";
 import {useI18n} from "vue-i18n";
@@ -11,8 +11,8 @@ const {t} = useI18n({
       gameDataTitle: "Reset data",
       gameAndPlayerStatusOption: "Game and player status",
       gameAndPlayerTimersOption: "Game and player timers",
-      playerGoalsOption: "Player goals",
-      playerPassesOption: "Player passes",
+      playerGoalsAndPassesOption: "Player goals and passes",
+      logEventsOption: "Event log",
       resetAction: "Reset",
       resetConfirmation: "Data has been reset!"
     },
@@ -20,8 +20,8 @@ const {t} = useI18n({
       gameDataTitle: "Effacer les données",
       gameAndPlayerStatusOption: "Statuts de la partie et des joueurs",
       gameAndPlayerTimersOption: "Temps de la partie et des joueurs",
-      playerGoalsOption: "Buts des joueurs",
-      playerPassesOption: "Passes des joueurs",
+      playerGoalsAndPassesOption: "Buts et passes des joueurs",
+      logEventsOption: "Journal d'évènement",
       resetAction: "Effacer",
       resetConfirmation: "Les données sont effacées!"
     }
@@ -30,13 +30,14 @@ const {t} = useI18n({
 
 const resetStatusFlag = ref(false);
 const resetTimersFlag = ref(false);
-const resetGoalsFlag = ref(false);
-const resetPassesFlag = ref(false);
+const resetGoalsAndPassesFlag = ref(false);
+const resetEventLogFlag = ref(false);
 const showSuccess = ref(false);
 
 const { start: startSuccessTimeout } = useTimeout(5000, { controls: true, callback: hideSuccessTimeout });
 
 const { resetStatuses, resetTimers, resetGoals, resetPasses } = useGameStore();
+const { resetEvents } = useEventStore();
 
 function resetAndPause() {
   if (resetStatusFlag.value) {
@@ -45,16 +46,17 @@ function resetAndPause() {
   if (resetTimersFlag.value) {
     resetTimers()
   }
-  if (resetGoalsFlag.value) {
+  if (resetGoalsAndPassesFlag.value) {
     resetGoals()
-  }
-  if (resetPassesFlag.value) {
     resetPasses()
+  }
+  if (resetEventLogFlag.value) {
+    resetEvents()
   }
   resetStatusFlag.value = false
   resetTimersFlag.value = false
-  resetGoalsFlag.value = false
-  resetPassesFlag.value = false
+  resetGoalsAndPassesFlag.value = false
+  resetEventLogFlag.value = false
   startSuccessTimeout()
   showSuccess.value = true
 }
@@ -74,15 +76,15 @@ function hideSuccessTimeout (){
       <el-checkbox label="timers" v-model="resetTimersFlag">{{ t('gameAndPlayerTimersOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-checkbox label="goals" v-model="resetGoalsFlag">{{ t('playerGoalsOption') }}</el-checkbox>
+      <el-checkbox label="goals" v-model="resetGoalsAndPassesFlag">{{ t('playerGoalsAndPassesOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
-      <el-checkbox label="passes" v-model="resetPassesFlag">{{ t('playerPassesOption') }}</el-checkbox>
+      <el-checkbox label="passes" v-model="resetEventLogFlag">{{ t('logEventsOption') }}</el-checkbox>
     </el-row>
     <el-row class="reset-option">
       <el-button
           class="reset"
-          :disabled="!(resetStatusFlag || resetTimersFlag || resetGoalsFlag || resetPassesFlag)"
+          :disabled="!(resetStatusFlag || resetTimersFlag || resetGoalsAndPassesFlag || resetEventLogFlag)"
           @click.stop="resetAndPause">{{ t('resetAction') }}</el-button>
     </el-row>
     <el-alert type="success" v-if="showSuccess">
