@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {computed} from 'vue'
 import type {PropType} from 'vue'
+import {computed} from 'vue'
 import type {GameEvent} from '@/stores/models/GameEvent'
 import {EventEnum} from '@/stores/models/GameEvent'
 import {useTeamStore} from '@/stores/TeamStore'
@@ -8,6 +8,8 @@ import {useRegistryStore} from '@/stores/RegistryStore'
 import {useI18n} from 'vue-i18n'
 import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
+import {Team} from "@/stores/models/Team";
+import {RegistryPlayer} from "@/stores/models/RegistryPlayer";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -42,8 +44,14 @@ const {getTeamByUuid} = useTeamStore()
 const {getPlayerFromRegistryByUuid} = useRegistryStore()
 const {getLanguage} = storeToRefs(useOptionStore())
 
-const team = getTeamByUuid(props.event?.forTeamUuid)
-const player = getPlayerFromRegistryByUuid(props.event?.byPlayerUuid)
+let team: Team | null = null
+let player: RegistryPlayer | null = null
+if (props.event?.forTeamUuid) {
+  team = getTeamByUuid(props.event?.forTeamUuid)
+}
+if (props.event?.byPlayerUuid) {
+  player = getPlayerFromRegistryByUuid(props.event?.byPlayerUuid)
+}
 
 const formattedTime = computed(() => {
   const seconds = Math.floor(props.event?.atSeconds % 60).toFixed(0).toString().padStart(2, '0')
@@ -71,8 +79,8 @@ locale.value = getLanguage.value
 <template>
   <div class="log-entry">
     <span class="formatted-time">{{ formattedTime }}</span>
-    <span class="team-name">
-      <span v-if="team.color" class="color-pin" :style="{'background-color': team.color}" />
+    <span class="team-name" v-if="team">
+      <span v-if="team.color" class="color-pin" :style="{'background-color': team.color}"/>
       {{ team.name }}
     </span>
     <span class="event-text">

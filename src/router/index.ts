@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import GameView from '@/views/GameView.vue'
 import GameConfigView from '@/views/GameTeamsAndRosters.vue'
 import GameOperations from '@/views/GameOperations.vue'
@@ -6,6 +6,7 @@ import OptionsView from '@/views/OptionsView.vue'
 import GameMenu from '@/views/GameMenu.vue'
 import PlayerRegistry from '@/views/PlayerRegistry.vue'
 import GameLog from "@/views/GameLog.vue";
+import GameRegistry from "@/views/GameRegistry.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/registry/players',
       name: 'player-registry',
       component: PlayerRegistry
+    },
+    {
+      path: '/registry/games',
+      name: 'game-registry',
+      component: GameRegistry
     },
     {
       path: '/options',

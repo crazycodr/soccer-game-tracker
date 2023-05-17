@@ -37,6 +37,10 @@ export const usePlayerStore = defineStore('player', () => {
     return player
   }
 
+  function resetPlayers() {
+    players.value = []
+  }
+
   function addPlayer(addedPlayer: Player) {
     const existingPlayer = find(players.value, (player: Player) => player.uuid === addedPlayer.uuid)
     if (existingPlayer) {
@@ -162,6 +166,7 @@ export const usePlayerStore = defineStore('player', () => {
   return {
     getPlayers,
     getPlayerByUuid,
+    resetPlayers,
     updatePlayer,
     upsertRegistryPlayerInGame,
     increaseGoals,

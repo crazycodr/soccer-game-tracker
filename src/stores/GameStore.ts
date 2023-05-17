@@ -7,6 +7,7 @@ import {forEach} from 'lodash'
 import {EventEnum, GameEvent} from '@/stores/models/GameEvent'
 import type {Player} from '@/stores/models/Player'
 import type {Team} from '@/stores/models/Team'
+import {v4, validate} from "uuid";
 
 export const useGameStore = defineStore('game', () => {
 
@@ -16,6 +17,10 @@ export const useGameStore = defineStore('game', () => {
   const STAT_MODE_REMOVAL = 2
 
   const game = useStorage<Game>('game', new Game(), localStorage, {mergeDefaults: true})
+  if (!validate(game.value.uuid) || game.value.uuid === undefined) {
+    game.value.uuid = v4()
+  }
+
   const statMode = ref(STAT_MODE_ADDITION)
 
   const {getPlayers} = storeToRefs(usePlayerStore())
@@ -119,6 +124,10 @@ export const useEventStore = defineStore('events', () => {
 
   const getEvents = computed(() => events.value)
 
+  function addEvent(event: GameEvent): void {
+    events.value.push(event)
+  }
+
   function addGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
     const newEvent = new GameEvent(
         EventEnum.GOAL,
@@ -165,6 +174,7 @@ export const useEventStore = defineStore('events', () => {
 
   return {
     getEvents,
+    addEvent,
     addGoal,
     addPass,
     revertGoal,
