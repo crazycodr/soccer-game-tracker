@@ -12,7 +12,7 @@ import {useTeamStore} from "@/stores/TeamStore";
 
 export const usePlayerStore = defineStore('player', () => {
 
-  const {addGoal, addPass, revertGoal, revertPass} = useEventStore()
+  const {addGoal, addPass, revertGoal, revertPass, sendPlayerToField, sendPlayerToGoal, sendPlayerToBench} = useEventStore()
   const {getTeamByUuid} = useTeamStore()
 
   const players = useStorage<Player[]>('players', [] as Player[], localStorage, {mergeDefaults: true})
@@ -78,7 +78,7 @@ export const usePlayerStore = defineStore('player', () => {
     })
   }
 
-  function benchPlayer(uuid: string) {
+  function sendToBench(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
       return existingPlayer.uuid === uuid
     })
@@ -86,10 +86,16 @@ export const usePlayerStore = defineStore('player', () => {
       throw new PlayerNotFoundException()
     }
     const player = <Player>first(matchingPlayers)
+    const team = getTeamByUuid(player.team)
     player.status = 'benching'
+    sendPlayerToBench(
+        new Date(),
+        team,
+        player
+    )
   }
 
-  function unbenchPlayer(uuid: string) {
+  function sendToField(uuid: string) {
     const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
       return existingPlayer.uuid === uuid
     })
@@ -97,7 +103,30 @@ export const usePlayerStore = defineStore('player', () => {
       throw new PlayerNotFoundException()
     }
     const player = <Player>first(matchingPlayers)
+    const team = getTeamByUuid(player.team)
     player.status = 'playing'
+    sendPlayerToField(
+        new Date(),
+        team,
+        player
+    )
+  }
+
+  function sendToGoal(uuid: string) {
+    const matchingPlayers: Player[] = filter(players.value, (existingPlayer: Player) => {
+      return existingPlayer.uuid === uuid
+    })
+    if (matchingPlayers.length === 0) {
+      throw new PlayerNotFoundException()
+    }
+    const player = <Player>first(matchingPlayers)
+    const team = getTeamByUuid(player.team)
+    player.status = 'goaling'
+    sendPlayerToGoal(
+        new Date(),
+        team,
+        player
+    )
   }
 
   function increaseGoals(uuid: string) {
@@ -174,8 +203,9 @@ export const usePlayerStore = defineStore('player', () => {
     addPlayer,
     setPlayerTeam,
     removePlayerByUuid,
-    benchPlayer,
-    unbenchPlayer,
+    sendToBench,
+    sendToField,
+    sendToGoal,
     decreaseGoals,
     decreasePasses
   }

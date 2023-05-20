@@ -3,21 +3,6 @@ import {GameEventReferences} from "@/stores/models/GameEventReferences";
 
 export class GameEvent {
 
-    /**
-     * @deprecated
-     */
-    public forTeamUuid: string | null = null
-
-    /**
-     * @deprecated
-     */
-    public byPlayerUuid: string | null = null
-
-    /**
-     * @deprecated
-     */
-    public atSeconds: number
-
     public uuid: string
     public type: EventEnum
     public on: Date | string | null = null
@@ -27,15 +12,8 @@ export class GameEvent {
         this.uuid = v4()
         this.type = type
         this.on = on
-        this.atSeconds = 0
-        if (forTeamUuid) {
-            this.forTeamUuid = forTeamUuid
-            this.references.teamUuid = forTeamUuid
-        }
-        if (byPlayerUuid) {
-            this.byPlayerUuid = byPlayerUuid
-            this.references.playerUuid = byPlayerUuid
-        }
+        this.references.teamUuid = forTeamUuid
+        this.references.playerUuid = byPlayerUuid
     }
 }
 

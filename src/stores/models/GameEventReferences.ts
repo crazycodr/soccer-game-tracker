@@ -1,4 +1,4 @@
 export class GameEventReferences {
-    public playerUuid: string = ''
-    public teamUuid: string = ''
+    public playerUuid: string | null = null
+    public teamUuid: string | null = null
 }

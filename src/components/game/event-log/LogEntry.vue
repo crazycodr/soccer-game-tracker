@@ -25,6 +25,9 @@ const {t, locale} = useI18n({
       eventPass: '{name} made a decisive pass',
       eventGoalReverted: 'Goal for {name} was reverted',
       eventPassRevert: 'Decisive pass for {name} was reverted',
+      eventPlayerGoesToField: '{name} enters the field',
+      eventPlayerGoesToBench: '{name} leaves to bench',
+      eventPlayerGoesToGoal: '{name} starts to goal',
       eventGameTimerStart: 'Game timer started (at {realDate})',
       eventGameTimerStop: 'Game timer stopped (at {realDate})',
       eventUnknown: 'Unknown event',
@@ -36,6 +39,9 @@ const {t, locale} = useI18n({
       eventPass: '{name} à contribué avec une passe décisive',
       eventGoalReverted: 'Un but de {name} à été révoqué',
       eventPassRevert: 'Une passe décisive de {name} à été révoquée',
+      eventPlayerGoesToField: '{name} entre en jeu',
+      eventPlayerGoesToBench: '{name} quitte pour le banc',
+      eventPlayerGoesToGoal: '{name} comment à garder les buts',
       eventGameTimerStart: 'Chronomètre de partie démarré (à {realDate})',
       eventGameTimerStop: 'Chronomètre de partie arrêté (à {realDate})',
       eventUnknown: 'Évènement inconnu',
@@ -94,6 +100,12 @@ const logText = computed(() => {
       return t('eventGameTimerStart', {name: player?.name, realDate: realEventString})
     case EventEnum.GAME_TIMER_STOP:
       return t('eventGameTimerStop', {name: player?.name, realDate: realEventString})
+    case EventEnum.PLAYER_TO_FIELD:
+      return t('eventPlayerGoesToField', {name: player?.name})
+    case EventEnum.PLAYER_TO_BENCH:
+      return t('eventPlayerGoesToBench', {name: player?.name})
+    case EventEnum.PLAYER_TO_GOAL:
+      return t('eventPlayerGoesToGoal', {name: player?.name})
     case EventEnum.GOAL:
       return t('eventGoal', {name: player?.name})
     case EventEnum.PASS:

@@ -14,15 +14,6 @@ export const useEventStore = defineStore('events', () => {
         if (!event.references) {
             event.references = new GameEventReferences()
         }
-        if (event.byPlayerUuid && !event.references.playerUuid) {
-            event.references.playerUuid = event.byPlayerUuid
-            event.byPlayerUuid = null
-        }
-        if (event.forTeamUuid && !event.references.teamUuid) {
-            event.references.teamUuid = event.forTeamUuid
-        }
-        event.byPlayerUuid = null
-        event.forTeamUuid = null
     })
 
     const getEvents = computed(() => events.value)
