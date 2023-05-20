@@ -7,7 +7,7 @@ import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundExcepti
 import {Player} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
 import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
-import {useEventStore} from "@/stores/GameStore";
+import {useEventStore} from "@/stores/EventStore";
 import {useTeamStore} from "@/stores/TeamStore";
 
 export const usePlayerStore = defineStore('player', () => {
@@ -100,44 +100,44 @@ export const usePlayerStore = defineStore('player', () => {
     player.status = 'playing'
   }
 
-  function increaseGoals(atSeconds: number, uuid: string) {
+  function increaseGoals(uuid: string) {
     const player = getPlayerByUuid(uuid)
     const team = getTeamByUuid(player.team)
     addGoal(
-        atSeconds,
+        new Date(),
         team,
         player
     )
     player.goals++
   }
 
-  function increasePasses(atSeconds: number, uuid: string) {
+  function increasePasses(uuid: string) {
     const player = getPlayerByUuid(uuid)
     const team = getTeamByUuid(player.team)
     addPass(
-        atSeconds,
+        new Date(),
         team,
         player
     )
     player.passes++
   }
 
-  function decreaseGoals(atSeconds: number, uuid: string) {
+  function decreaseGoals(uuid: string) {
     const player = getPlayerByUuid(uuid)
     const team = getTeamByUuid(player.team)
     revertGoal(
-        atSeconds,
+        new Date(),
         team,
         player
     )
     player.goals--
   }
 
-  function decreasePasses(atSeconds: number, uuid: string) {
+  function decreasePasses(uuid: string) {
     const player = getPlayerByUuid(uuid)
     const team = getTeamByUuid(player.team)
     revertPass(
-        atSeconds,
+        new Date(),
         team,
         player
     )

@@ -4,7 +4,7 @@ import {useI18n} from "vue-i18n";
 import {useOptionStore} from "@/stores/OptionStore";
 import {storeToRefs} from "pinia";
 import LogEntry from "@/components/game/event-log/LogEntry.vue";
-import {useEventStore} from "@/stores/GameStore";
+import {useEventStore} from "@/stores/EventStore";
 
 const {t, locale} = useI18n({
   useScope: 'global',

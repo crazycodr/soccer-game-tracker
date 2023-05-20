@@ -1,19 +1,20 @@
 <script setup lang="ts">
 
 import {useI18n} from 'vue-i18n'
-import type {PropType} from 'vue'
 import {computed} from 'vue'
 import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
-import {join, map} from 'lodash'
+import {filter, join, map} from 'lodash'
 import type {Team} from '@/stores/models/Team'
-import type {Game} from '@/stores/models/Game'
 import {useTeamStore} from '@/stores/TeamStore'
 import {useGameStore} from '@/stores/GameStore'
 import {useRegistryStore} from '@/stores/RegistryStore'
 import {usePlayerStore} from "@/stores/PlayerStore";
 import type {Player} from "@/stores/models/Player";
-import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
+import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
+import {useEventStore} from "@/stores/EventStore";
+import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
+import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -42,14 +43,8 @@ const {upsertGameInRegistry} = useRegistryStore()
 
 locale.value = getLanguage.value
 
-const props = defineProps({
-  activeGame: {
-    type: Object as PropType<Game>,
-    required: true
-  }
-})
-
-const {getGame} = storeToRefs(useGameStore())
+const {getEvents} = storeToRefs(useEventStore())
+const {getGame, tickCounter} = storeToRefs(useGameStore())
 const {getGameFromRegistryByUuid} = useRegistryStore()
 
 const teamNameList = computed(() => {
@@ -65,10 +60,18 @@ const playerNameList = computed(() => {
 })
 
 const formattedTime = computed(() => {
-  return formatTimeFromSeconds(props.activeGame?.seconds)
+  const gameTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+    return event.type === EventEnum.GAME_TIMER_START || event.type === EventEnum.GAME_TIMER_STOP
+  })
+  const secondsBeforeCurrentEvent = getGameDurationFromGameTimerEvents(gameTimerEvents, new Date())
+  /**
+   * This strange +/- tickCounter is to stimulate redraw of the property because it is event based
+   * and would not change on tick.
+   */
+  return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
 })
 
-const isGameActive = computed(() => getGame.value.seconds > 0)
+const isGameActive = computed(() => getEvents.value.length > 0)
 
 const addSaveButtonLabel = computed(() => {
   if (isGameActive.value && getGameFromRegistryByUuid(getGame.value.uuid)) {

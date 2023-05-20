@@ -12,7 +12,7 @@ import type {Game} from "@/stores/models/Game";
 import {GameAlreadyExistsException} from "@/stores/exceptions/GameAlreadyExistsException";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
-import {useEventStore} from "@/stores/GameStore";
+import {useEventStore} from "@/stores/EventStore";
 import {GameNotFoundException} from "@/stores/exceptions/GameNotFoundException";
 
 export const useRegistryStore = defineStore('registry', () => {
@@ -48,7 +48,6 @@ export const useRegistryStore = defineStore('registry', () => {
         const createdGame = new RegistryGame()
         createdGame.uuid = addedGame.uuid
         createdGame.status = addedGame.status
-        createdGame.seconds = addedGame.seconds
         createdGame.players = getPlayers.value
         createdGame.teams = getTeams.value
         createdGame.events = getEvents.value
@@ -61,7 +60,6 @@ export const useRegistryStore = defineStore('registry', () => {
             throw new GameNotFoundException()
         }
         existingGame.status = updatedGame.status
-        existingGame.seconds = updatedGame.seconds
         existingGame.players = getPlayers.value
         existingGame.teams = getTeams.value
         existingGame.events = getEvents.value

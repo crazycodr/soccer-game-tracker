@@ -1,5 +1,5 @@
 import {describe, test, expect} from "vitest";
-import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
+import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 
 describe('formatTimeFromSeconds', () => {
     test('0 seconds yield 00:00', () => {

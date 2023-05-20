@@ -2,21 +2,37 @@
 import {computed} from "vue";
 import {useGameStore} from "@/stores/GameStore";
 import {storeToRefs} from "pinia";
-import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
+import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
+import {useEventStore} from "@/stores/EventStore";
+import {filter} from "lodash";
+import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
+import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
 
 const {pauseGame, unpauseGame} = useGameStore();
+const {startTimer, stopTimer} = useEventStore();
+const {getEvents} = storeToRefs(useEventStore());
 
-const {getGame} = storeToRefs(useGameStore());
+const {getGame, tickCounter} = storeToRefs(useGameStore());
 
 const formattedTime = computed(() => {
-  return formatTimeFromSeconds(getGame.value.seconds)
+  const gameTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+    return event.type === EventEnum.GAME_TIMER_START || event.type === EventEnum.GAME_TIMER_STOP
+  })
+  const secondsBeforeCurrentEvent = getGameDurationFromGameTimerEvents(gameTimerEvents, new Date())
+  /**
+   * This strange +/- tickCounter is to stimulate redraw of the property because it is event based
+   * and would not change on tick.
+   */
+  return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
 })
 
 function timerPress() {
   if (getGame.value.status === 'playing') {
     pauseGame()
+    stopTimer(new Date())
   } else {
     unpauseGame()
+    startTimer(new Date())
   }
 }
 

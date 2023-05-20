@@ -10,7 +10,11 @@ import {storeToRefs} from 'pinia'
 import {useOptionStore} from '@/stores/OptionStore'
 import type {Team} from "@/stores/models/Team";
 import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
-import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
+import {formatTimeFromSeconds, getEventDate} from "@/modules/time/TimeFormatting";
+import {useEventStore} from "@/stores/EventStore";
+import {filter} from "lodash";
+import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
+import {formatDate} from "@vueuse/core";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -21,7 +25,10 @@ const {t, locale} = useI18n({
       eventPass: '{name} made a decisive pass',
       eventGoalReverted: 'Goal for {name} was reverted',
       eventPassRevert: 'Decisive pass for {name} was reverted',
-      eventUnknown: 'Unknown event'
+      eventGameTimerStart: 'Game timer started (at {realDate})',
+      eventGameTimerStop: 'Game timer stopped (at {realDate})',
+      eventUnknown: 'Unknown event',
+      noRecordedDate: 'No valid date recorded'
     },
     fr: {
       gameLog: 'Évènements',
@@ -29,7 +36,10 @@ const {t, locale} = useI18n({
       eventPass: '{name} à contribué avec une passe décisive',
       eventGoalReverted: 'Un but de {name} à été révoqué',
       eventPassRevert: 'Une passe décisive de {name} à été révoquée',
-      eventUnknown: 'Évènement inconnu'
+      eventGameTimerStart: 'Chronomètre de partie démarré (à {realDate})',
+      eventGameTimerStop: 'Chronomètre de partie arrêté (à {realDate})',
+      eventUnknown: 'Évènement inconnu',
+      noRecordedDate: 'Aucune date valide enregistrée'
     }
   }
 })
@@ -44,22 +54,46 @@ const props = defineProps({
 const {getTeamByUuid} = useTeamStore()
 const {getPlayerFromRegistryByUuid} = useRegistryStore()
 const {getLanguage} = storeToRefs(useOptionStore())
+const {getEvents} = storeToRefs(useEventStore())
 
 let team: Team | null = null
 let player: RegistryPlayer | null = null
-if (props.event?.forTeamUuid) {
-  team = getTeamByUuid(props.event?.forTeamUuid)
+if (props.event?.references.teamUuid) {
+  team = getTeamByUuid(props.event?.references.teamUuid)
 }
-if (props.event?.byPlayerUuid) {
-  player = getPlayerFromRegistryByUuid(props.event?.byPlayerUuid)
+if (props.event?.references.playerUuid) {
+  player = getPlayerFromRegistryByUuid(props.event?.references.playerUuid)
 }
 
 const formattedTime = computed(() => {
-  return formatTimeFromSeconds(props.event?.atSeconds)
+  const propEventOn = getEventDate(props.event?.on)
+  if (!propEventOn) {
+    return ''
+  }
+  const gameTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+    return event.type === EventEnum.GAME_TIMER_START || event.type === EventEnum.GAME_TIMER_STOP
+  })
+  const timerEventsBeforeCurrentEvent = filter(gameTimerEvents, (event: GameEvent) => {
+    const eventOn = getEventDate(event.on)
+    if (eventOn && propEventOn) {
+      return eventOn <= propEventOn
+    }
+    return false
+  })
+  const secondsBeforeCurrentEvent = getGameDurationFromGameTimerEvents(timerEventsBeforeCurrentEvent, propEventOn)
+  return formatTimeFromSeconds(secondsBeforeCurrentEvent)
 })
 
 const logText = computed(() => {
+
+  const realEventDate = getEventDate(props.event.on)
+  const realEventString = realEventDate ? formatDate(realEventDate, 'H:mm:ss') : t('no-recorded-date');
+
   switch (props.event?.type) {
+    case EventEnum.GAME_TIMER_START:
+      return t('eventGameTimerStart', {name: player?.name, realDate: realEventString})
+    case EventEnum.GAME_TIMER_STOP:
+      return t('eventGameTimerStop', {name: player?.name, realDate: realEventString})
     case EventEnum.GOAL:
       return t('eventGoal', {name: player?.name})
     case EventEnum.PASS:

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import {useEventStore, useGameStore} from "@/stores/GameStore";
+import {useGameStore} from "@/stores/GameStore";
+import {useEventStore} from "@/stores/EventStore";
 import {ref} from "vue";
 import {useTimeout} from "@vueuse/core";
 import {useI18n} from "vue-i18n";

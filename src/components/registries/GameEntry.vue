@@ -9,11 +9,12 @@ import {each, join, map} from 'lodash'
 import type {Team} from '@/stores/models/Team'
 import type {Player} from "@/stores/models/Player";
 import type {RegistryGame} from "@/stores/models/RegistryGame";
-import {useEventStore, useGameStore} from "@/stores/GameStore";
+import {useGameStore} from "@/stores/GameStore";
+import {useEventStore} from "@/stores/EventStore";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
 import type {GameEvent} from "@/stores/models/GameEvent";
-import formatTimeFromSeconds from "@/modules/time/TimeFormatting";
+import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -73,7 +74,6 @@ function loadGame() {
   resetEvents()
   resetTeams()
   resetPlayers()
-  getGame.value.seconds = props.registryGame?.seconds
   getGame.value.uuid = props.registryGame?.uuid
   each(props.registryGame?.teams, (team: Team) => addTeam(team))
   each(props.registryGame?.players, (player: Player) => addPlayer(player))

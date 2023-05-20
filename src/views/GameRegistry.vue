@@ -6,6 +6,7 @@ import GameEntry from '@/components/registries/GameEntry.vue'
 import {useGameStore} from '@/stores/GameStore'
 import ActiveGameEntry from '@/components/registries/ActiveGameEntry.vue'
 import {computed} from 'vue'
+import {useEventStore} from "@/stores/EventStore";
 
 const {t} = useI18n({
   messages: {
@@ -20,10 +21,11 @@ const {t} = useI18n({
   }
 })
 
+const {getEvents} = storeToRefs(useEventStore())
 const {getGamesFromRegistry} = storeToRefs(useRegistryStore())
 const {getGame} = storeToRefs(useGameStore())
 
-const isGameActive = computed(() => getGame.value.seconds > 0)
+const isGameActive = computed(() => getEvents.value.length > 0)
 const registryHasGames = computed(() => getGamesFromRegistry.value.length)
 
 </script>

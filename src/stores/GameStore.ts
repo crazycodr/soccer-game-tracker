@@ -1,24 +1,28 @@
 import {defineStore, storeToRefs} from 'pinia'
 import {computed, ref} from 'vue'
-import {useStorage} from '@vueuse/core'
+import {useInterval, useStorage} from '@vueuse/core'
 import {Game} from '@/stores/models/Game'
 import {usePlayerStore} from '@/stores/PlayerStore'
 import {forEach} from 'lodash'
-import {EventEnum, GameEvent} from '@/stores/models/GameEvent'
 import type {Player} from '@/stores/models/Player'
-import type {Team} from '@/stores/models/Team'
 import {v4, validate} from "uuid";
 
 export const useGameStore = defineStore('game', () => {
 
-  setInterval(tick, 1000)
+  const { pause, resume } = useInterval(1000, { controls: true, callback: tick });
 
   const STAT_MODE_ADDITION = 1
   const STAT_MODE_REMOVAL = 2
 
+  const tickCounter = ref(0)
+
   const game = useStorage<Game>('game', new Game(), localStorage, {mergeDefaults: true})
   if (!validate(game.value.uuid) || game.value.uuid === undefined) {
     game.value.uuid = v4()
+  }
+
+  if (game.value.status === 'playing') {
+    resume()
   }
 
   const statMode = ref(STAT_MODE_ADDITION)
@@ -51,15 +55,17 @@ export const useGameStore = defineStore('game', () => {
 
   function pauseGame() {
     game.value.status = 'paused'
+    pause()
   }
 
   function unpauseGame() {
     game.value.status = 'playing'
+    resume()
   }
 
   function tick() {
     if (game.value.status === 'playing') {
-      game.value.seconds++
+      tickCounter.value++
       forEach(getPlayers.value, (player: Player) => {
         if (player.status === 'playing') {
           player.gameSeconds++
@@ -78,7 +84,6 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function resetTimers() {
-    game.value.seconds = 0
     forEach(getPlayers.value, (player: Player) => {
       player.gameSeconds = 0
       player.benchSeconds = 0
@@ -101,6 +106,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   return {
+    tickCounter,
     getGame,
     pauseGame,
     unpauseGame,
@@ -118,68 +124,4 @@ export const useGameStore = defineStore('game', () => {
   }
 })
 
-export const useEventStore = defineStore('events', () => {
 
-  const events = useStorage<GameEvent[]>('events', [] as GameEvent[], localStorage, {mergeDefaults: true})
-
-  const getEvents = computed(() => events.value)
-
-  function addEvent(event: GameEvent): void {
-    events.value.push(event)
-  }
-
-  function addGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
-    const newEvent = new GameEvent(
-        EventEnum.GOAL,
-        atSeconds,
-        forTeam.uuid,
-        byPlayer.uuid
-    )
-    events.value.push(newEvent)
-  }
-
-  function addPass(atSeconds: number, forTeam: Team, byPlayer: Player): void {
-    const newEvent = new GameEvent(
-        EventEnum.PASS,
-        atSeconds,
-        forTeam.uuid,
-        byPlayer.uuid
-    )
-    events.value.push(newEvent)
-  }
-
-  function revertGoal(atSeconds: number, forTeam: Team, byPlayer: Player): void {
-    const newEvent = new GameEvent(
-        EventEnum.REVERTED_GOAL,
-        atSeconds,
-        forTeam.uuid,
-        byPlayer.uuid
-    )
-    events.value.push(newEvent)
-  }
-
-  function revertPass(atSeconds: number, forTeam: Team, byPlayer: Player): void {
-    const newEvent = new GameEvent(
-        EventEnum.REVERTED_PASS,
-        atSeconds,
-        forTeam.uuid,
-        byPlayer.uuid
-    )
-    events.value.push(newEvent)
-  }
-
-  function resetEvents(): void {
-    events.value = []
-  }
-
-  return {
-    getEvents,
-    addEvent,
-    addGoal,
-    addPass,
-    revertGoal,
-    revertPass,
-    resetEvents
-  }
-
-})
