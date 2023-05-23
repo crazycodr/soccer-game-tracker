@@ -17,6 +17,8 @@ import {useEventStore} from "@/stores/EventStore";
 const {t} = useI18n({
   messages: {
     en: {
+      goalsLabel: "Goals",
+      passesLabel: "Dec. passes",
       benchingLabel: "Benching",
       benchedLabel: "Benched",
       goalingLabel: "Goaling",
@@ -30,6 +32,8 @@ const {t} = useI18n({
       passAbbreviation: "P"
     },
     fr: {
+      goalsLabel: "Buts",
+      passesLabel: "Passes Déc.",
       benchingLabel: "Sur le banc",
       benchedLabel: "Temps au banc",
       goalingLabel: "Garde les buts",
@@ -161,31 +165,47 @@ function affectPasses(uuid: string) {
             <el-col class="label" :span="18">{{ benchingStatus }}</el-col>
             <el-col class="timer" :span="6">{{ benchTimeSince }}</el-col>
           </el-row>
-          <el-row style="margin-top: 1em;" :gutter="10">
-            <el-col v-if="isPlaying || isGoaling" :span="24">
-              <el-button class="status-button" @click="sendToBench(uuid)">{{
-                  t('benchAction')
-                }}
-              </el-button>
-            </el-col>
-            <el-col v-if="isBenching" :span="12">
-              <el-button class="status-button" @click="sendToField(uuid)">{{
-                  t('playAction')
-                }}
-              </el-button>
-            </el-col>
-            <el-col v-if="isBenching" :span="12">
-              <el-button class="status-button" @click="sendToGoal(uuid)">{{
-                  t('goalAction')
-                }}
-              </el-button>
-            </el-col>
+          <el-row class="statistic" style="margin-top: 0.5em">
+            <el-col class="label" :span="18">{{ t('goalsLabel') }}</el-col>
+            <el-col class="timer" :span="6">{{ goals }}</el-col>
+          </el-row>
+          <el-row class="statistic">
+            <el-col class="label" :span="18">{{ t('passesLabel') }}</el-col>
+            <el-col class="timer" :span="6">{{ passes }}</el-col>
           </el-row>
         </el-col>
         <el-col :span="10">
           <el-row :gutter="10">
-            <el-col :span="12"><el-button @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button></el-col>
-            <el-col :span="12"><el-button @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button></el-col>
+            <el-col :span="12">
+              <el-button :disabled="isBenching" class="status-button" @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button :disabled="isBenching" class="status-button" @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 0.5em">
+            <el-col :span="24">
+              <el-button :disabled="isBenching" class="status-button" @click="sendToBench(uuid)">{{
+                  t('benchAction')
+                }}
+              </el-button>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 0.5em">
+            <el-col :span="24">
+              <el-button :disabled="isPlaying || isGoaling" class="status-button" @click="sendToField(uuid)">{{
+                  t('playAction')
+                }}
+              </el-button>
+            </el-col>
+          </el-row>
+          <el-row style="margin-top: 0.5em">
+            <el-col :span="24">
+              <el-button :disabled="isPlaying || isGoaling" class="status-button" @click="sendToGoal(uuid)">{{
+                  t('goalAction')
+                }}
+              </el-button>
+            </el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -196,6 +216,10 @@ function affectPasses(uuid: string) {
 <style scoped lang="scss">
 .player-name {
   font-size: 1.5em;
+}
+
+.statistic {
+  color: darkgrey;
 }
 
 .status {
