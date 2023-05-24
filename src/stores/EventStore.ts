@@ -4,6 +4,7 @@ import {computed} from "vue";
 import type {Team} from "@/stores/models/Team";
 import type {Player} from "@/stores/models/Player";
 import {useGameStore} from "@/stores/GameStore";
+import {reject} from "lodash";
 
 export const useEventStore = defineStore('events', () => {
 
@@ -85,9 +86,17 @@ export const useEventStore = defineStore('events', () => {
         useGameStore().getGame.events.push(newEvent)
     }
 
+    function deleteEvent(deletedEvent: Event) {
+        useGameStore().getGame.events = reject(
+            useGameStore().getGame.events,
+            (event: Event) => event.uuid === deletedEvent.uuid
+        )
+    }
+
     return {
         getEvents,
         addEvent,
+        deleteEvent,
         addGoal,
         addPass,
         startTimer,

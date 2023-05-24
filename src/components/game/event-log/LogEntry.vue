@@ -15,6 +15,8 @@ import {useEventStore} from "@/stores/EventStore";
 import {filter} from "lodash";
 import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
 import {formatDate} from "@vueuse/core";
+import {CircleCloseFilled} from "@element-plus/icons-vue";
+import {ElMessageBox} from "element-plus";
 
 const {t, locale} = useI18n({
   useScope: 'global',
@@ -23,29 +25,33 @@ const {t, locale} = useI18n({
       gameLog: 'Event log',
       eventGoal: '{name} scored a goal',
       eventPass: '{name} made a decisive pass',
-      eventGoalReverted: 'Goal for {name} was reverted',
-      eventPassRevert: 'Decisive pass for {name} was reverted',
       eventPlayerGoesToField: '{name} goes to the field',
       eventPlayerGoesToBench: '{name} goes to the bench',
       eventPlayerGoesToGoal: '{name} goes to the goal',
       eventGameTimerStart: 'Game timer started (at {realDate})',
       eventGameTimerStop: 'Game timer stopped (at {realDate})',
       eventUnknown: 'Unknown event',
-      noRecordedDate: 'No valid date recorded'
+      noRecordedDate: 'No valid date recorded',
+      confirmTitle: "Confirm deletion",
+      warningMessage: "Warning, deleting an event can have catastrophic effects on live calculations! Are you sure you want to delete this event?",
+      cancelOption: "Cancel",
+      deleteOption: "Delete"
     },
     fr: {
       gameLog: 'Évènements',
       eventGoal: '{name} à marqué un but',
       eventPass: '{name} à contribué avec une passe décisive',
-      eventGoalReverted: 'Un but de {name} à été révoqué',
-      eventPassRevert: 'Une passe décisive de {name} à été révoquée',
       eventPlayerGoesToField: '{name} se dirige au jeu',
       eventPlayerGoesToBench: '{name} se dirige au banc',
       eventPlayerGoesToGoal: '{name} se dirige au but',
       eventGameTimerStart: 'Chronomètre de partie démarré (à {realDate})',
       eventGameTimerStop: 'Chronomètre de partie arrêté (à {realDate})',
       eventUnknown: 'Évènement inconnu',
-      noRecordedDate: 'Aucune date valide enregistrée'
+      noRecordedDate: 'Aucune date valide enregistrée',
+      confirmTitle: "Confirmation de la suppression",
+      warningMessage: "Attention: La suppression d'un événement peut entrainer des effets catastrophiques sur le calcul des statistiques en temps réel! Etes-vous certains de vouloir supprimer cette entrée?",
+      cancelOption: "Annuler",
+      deleteOption: "Supprimer"
     }
   }
 })
@@ -61,6 +67,7 @@ const {getTeamByUuid} = useTeamStore()
 const {getPlayerFromRegistryByUuid} = useRegistryStore()
 const {getLanguage} = storeToRefs(useOptionStore())
 const {getEvents} = storeToRefs(useEventStore())
+const {deleteEvent} = useEventStore()
 
 let team: Team | null = null
 let player: RegistryPlayer | null = null
@@ -110,19 +117,31 @@ const logText = computed(() => {
       return t('eventGoal', {name: player?.name})
     case EventEnum.PASS:
       return t('eventPass', {name: player?.name})
-    case EventEnum.REVERTED_GOAL:
-      return t('eventGoalReverted', {name: player?.name})
-    case EventEnum.REVERTED_PASS:
-      return t('eventPassRevert', {name: player?.name})
     default:
       return t('eventUnknown', {name: player?.name})
   }
 })
 
+const confirmDeletion = () => {
+  ElMessageBox.confirm(
+      t('warningMessage'),
+      t('confirmTitle'),
+      {
+        confirmButtonText: t('deleteOption'),
+        cancelButtonText: t('cancelOption')
+      }
+  ).then(() => {
+    deleteEvent(props.event)
+  }).catch(() => {
+    // Do nothing
+  })
+}
+
 locale.value = getLanguage.value
 </script>
 <template>
   <div class="log-entry">
+    <span class="delete-command" @click="confirmDeletion"><el-icon><CircleCloseFilled /></el-icon></span>
     <span class="formatted-time">{{ formattedTime }}</span>
     <span class="team-name" v-if="team">
       <span v-if="team.color" class="color-pin" :style="{'background-color': team.color}"/>
@@ -138,6 +157,11 @@ locale.value = getLanguage.value
 .log-entry {
   display: flex;
   align-items: center;
+
+  .delete-command {
+    width: 2em;
+    flex-shrink: 0;
+  }
 
   .formatted-time {
     width: 4em;
