@@ -111,7 +111,6 @@ export const usePlayerStore = defineStore('player', () => {
         team,
         player
     )
-    player.goals++
   }
 
   function increasePasses(uuid: string) {
@@ -122,7 +121,6 @@ export const usePlayerStore = defineStore('player', () => {
         team,
         player
     )
-    player.passes++
   }
 
   function upsertRegistryPlayerInGame(upsertedRegistryPlayer: RegistryPlayer): void {

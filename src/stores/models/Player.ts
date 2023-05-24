@@ -6,10 +6,6 @@ export class Player {
     public name: string
     public team: string = ''
     public status: PlayerStatusEnum = PlayerStatusEnum.waiting
-    public gameSeconds: number = 0
-    public benchSeconds: number = 0
-    public goals: number = 0
-    public passes: number = 0
     public jacketNumber: string = ''
 
     constructor(name: string) {

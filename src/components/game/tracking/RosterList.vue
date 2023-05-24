@@ -30,8 +30,6 @@ function getPlayersOfTeam(teamUuid: string) {
                 :uuid="player.uuid"
                 :name="player.name"
                 :status="player.status"
-                :goals="player.goals"
-                :passes="player.passes"
                 :jacket-number="player.jacketNumber"/>
           </el-col>
         </el-row>

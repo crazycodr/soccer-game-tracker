@@ -5,6 +5,7 @@ import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
 import {filter} from "lodash";
 import type {Event} from "@/stores/models/Event";
+import {EventEnum} from "@/stores/models/Event";
 import {
   getBenchingDurationFromPlayerTimerEvents,
   getFieldDurationFromPlayerTimerEvents,
@@ -57,10 +58,10 @@ const {
   increaseGoals,
   increasePasses
 } = usePlayerStore()
-const {tickCounter} = storeToRefs(useGameStore())
+const {tickCounter, isTimerRunning} = storeToRefs(useGameStore())
 const {getEvents} = storeToRefs(useEventStore())
 
-const props = defineProps(['uuid', 'name', 'status', 'goals', 'passes', 'jacketNumber'])
+const props = defineProps(['uuid', 'name', 'status', 'jacketNumber'])
 
 const benchTimeSince = computed(() => {
   const playerTimerEvents = filter(getEvents.value, (event: Event) => {
@@ -96,6 +97,20 @@ const goalingTimeSince = computed(() => {
    * and would not change on tick.
    */
   return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
+})
+
+const playerGoals = computed(() => {
+  return filter(getEvents.value, (event: Event) => {
+    return event.references.playerUuid === props.uuid
+        && event.type === EventEnum.GOAL
+  }).length
+})
+
+const playerDecisivePasses = computed(() => {
+  return filter(getEvents.value, (event: Event) => {
+    return event.references.playerUuid === props.uuid
+        && event.type === EventEnum.PASS
+  }).length
 })
 
 const playingStatus = computed(() => {
@@ -155,25 +170,25 @@ function affectPasses(uuid: string) {
           </el-row>
           <el-row class="statistic" style="margin-top: 0.5em">
             <el-col class="label" :span="18">{{ t('goalsLabel') }}</el-col>
-            <el-col class="timer" :span="6">{{ goals }}</el-col>
+            <el-col class="timer" :span="6">{{ playerGoals }}</el-col>
           </el-row>
           <el-row class="statistic">
             <el-col class="label" :span="18">{{ t('passesLabel') }}</el-col>
-            <el-col class="timer" :span="6">{{ passes }}</el-col>
+            <el-col class="timer" :span="6">{{ playerDecisivePasses }}</el-col>
           </el-row>
         </el-col>
         <el-col :span="10">
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-button :disabled="!(isPlaying || isGoaling)" class="status-button" @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
+              <el-button :disabled="!isTimerRunning || !(isPlaying || isGoaling)" class="status-button" @click="affectGoals(uuid)">{{playerGoals}} {{t('goalAbbreviation')}}</el-button>
             </el-col>
             <el-col :span="12">
-              <el-button :disabled="!(isPlaying || isGoaling)" class="status-button" @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
+              <el-button :disabled="!isTimerRunning || !(isPlaying || isGoaling)" class="status-button" @click="affectPasses(uuid)">{{playerDecisivePasses}} {{t('passAbbreviation')}}</el-button>
             </el-col>
           </el-row>
           <el-row style="margin-top: 0.5em">
             <el-col :span="24">
-              <el-button :disabled="isBenching" class="status-button" @click="sendToBench(uuid)">{{
+              <el-button :disabled="!isTimerRunning || isBenching" class="status-button" @click="sendToBench(uuid)">{{
                   t('benchAction')
                 }}
               </el-button>
@@ -181,7 +196,7 @@ function affectPasses(uuid: string) {
           </el-row>
           <el-row style="margin-top: 0.5em">
             <el-col :span="24">
-              <el-button :disabled="isPlaying || isGoaling" class="status-button" @click="sendToField(uuid)">{{
+              <el-button :disabled="!isTimerRunning || isPlaying || isGoaling" class="status-button" @click="sendToField(uuid)">{{
                   t('playAction')
                 }}
               </el-button>
@@ -189,7 +204,7 @@ function affectPasses(uuid: string) {
           </el-row>
           <el-row style="margin-top: 0.5em">
             <el-col :span="24">
-              <el-button :disabled="isPlaying || isGoaling" class="status-button" @click="sendToGoal(uuid)">{{
+              <el-button :disabled="!isTimerRunning || isPlaying || isGoaling" class="status-button" @click="sendToGoal(uuid)">{{
                   t('goalAction')
                 }}
               </el-button>

@@ -23,6 +23,10 @@ export const useGameStore = defineStore('game', () => {
     return game.value
   })
 
+  const isTimerRunning = computed(() => {
+    return game.value.status === 'playing'
+  })
+
   function pauseGame() {
     game.value.status = 'paused'
     pause()
@@ -41,6 +45,7 @@ export const useGameStore = defineStore('game', () => {
 
   return {
     tickCounter,
+    isTimerRunning,
     getGame,
     pauseGame,
     unpauseGame
