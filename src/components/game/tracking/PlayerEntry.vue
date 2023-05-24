@@ -4,7 +4,7 @@ import {usePlayerStore} from "@/stores/PlayerStore";
 import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
 import {filter} from "lodash";
-import {GameEvent} from "@/stores/models/GameEvent";
+import type {GameEvent} from "@/stores/models/GameEvent";
 import {
   getBenchingDurationFromPlayerTimerEvents,
   getFieldDurationFromPlayerTimerEvents,
