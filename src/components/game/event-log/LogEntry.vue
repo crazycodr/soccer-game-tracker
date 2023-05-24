@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type {PropType} from 'vue'
 import {computed} from 'vue'
-import type {GameEvent} from '@/stores/models/GameEvent'
-import {EventEnum} from '@/stores/models/GameEvent'
+import type {Event} from '@/stores/models/Event'
+import {EventEnum} from '@/stores/models/Event'
 import {useTeamStore} from '@/stores/TeamStore'
 import {useRegistryStore} from '@/stores/RegistryStore'
 import {useI18n} from 'vue-i18n'
@@ -25,9 +25,9 @@ const {t, locale} = useI18n({
       eventPass: '{name} made a decisive pass',
       eventGoalReverted: 'Goal for {name} was reverted',
       eventPassRevert: 'Decisive pass for {name} was reverted',
-      eventPlayerGoesToField: '{name} enters the field',
-      eventPlayerGoesToBench: '{name} leaves to bench',
-      eventPlayerGoesToGoal: '{name} starts to goal',
+      eventPlayerGoesToField: '{name} goes to the field',
+      eventPlayerGoesToBench: '{name} goes to the bench',
+      eventPlayerGoesToGoal: '{name} goes to the goal',
       eventGameTimerStart: 'Game timer started (at {realDate})',
       eventGameTimerStop: 'Game timer stopped (at {realDate})',
       eventUnknown: 'Unknown event',
@@ -39,9 +39,9 @@ const {t, locale} = useI18n({
       eventPass: '{name} à contribué avec une passe décisive',
       eventGoalReverted: 'Un but de {name} à été révoqué',
       eventPassRevert: 'Une passe décisive de {name} à été révoquée',
-      eventPlayerGoesToField: '{name} entre en jeu',
-      eventPlayerGoesToBench: '{name} quitte pour le banc',
-      eventPlayerGoesToGoal: '{name} comment à garder les buts',
+      eventPlayerGoesToField: '{name} se dirige au jeu',
+      eventPlayerGoesToBench: '{name} se dirige au banc',
+      eventPlayerGoesToGoal: '{name} se dirige au but',
       eventGameTimerStart: 'Chronomètre de partie démarré (à {realDate})',
       eventGameTimerStop: 'Chronomètre de partie arrêté (à {realDate})',
       eventUnknown: 'Évènement inconnu',
@@ -52,7 +52,7 @@ const {t, locale} = useI18n({
 
 const props = defineProps({
   event: {
-    type: Object as PropType<GameEvent>,
+    type: Object as PropType<Event>,
     required: true
   }
 })
@@ -76,10 +76,10 @@ const formattedTime = computed(() => {
   if (!propEventOn) {
     return ''
   }
-  const gameTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+  const gameTimerEvents = filter(getEvents.value, (event: Event) => {
     return event.type === EventEnum.GAME_TIMER_START || event.type === EventEnum.GAME_TIMER_STOP
   })
-  const timerEventsBeforeCurrentEvent = filter(gameTimerEvents, (event: GameEvent) => {
+  const timerEventsBeforeCurrentEvent = filter(gameTimerEvents, (event: Event) => {
     const eventOn = getEventDate(event.on)
     if (eventOn && propEventOn) {
       return eventOn <= propEventOn

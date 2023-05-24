@@ -1,47 +1,35 @@
 import {defineStore} from 'pinia'
 import {computed} from 'vue'
-import {each, filter, find} from 'lodash'
-import {useStorage} from '@vueuse/core'
+import {filter, find} from 'lodash'
 import {TeamNotFoundException} from '@/stores/exceptions/TeamNotFoundException';
 import {TeamAlreadyExistsException} from '@/stores/exceptions/TeamAlreadyExistsException';
 import type {Team} from "@/stores/models/Team";
-import {v4, validate} from "uuid";
+import {useGameStore} from "@/stores/GameStore";
 
 export const useTeamStore = defineStore('team', () => {
 
-  const teams = useStorage<Team[]>('teams', [], localStorage, {mergeDefaults: true})
-  each(teams.value, (team: Team) => {
-    if (!validate(team.uuid) || team.uuid === undefined) {
-      team.uuid = v4()
-    }
-  })
-
   const getTeams = computed((): Team[] => {
-    return teams.value
+    return useGameStore().getGame.teams
   })
 
   function getTeamByUuid(uuid: string): Team {
-    const team = find(teams.value, (team: Team) => team.uuid === uuid)
+    const team = find(useGameStore().getGame.teams, (team: Team) => team.uuid === uuid)
     if (!team) {
       throw new TeamNotFoundException()
     }
     return team
   }
 
-  function resetTeams() {
-    teams.value = []
-  }
-
   function addTeam(addedTeam: Team) {
-    const existingTeam = find(teams.value, (team: Team) => team.uuid === addedTeam.uuid)
+    const existingTeam = find(useGameStore().getGame.teams, (team: Team) => team.uuid === addedTeam.uuid)
     if (existingTeam) {
       throw new TeamAlreadyExistsException()
     }
-    teams.value.push(addedTeam)
+    useGameStore().getGame.teams.push(addedTeam)
   }
 
   function updateTeam(uuid: string, name: string, color: string) {
-    const team = find(teams.value, (team: Team) => {
+    const team = find(useGameStore().getGame.teams, (team: Team) => {
       return team.uuid === uuid
     })
     if (!team) {
@@ -51,22 +39,12 @@ export const useTeamStore = defineStore('team', () => {
     team.color = color
   }
 
-  function setTeamColor(teamName: string, color: string) {
-    const existingTeams: Team[] = filter(teams.value, (existingTeam: Team) => {
-      return existingTeam.name === teamName
-    })
-    if (existingTeams.length === 0) {
-      throw new TeamNotFoundException()
-    }
-    existingTeams[0].color = color
-  }
-
   function removeTeamByUuid(name: string) {
-    teams.value = filter(teams.value, (existingTeam: Team) => {
+    useGameStore().getGame.teams = filter(useGameStore().getGame.teams, (existingTeam: Team) => {
       return existingTeam.name !== name
     })
   }
 
-  return {setTeamColor, resetTeams, updateTeam, getTeams, getTeamByUuid, addTeam, removeTeamByUuid}
+  return {updateTeam, getTeams, getTeamByUuid, addTeam, removeTeamByUuid}
 })
 

@@ -1,7 +1,7 @@
 import {v4} from "uuid";
 import type {Team} from "@/stores/models/Team";
 import type {Player} from "@/stores/models/Player";
-import type {GameEvent} from "@/stores/models/GameEvent";
+import type {Event} from "@/stores/models/Event";
 
 export class RegistryGame {
 
@@ -10,7 +10,7 @@ export class RegistryGame {
     public seconds: number = 0
     public teams: Team[] = []
     public players: Player[] = []
-    public events: GameEvent[] = []
+    public events: Event[] = []
 
     constructor() {
         this.uuid = v4()

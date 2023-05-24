@@ -1,11 +1,11 @@
-import type {GameEvent} from "@/stores/models/GameEvent";
-import {EventEnum} from "@/stores/models/GameEvent";
+import type {Event} from "@/stores/models/Event";
+import {EventEnum} from "@/stores/models/Event";
 import {concat, each, filter, floor, includes, map, sortBy, sum} from "lodash";
 import type {Interval} from "date-fns";
 import {areIntervalsOverlapping, differenceInMilliseconds} from "date-fns";
 import {getEventDate} from "@/modules/time/TimeFormatting";
 
-export function getGameDurationFromGameTimerEvents(events: GameEvent[], now: Date): number {
+export function getGameDurationFromGameTimerEvents(events: Event[], now: Date): number {
     const intervals: Interval[] = createIntervalPairsFrom(
         events,
         EventEnum.GAME_TIMER_START,
@@ -18,7 +18,7 @@ export function getGameDurationFromGameTimerEvents(events: GameEvent[], now: Dat
     return floor(totalMilliseconds / 1000)
 }
 
-export function getFieldDurationFromPlayerTimerEvents(events: GameEvent[], now: Date): number {
+export function getFieldDurationFromPlayerTimerEvents(events: Event[], now: Date): number {
     const gameTimerIntervals: Interval[] = createIntervalPairsFrom(
         events,
         EventEnum.GAME_TIMER_START,
@@ -40,7 +40,7 @@ export function getFieldDurationFromPlayerTimerEvents(events: GameEvent[], now: 
     return floor(totalMilliseconds / 1000)
 }
 
-export function getGoalingDurationFromPlayerTimerEvents(events: GameEvent[], now: Date): number {
+export function getGoalingDurationFromPlayerTimerEvents(events: Event[], now: Date): number {
     const gameTimerIntervals: Interval[] = createIntervalPairsFrom(
         events,
         EventEnum.GAME_TIMER_START,
@@ -62,7 +62,7 @@ export function getGoalingDurationFromPlayerTimerEvents(events: GameEvent[], now
     return floor(totalMilliseconds / 1000)
 }
 
-export function getBenchingDurationFromPlayerTimerEvents(events: GameEvent[], now: Date): number {
+export function getBenchingDurationFromPlayerTimerEvents(events: Event[], now: Date): number {
     const gameTimerIntervals: Interval[] = createIntervalPairsFrom(
         events,
         EventEnum.GAME_TIMER_START,
@@ -84,15 +84,15 @@ export function getBenchingDurationFromPlayerTimerEvents(events: GameEvent[], no
     return floor(totalMilliseconds / 1000)
 }
 
-export function createIntervalPairsFrom(events: GameEvent[], startType: EventEnum, endTypes: EventEnum[], now: Date): Interval[] {
-    const validEvents = filter(events, (event: GameEvent) => {
+export function createIntervalPairsFrom(events: Event[], startType: EventEnum, endTypes: EventEnum[], now: Date): Interval[] {
+    const validEvents = filter(events, (event: Event) => {
         return includes(concat([startType], endTypes), event.type)
     })
     const sortedEvents = sortBy(validEvents, 'on')
     let started: boolean = false
     let startsOn: Date | null = null
     const intervals: Interval[] = []
-    each(sortedEvents, (event: GameEvent) => {
+    each(sortedEvents, (event: Event) => {
         if (event.type === startType && !started && !startsOn) {
             started = true
             startsOn = getEventDate(event.on)

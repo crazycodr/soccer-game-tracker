@@ -1,7 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import GameView from '@/views/GameView.vue'
 import GameConfigView from '@/views/GameTeamsAndRosters.vue'
-import GameOperations from '@/views/GameOperations.vue'
 import OptionsView from '@/views/OptionsView.vue'
 import GameMenu from '@/views/GameMenu.vue'
 import PlayerRegistry from '@/views/PlayerRegistry.vue'
@@ -25,11 +24,6 @@ const router = createRouter({
       path: '/game/log',
       name: 'game-log',
       component: GameLog
-    },
-    {
-      path: '/operations',
-      name: 'operations',
-      component: GameOperations
     },
     {
       path: '/config',

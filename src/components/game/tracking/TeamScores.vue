@@ -3,20 +3,20 @@ import {storeToRefs} from "pinia";
 import {filter, map, sum} from "lodash";
 import {useTeamStore} from "@/stores/TeamStore";
 import {useEventStore} from "@/stores/EventStore";
-import type {GameEvent} from "@/stores/models/GameEvent";
-import {EventEnum} from "@/stores/models/GameEvent";
+import type {Event} from "@/stores/models/Event";
+import {EventEnum} from "@/stores/models/Event";
 
 const {getEvents} = storeToRefs(useEventStore());
 const {getTeams} = storeToRefs(useTeamStore());
 
 function getGoalsOfTeam(teamUuid: string) {
-  const goalEvents = filter(getEvents.value, (event: GameEvent) => {
+  const goalEvents = filter(getEvents.value, (event: Event) => {
     return event.references.teamUuid === teamUuid && (
         event.type === EventEnum.GOAL
         || event.type === EventEnum.REVERTED_GOAL
     )
   })
-  return sum(map(goalEvents, (event: GameEvent) => {
+  return sum(map(goalEvents, (event: Event) => {
     switch (event.type) {
       case EventEnum.GOAL: return 1
       case EventEnum.REVERTED_GOAL: return -1

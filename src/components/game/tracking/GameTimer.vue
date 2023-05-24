@@ -5,7 +5,7 @@ import {storeToRefs} from "pinia";
 import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 import {useEventStore} from "@/stores/EventStore";
 import {filter} from "lodash";
-import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
+import {EventEnum, Event} from "@/stores/models/Event";
 import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
 
 const {pauseGame, unpauseGame} = useGameStore();
@@ -15,7 +15,7 @@ const {getEvents} = storeToRefs(useEventStore());
 const {getGame, tickCounter} = storeToRefs(useGameStore());
 
 const formattedTime = computed(() => {
-  const gameTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+  const gameTimerEvents = filter(getEvents.value, (event: Event) => {
     return event.type === EventEnum.GAME_TIMER_START || event.type === EventEnum.GAME_TIMER_STOP
   })
   const secondsBeforeCurrentEvent = getGameDurationFromGameTimerEvents(gameTimerEvents, new Date())

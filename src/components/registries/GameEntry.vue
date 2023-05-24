@@ -13,7 +13,7 @@ import {useGameStore} from "@/stores/GameStore";
 import {useEventStore} from "@/stores/EventStore";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
-import type {GameEvent} from "@/stores/models/GameEvent";
+import type {Event} from "@/stores/models/Event";
 import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 
 const {t, locale} = useI18n({
@@ -35,11 +35,10 @@ const {t, locale} = useI18n({
 })
 
 const {getLanguage} = storeToRefs(useOptionStore())
-const {resetGoals, resetPasses, resetTimers, resetStatuses} = useGameStore()
 const {getGame} = storeToRefs(useGameStore())
-const {resetEvents, addEvent} = useEventStore()
-const {resetPlayers, addPlayer} = usePlayerStore()
-const {resetTeams, addTeam} = useTeamStore()
+const {addEvent} = useEventStore()
+const {addPlayer} = usePlayerStore()
+const {addTeam} = useTeamStore()
 
 locale.value = getLanguage.value
 
@@ -67,17 +66,10 @@ const formattedTime = computed(() => {
 })
 
 function loadGame() {
-  resetTimers()
-  resetStatuses()
-  resetGoals()
-  resetPasses()
-  resetEvents()
-  resetTeams()
-  resetPlayers()
   getGame.value.uuid = props.registryGame?.uuid
   each(props.registryGame?.teams, (team: Team) => addTeam(team))
   each(props.registryGame?.players, (player: Player) => addPlayer(player))
-  each(props.registryGame?.events, (event: GameEvent) => addEvent(event))
+  each(props.registryGame?.events, (event: Event) => addEvent(event))
 }
 </script>
 

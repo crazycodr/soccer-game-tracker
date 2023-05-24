@@ -1,19 +1,12 @@
-import {defineStore, storeToRefs} from 'pinia'
+import {defineStore} from 'pinia'
 import {computed, ref} from 'vue'
 import {useInterval, useStorage} from '@vueuse/core'
 import {Game} from '@/stores/models/Game'
-import {usePlayerStore} from '@/stores/PlayerStore'
-import {forEach} from 'lodash'
-import type {Player} from '@/stores/models/Player'
-import {PlayerStatusEnum} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
 
 export const useGameStore = defineStore('game', () => {
 
   const { pause, resume } = useInterval(1000, { controls: true, callback: tick });
-
-  const STAT_MODE_ADDITION = 1
-  const STAT_MODE_REMOVAL = 2
 
   const tickCounter = ref(0)
 
@@ -26,33 +19,9 @@ export const useGameStore = defineStore('game', () => {
     resume()
   }
 
-  const statMode = ref(STAT_MODE_ADDITION)
-
-  const {getPlayers} = storeToRefs(usePlayerStore())
-
   const getGame = computed((): Game => {
     return game.value
   })
-
-  const getStatMode = computed(() => {
-    return statMode.value
-  })
-
-  const inAdditionMode = computed((): boolean => {
-    return statMode.value === STAT_MODE_ADDITION
-  })
-
-  const inRemovalMode = computed((): boolean => {
-    return statMode.value === STAT_MODE_REMOVAL
-  })
-
-  function setToAdditionMode() {
-    statMode.value = STAT_MODE_ADDITION
-  }
-
-  function setToRemovalMode() {
-    statMode.value = STAT_MODE_REMOVAL
-  }
 
   function pauseGame() {
     game.value.status = 'paused'
@@ -67,61 +36,14 @@ export const useGameStore = defineStore('game', () => {
   function tick() {
     if (game.value.status === 'playing') {
       tickCounter.value++
-      forEach(getPlayers.value, (player: Player) => {
-        if (player.status === 'playing') {
-          player.gameSeconds++
-        } else {
-          player.benchSeconds++
-        }
-      })
     }
-  }
-
-  function resetStatuses() {
-    pauseGame()
-    forEach(getPlayers.value, (player: Player) => {
-      player.status = PlayerStatusEnum.waiting
-    })
-  }
-
-  function resetTimers() {
-    forEach(getPlayers.value, (player: Player) => {
-      player.gameSeconds = 0
-      player.benchSeconds = 0
-      player.status = PlayerStatusEnum.waiting
-    })
-  }
-
-  function resetGoals() {
-    forEach(getPlayers.value, (player: Player) => {
-      player.goals = 0
-      player.passes = 0
-    })
-  }
-
-  function resetPasses() {
-    forEach(getPlayers.value, (player: Player) => {
-      player.goals = 0
-      player.passes = 0
-    })
   }
 
   return {
     tickCounter,
     getGame,
     pauseGame,
-    unpauseGame,
-    resetTimers,
-    resetStatuses,
-    resetGoals,
-    resetPasses,
-    inAdditionMode,
-    inRemovalMode,
-    setToAdditionMode,
-    setToRemovalMode,
-    getStatMode,
-    STAT_MODE_ADDITION,
-    STAT_MODE_REMOVAL
+    unpauseGame
   }
 })
 

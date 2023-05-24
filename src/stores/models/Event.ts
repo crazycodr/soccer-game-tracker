@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {GameEventReferences} from "@/stores/models/GameEventReferences";
 
-export class GameEvent {
+export class Event {
 
     public uuid: string
     public type: EventEnum

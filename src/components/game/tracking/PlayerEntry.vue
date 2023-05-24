@@ -4,7 +4,7 @@ import {usePlayerStore} from "@/stores/PlayerStore";
 import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
 import {filter} from "lodash";
-import type {GameEvent} from "@/stores/models/GameEvent";
+import type {Event} from "@/stores/models/Event";
 import {
   getBenchingDurationFromPlayerTimerEvents,
   getFieldDurationFromPlayerTimerEvents,
@@ -30,7 +30,7 @@ const {t} = useI18n({
       benchAction: "To bench",
       goalAction: "To goal",
       goalAbbreviation: "G",
-      passAbbreviation: "P"
+      passAbbreviation: "DP"
     },
     fr: {
       goalsLabel: "Buts",
@@ -45,7 +45,7 @@ const {t} = useI18n({
       benchAction: "Au banc",
       goalAction: "Au but",
       goalAbbreviation: "B",
-      passAbbreviation: "P"
+      passAbbreviation: "PD"
     }
   }
 })
@@ -55,18 +55,15 @@ const {
   sendToBench,
   sendToGoal,
   increaseGoals,
-  increasePasses,
-  decreasePasses,
-  decreaseGoals
+  increasePasses
 } = usePlayerStore()
-const {inAdditionMode, inRemovalMode} = useGameStore()
 const {tickCounter} = storeToRefs(useGameStore())
 const {getEvents} = storeToRefs(useEventStore())
 
-const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSeconds', 'goals', 'passes', 'jacketNumber'])
+const props = defineProps(['uuid', 'name', 'status', 'goals', 'passes', 'jacketNumber'])
 
 const benchTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
     return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getBenchingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
@@ -78,7 +75,7 @@ const benchTimeSince = computed(() => {
 })
 
 const playingTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
     return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getFieldDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
@@ -90,7 +87,7 @@ const playingTimeSince = computed(() => {
 })
 
 const goalingTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
+  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
     return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getGoalingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
@@ -126,21 +123,11 @@ const isGoaling = computed(() => {
 })
 
 function affectGoals(uuid: string) {
-  if (inAdditionMode) {
-    increaseGoals(uuid)
-  }
-  if (inRemovalMode) {
-    decreaseGoals(uuid)
-  }
+  increaseGoals(uuid)
 }
 
 function affectPasses(uuid: string) {
-  if (inAdditionMode) {
-    increasePasses(uuid)
-  }
-  if (inRemovalMode) {
-    decreasePasses(uuid)
-  }
+  increasePasses(uuid)
 }
 </script>
 <template>
