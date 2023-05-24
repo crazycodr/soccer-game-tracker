@@ -4,7 +4,7 @@ import {each, filter, find, first} from 'lodash'
 import {useStorage} from '@vueuse/core'
 import {PlayerAlreadyExistsException} from '@/stores/exceptions/PlayerAlreadyExistsException'
 import {PlayerNotFoundException} from '@/stores/exceptions/PlayerNotFoundException'
-import {Player} from "@/stores/models/Player";
+import {Player, PlayerStatusEnum} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
 import type {RegistryPlayer} from "@/stores/models/RegistryPlayer";
 import {useEventStore} from "@/stores/EventStore";
@@ -87,7 +87,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     const player = <Player>first(matchingPlayers)
     const team = getTeamByUuid(player.team)
-    player.status = 'benching'
+    player.status = PlayerStatusEnum.benching
     sendPlayerToBench(
         new Date(),
         team,
@@ -104,7 +104,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     const player = <Player>first(matchingPlayers)
     const team = getTeamByUuid(player.team)
-    player.status = 'playing'
+    player.status = PlayerStatusEnum.playing
     sendPlayerToField(
         new Date(),
         team,
@@ -121,7 +121,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     const player = <Player>first(matchingPlayers)
     const team = getTeamByUuid(player.team)
-    player.status = 'goaling'
+    player.status = PlayerStatusEnum.goaling
     sendPlayerToGoal(
         new Date(),
         team,

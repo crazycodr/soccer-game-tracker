@@ -5,7 +5,7 @@ export class Player {
     public uuid: string
     public name: string
     public team: string = ''
-    public status: string = 'playing'
+    public status: PlayerStatusEnum = PlayerStatusEnum.waiting
     public gameSeconds: number = 0
     public benchSeconds: number = 0
     public goals: number = 0
@@ -16,4 +16,12 @@ export class Player {
         this.uuid = v4()
         this.name = name
     }
+}
+
+export enum PlayerStatusEnum {
+    waiting = 'waiting',
+    benching = 'benching',
+    playing = 'playing',
+    goaling = 'goaling',
+
 }

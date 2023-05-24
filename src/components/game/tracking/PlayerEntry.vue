@@ -4,7 +4,7 @@ import {usePlayerStore} from "@/stores/PlayerStore";
 import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
 import {filter} from "lodash";
-import {EventEnum, GameEvent} from "@/stores/models/GameEvent";
+import {GameEvent} from "@/stores/models/GameEvent";
 import {
   getBenchingDurationFromPlayerTimerEvents,
   getFieldDurationFromPlayerTimerEvents,
@@ -13,6 +13,7 @@ import {
 import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 import {storeToRefs} from "pinia";
 import {useEventStore} from "@/stores/EventStore";
+import {PlayerStatusEnum} from "@/stores/models/Player";
 
 const {t} = useI18n({
   messages: {
@@ -66,7 +67,7 @@ const props = defineProps(['uuid', 'name', 'status', 'gameSeconds', 'benchSecond
 
 const benchTimeSince = computed(() => {
   const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
-    return event.type === EventEnum.PLAYER_TO_BENCH || event.type === EventEnum.PLAYER_TO_FIELD || event.type === EventEnum.PLAYER_TO_GOAL
+    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getBenchingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
   /**
@@ -78,7 +79,7 @@ const benchTimeSince = computed(() => {
 
 const playingTimeSince = computed(() => {
   const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
-    return event.type === EventEnum.PLAYER_TO_BENCH || event.type === EventEnum.PLAYER_TO_FIELD || event.type === EventEnum.PLAYER_TO_GOAL
+    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getFieldDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
   /**
@@ -90,7 +91,7 @@ const playingTimeSince = computed(() => {
 
 const goalingTimeSince = computed(() => {
   const playerTimerEvents = filter(getEvents.value, (event: GameEvent) => {
-    return event.type === EventEnum.PLAYER_TO_BENCH || event.type === EventEnum.PLAYER_TO_FIELD || event.type === EventEnum.PLAYER_TO_GOAL
+    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
   })
   const secondsBeforeCurrentEvent = getGoalingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
   /**
@@ -113,15 +114,15 @@ const goalingStatus = computed(() => {
 })
 
 const isPlaying = computed(() => {
-  return props.status === 'playing'
+  return props.status === PlayerStatusEnum.playing
 })
 
 const isBenching = computed(() => {
-  return props.status === 'benching'
+  return props.status === PlayerStatusEnum.benching
 })
 
 const isGoaling = computed(() => {
-  return props.status === 'goaling'
+  return props.status === PlayerStatusEnum.goaling
 })
 
 function affectGoals(uuid: string) {
@@ -177,10 +178,10 @@ function affectPasses(uuid: string) {
         <el-col :span="10">
           <el-row :gutter="10">
             <el-col :span="12">
-              <el-button :disabled="isBenching" class="status-button" @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
+              <el-button :disabled="!(isPlaying || isGoaling)" class="status-button" @click="affectGoals(uuid)">{{goals}} {{t('goalAbbreviation')}}</el-button>
             </el-col>
             <el-col :span="12">
-              <el-button :disabled="isBenching" class="status-button" @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
+              <el-button :disabled="!(isPlaying || isGoaling)" class="status-button" @click="affectPasses(uuid)">{{passes}} {{t('passAbbreviation')}}</el-button>
             </el-col>
           </el-row>
           <el-row style="margin-top: 0.5em">

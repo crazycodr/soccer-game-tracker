@@ -5,6 +5,7 @@ import {Game} from '@/stores/models/Game'
 import {usePlayerStore} from '@/stores/PlayerStore'
 import {forEach} from 'lodash'
 import type {Player} from '@/stores/models/Player'
+import {PlayerStatusEnum} from "@/stores/models/Player";
 import {v4, validate} from "uuid";
 
 export const useGameStore = defineStore('game', () => {
@@ -79,7 +80,7 @@ export const useGameStore = defineStore('game', () => {
   function resetStatuses() {
     pauseGame()
     forEach(getPlayers.value, (player: Player) => {
-      player.status = 'playing'
+      player.status = PlayerStatusEnum.waiting
     })
   }
 
@@ -87,7 +88,7 @@ export const useGameStore = defineStore('game', () => {
     forEach(getPlayers.value, (player: Player) => {
       player.gameSeconds = 0
       player.benchSeconds = 0
-      player.status = 'playing'
+      player.status = PlayerStatusEnum.waiting
     })
   }
 
