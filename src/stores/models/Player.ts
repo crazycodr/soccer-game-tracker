@@ -6,7 +6,11 @@ export class Player {
     public name: string
     public team: string = ''
     public status: PlayerStatusEnum = PlayerStatusEnum.waiting
-    public jacketNumber: string = ''
+    public jersey: string = ''
+
+    public benchingSeconds: number = 0
+    public playingSeconds: number = 0
+    public goalingSeconds: number = 0
 
     constructor(name: string) {
         this.uuid = v4()

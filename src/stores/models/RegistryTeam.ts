@@ -2,7 +2,7 @@ export class RegistryPlayer {
 
     public uuid: string
     public name: string
-    public jacketNumber: string = ''
+    public jersey: string = ''
 
     constructor(uuid: string, name: string) {
         this.uuid = uuid

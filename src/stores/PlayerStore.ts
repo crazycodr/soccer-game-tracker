@@ -34,7 +34,7 @@ export const usePlayerStore = defineStore('player', () => {
     useGameStore().getGame.players.push(addedPlayer)
   }
 
-  function updatePlayer(uuid: string, name: string, teamUuid: string, jacketNumber: string) {
+  function updatePlayer(uuid: string, name: string, teamUuid: string, jersey: string) {
     const player = find(useGameStore().getGame.players, (player: Player) => {
       return player.uuid === uuid
     })
@@ -43,7 +43,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     player.name = name
     player.team = teamUuid
-    player.jacketNumber = jacketNumber
+    player.jersey = jersey
   }
 
   function removePlayerByUuid(uuid: string) {
@@ -130,12 +130,12 @@ export const usePlayerStore = defineStore('player', () => {
           upsertedRegistryPlayer.uuid,
           upsertedRegistryPlayer.name,
           gamePlayer.team,
-          upsertedRegistryPlayer.jacketNumber
+          upsertedRegistryPlayer.jersey
       )
     } catch (ex) {
       const newPlayer = new Player(upsertedRegistryPlayer.name)
       newPlayer.uuid = upsertedRegistryPlayer.uuid
-      newPlayer.jacketNumber = upsertedRegistryPlayer.jacketNumber
+      newPlayer.jersey = upsertedRegistryPlayer.jersey
       addPlayer(newPlayer)
     }
   }

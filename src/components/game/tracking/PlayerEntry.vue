@@ -61,7 +61,7 @@ const {
 const {tickCounter, isTimerRunning} = storeToRefs(useGameStore())
 const {getEvents} = storeToRefs(useEventStore())
 
-const props = defineProps(['uuid', 'name', 'status', 'jacketNumber'])
+const props = defineProps(['uuid', 'name', 'status', 'jersey'])
 
 const benchTimeSince = computed(() => {
   const playerTimerEvents = filter(getEvents.value, (event: Event) => {
@@ -150,7 +150,7 @@ function affectPasses(uuid: string) {
     <template #header>
       <div class="player-name">
         {{ name }}
-        <span v-if="jacketNumber !== ''"> (#{{ jacketNumber }})</span>
+        <span v-if="jersey !== ''"> (#{{ jersey }})</span>
       </div>
     </template>
     <template #default>

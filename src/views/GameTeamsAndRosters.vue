@@ -57,7 +57,7 @@ const {getPlayers} = storeToRefs(usePlayerStore());
                                   :uuid="player.uuid"
                                   :name="player.name"
                                   :in-team="player.team"
-                                  :jacket-number="player.jacketNumber" />
+                                  :jersey="player.jersey" />
         </el-col>
       </el-row>
     </div>

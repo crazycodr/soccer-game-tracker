@@ -38,7 +38,7 @@ const {removePlayerByUuid, updatePlayer, getPlayerByUuid} = usePlayerStore()
 const {getTeamByUuid} = useTeamStore()
 const {upsertPlayerInRegistry} = useRegistryStore()
 
-const props = defineProps(['uuid', 'name', 'inTeam', 'jacketNumber'])
+const props = defineProps(['uuid', 'name', 'inTeam', 'jersey'])
 
 const showDialog = ref(false)
 
@@ -51,8 +51,8 @@ const color = computed(() => {
   }
 })
 
-function update(payload: { name: string, team: string, jacketNumber: string }) {
-  updatePlayer(props.uuid, payload.name, payload.team, payload.jacketNumber)
+function update(payload: { name: string, team: string, jersey: string }) {
+  updatePlayer(props.uuid, payload.name, payload.team, payload.jersey)
   showDialog.value = false
 }
 
@@ -90,9 +90,9 @@ const confirmDeletion = () => {
       {{name}}
     </template>
     <template #default>
-      <el-row class="jacket-number">
-        <div v-if="jacketNumber !== ''"> #{{jacketNumber}}</div>
-        <div v-if="jacketNumber === ''"> {{ t('numberLess') }}</div>
+      <el-row class="jersey">
+        <div v-if="jersey !== ''"> #{{jersey}}</div>
+        <div v-if="jersey === ''"> {{ t('numberLess') }}</div>
       </el-row>
       <el-row>
         <el-button icon="EditPen" @click="showDialog = true" />
@@ -101,7 +101,7 @@ const confirmDeletion = () => {
           <player-editor
               :initial-name="name"
               :initial-team="inTeam"
-              :initial-jacket-number="jacketNumber"
+              :initial-jersey="jersey"
               :can-delete="true"
               @submit="update"
               @cancel="showDialog = false"
@@ -121,7 +121,7 @@ const confirmDeletion = () => {
   margin-left: 1em;
   border-radius: 50%;
 }
-.jacket-number {
+.jersey {
   margin-bottom: 1em;
 }
 </style>

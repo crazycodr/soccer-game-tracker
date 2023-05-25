@@ -14,7 +14,7 @@ const {t} = useI18n({
     en: {
       playerName: "Name",
       playerTeam: "Team",
-      playerJacketNumber: "Jacket number",
+      playerJersey: "Jersey number",
       cancelOption: "Cancel",
       updateOption: "Update",
       createOption: "Create",
@@ -23,7 +23,7 @@ const {t} = useI18n({
     fr: {
       playerName: "Nom",
       playerTeam: "Équipe",
-      playerJacketNumber: "Numéro de gillet",
+      playerJersey: "Numéro de gillet",
       cancelOption: "Annuler",
       updateOption: "Mettre à jour",
       createOption: "Créer",
@@ -33,7 +33,7 @@ const {t} = useI18n({
 })
 
 const emit = defineEmits< {
-  (e: 'submit', payload: {name: string, team: string, jacketNumber: string}): void,
+  (e: 'submit', payload: {name: string, team: string, jersey: string}): void,
   (e: 'cancel'): void,
   (e: 'delete'): void
 }>()
@@ -42,12 +42,12 @@ const props = defineProps({
   canDelete: { type: Boolean, default: false },
   initialName: { type: String, default: '' },
   initialTeam: { type: String, default: '' },
-  initialJacketNumber: { type: String, default: '' }
+  initialJersey: { type: String, default: '' }
 })
 
 const editedName = ref(props.initialName)
 const editedTeam = ref(props.initialTeam)
-const editedJacketNumber = ref(props.initialJacketNumber)
+const editedJersey = ref(props.initialJersey)
 
 const editedSelectedTeam = computed({
   get(){
@@ -70,7 +70,7 @@ function emitSubmit() {
   emit('submit', {
     name: editedName.value,
     team: editedTeam.value,
-    jacketNumber: editedJacketNumber.value
+    jersey: editedJersey.value
   })
 }
 
@@ -98,8 +98,8 @@ function emitDelete() {
             :value="team" :label="team.name" />
       </el-select>
     </el-form-item>
-    <el-form-item :label="t('playerJacketNumber')">
-      <el-input @keyup="submitOnEnter" type="text" v-model="editedJacketNumber" />
+    <el-form-item :label="t('playerJersey')">
+      <el-input @keyup="submitOnEnter" type="text" v-model="editedJersey" />
     </el-form-item>
     <el-form-item>
       <el-button icon="RemoveFilled" type="danger" v-if="canDelete" @click="emitDelete" />

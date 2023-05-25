@@ -29,9 +29,9 @@ const {addPlayer} = usePlayerStore();
 
 const showDialog = ref(false)
 
-function create(payload: {name: string, team: string, jacketNumber: string}) {
+function create(payload: {name: string, team: string, jersey: string}) {
   const newPlayer = new Player(payload.name)
-  newPlayer.jacketNumber = payload.jacketNumber
+  newPlayer.jersey = payload.jersey
   newPlayer.team = payload.team
   addPlayer(newPlayer)
   showDialog.value = false

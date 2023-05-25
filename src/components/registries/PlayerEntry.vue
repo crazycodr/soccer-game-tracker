@@ -13,13 +13,13 @@ const {t, locale} = useI18n({
   messages: {
     en: {
       addToGame: "Game",
-      noJacketNumber: 'No jacket number',
+      noJersey: 'No jersey number',
       notificationTitle: "Success",
       notificationMessage: "Player added or updated in current game"
     },
     fr: {
       addToGame: "Partie",
-      noJacketNumber: 'Pas de # de gilet',
+      noJersey: 'Pas de # de gilet',
       notificationTitle: "Succès",
       notificationMessage: "Joueur ajouté ou mis à jour dans la partie en cours"
     }
@@ -56,8 +56,8 @@ function sendToPlayerToGame() {
       <div class="name">{{ props.registryPlayer.name }}</div>
     </template>
     <template #default>
-      <div v-if="props.registryPlayer.jacketNumber">#{{ props.registryPlayer.jacketNumber }}</div>
-      <div v-if="!props.registryPlayer.jacketNumber">{{ t('noJacketNumber') }}</div>
+      <div v-if="props.registryPlayer.jersey">#{{ props.registryPlayer.jersey }}</div>
+      <div v-if="!props.registryPlayer.jersey">{{ t('noJersey') }}</div>
       <el-button icon="DArrowLeft" @click="sendToPlayerToGame">{{ t('addToGame') }}</el-button>
     </template>
   </el-card>

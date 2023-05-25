@@ -1,36 +1,57 @@
 <script setup lang="ts">
 import GameRosterPlayer from "@/components/game/tracking/PlayerEntry.vue";
 import {storeToRefs} from "pinia";
-import {filter} from "lodash";
+import {filter, map, sortBy} from "lodash";
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {useTeamStore} from "@/stores/TeamStore";
 import type {Player} from "@/stores/models/Player";
+import {TrackingSortOptions, useOptionStore} from "@/stores/OptionStore";
+import {computed} from "vue";
+import type {Team} from "@/stores/models/Team";
 
-const {getPlayers} = storeToRefs(usePlayerStore());
-const {getTeams} = storeToRefs(useTeamStore());
+const {getTrackingSorting} = storeToRefs(useOptionStore())
 
-function getPlayersOfTeam(teamUuid: string) {
-  return filter(getPlayers.value, (player: Player) => {
-    return player.team === teamUuid
+const playersPerTeam = computed((): {team: Team, players: Player[]}[] => {
+  const teams = useTeamStore().getTeams
+  return map(teams, (team: Team) => {
+    let sortingFunction;
+    switch (getTrackingSorting.value) {
+      case TrackingSortOptions.TRACKING_SORT_HIGHEST_BENCH:
+        sortingFunction = (player: Player) => player.benchingSeconds * -1
+        break;
+      case TrackingSortOptions.TRACKING_SORT_JERSEY:
+        sortingFunction = (player: Player) => player.jersey
+        break;
+      case TrackingSortOptions.TRACKING_SORT_NAME:
+      default:
+        sortingFunction = (player: Player) => player.name
+        break;
+    }
+    const players = filter(usePlayerStore().getPlayers, (player: Player) => player.team === team.uuid)
+    const sortedPlayers = sortBy(players, sortingFunction)
+    return {
+      team: team,
+      players: sortedPlayers
+    }
   })
-}
+})
 </script>
 
 <template>
   <main>
-    <div class="team" v-for="team in getTeams" :key="team.uuid">
-      <div class="team-name" :style="{color: team.color, 'border-bottom-color': team.color}">{{ team.name }}</div>
+    <div class="team" v-for="teamAndPlayersEntry in playersPerTeam" :key="teamAndPlayersEntry.team.uuid">
+      <div class="team-name" :style="{color: teamAndPlayersEntry.team.color, 'border-bottom-color': teamAndPlayersEntry.team.color}">{{ teamAndPlayersEntry.team.name }}</div>
       <div class="team-roster">
         <el-row :gutter="10">
           <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8"
-              v-for="player in getPlayersOfTeam(team.uuid)"
+              v-for="player in teamAndPlayersEntry.players"
               :key="player.uuid">
             <GameRosterPlayer
                 class="roster-player"
                 :uuid="player.uuid"
                 :name="player.name"
                 :status="player.status"
-                :jacket-number="player.jacketNumber"/>
+                :jersey="player.jersey"/>
           </el-col>
         </el-row>
       </div>

@@ -79,8 +79,8 @@ export const useRegistryStore = defineStore('registry', () => {
         if (!validate(player.uuid) || player.uuid === undefined) {
             player.uuid = v4()
         }
-        if (player.jacketNumber === undefined) {
-            player.jacketNumber = ''
+        if (player.jersey === undefined) {
+            player.jersey = ''
         }
     })
 
@@ -102,7 +102,7 @@ export const useRegistryStore = defineStore('registry', () => {
             throw new PlayerAlreadyExistsException()
         }
         const createdPlayer = new RegistryPlayer(addedPlayer.uuid, addedPlayer.name)
-        createdPlayer.jacketNumber = addedPlayer.jacketNumber
+        createdPlayer.jersey = addedPlayer.jersey
         players.value.push(createdPlayer)
     }
 
@@ -112,7 +112,7 @@ export const useRegistryStore = defineStore('registry', () => {
             throw new PlayerNotFoundException()
         }
         existingPlayer.name = updatedPlayer.name
-        existingPlayer.jacketNumber = updatedPlayer.jacketNumber
+        existingPlayer.jersey = updatedPlayer.jersey
     }
 
     function upsertPlayerInRegistry(upsertedPlayer: Player): void {
