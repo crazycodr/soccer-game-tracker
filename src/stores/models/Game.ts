@@ -6,7 +6,7 @@ import type {Event} from "@/stores/models/Event";
 export class Game {
 
     public uuid: string
-    public status: string = 'paused'
+    public status: GameStatusEnum = GameStatusEnum.PRE_GAME
     public teams: Team[] = []
     public players: Player[] = []
     public events: Event[] = []
@@ -14,4 +14,11 @@ export class Game {
     constructor() {
         this.uuid = v4()
     }
+}
+
+export enum GameStatusEnum {
+    PRE_GAME = 'pre',
+    PLAYING = 'playing',
+    PAUSED = 'paused',
+    COMPLETED = 'completed'
 }

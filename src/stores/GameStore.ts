@@ -1,8 +1,7 @@
 import {defineStore} from 'pinia'
 import {computed, ref} from 'vue'
 import {useInterval, useStorage} from '@vueuse/core'
-import {Game} from '@/stores/models/Game'
-import {v4, validate} from "uuid";
+import {Game, GameStatusEnum} from '@/stores/models/Game'
 import {usePlayerStore} from "@/stores/PlayerStore";
 import {each, filter} from "lodash";
 import {Player, PlayerStatusEnum} from "@/stores/models/Player";
@@ -22,11 +21,8 @@ export const useGameStore = defineStore('game', () => {
   const tickCounter = ref(0)
 
   const game = useStorage<Game>('game', new Game(), localStorage, {mergeDefaults: true})
-  if (!validate(game.value.uuid) || game.value.uuid === undefined) {
-    game.value.uuid = v4()
-  }
 
-  if (game.value.status === 'playing') {
+  if (game.value.status === GameStatusEnum.PLAYING) {
     resume()
   }
 
@@ -35,21 +31,31 @@ export const useGameStore = defineStore('game', () => {
   })
 
   const isTimerRunning = computed(() => {
-    return game.value.status === 'playing'
+    return game.value.status === GameStatusEnum.PLAYING
   })
 
+  function resetGame() {
+    game.value = new Game()
+    pause()
+  }
+
+  function startGame() {
+    game.value.status = GameStatusEnum.PLAYING
+    resume()
+  }
+
   function pauseGame() {
-    game.value.status = 'paused'
+    game.value.status = GameStatusEnum.PAUSED
     pause()
   }
 
   function unpauseGame() {
-    game.value.status = 'playing'
+    game.value.status = GameStatusEnum.PLAYING
     resume()
   }
 
   function tick() {
-    if (game.value.status === 'playing') {
+    if (game.value.status === GameStatusEnum.PLAYING) {
       tickCounter.value++
       each(usePlayerStore().getPlayers, (player: Player) => {
         switch (player.status) {
@@ -68,7 +74,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function recalculateStats() {
-    if (game.value.status === 'playing') {
+    if (game.value.status === GameStatusEnum.PLAYING) {
       each(usePlayerStore().getPlayers, (player: Player) => {
         switch (player.status) {
           case PlayerStatusEnum.playing:
@@ -110,8 +116,10 @@ export const useGameStore = defineStore('game', () => {
     tickCounter,
     isTimerRunning,
     getGame,
+    startGame,
     pauseGame,
-    unpauseGame
+    unpauseGame,
+    resetGame
   }
 })
 

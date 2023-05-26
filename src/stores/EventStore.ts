@@ -1,8 +1,9 @@
 import {defineStore} from "pinia";
-import {EventEnum, Event} from "@/stores/models/Event";
+import {Event, EventEnum} from "@/stores/models/Event";
 import {computed} from "vue";
 import type {Team} from "@/stores/models/Team";
 import type {Player} from "@/stores/models/Player";
+import {PlayerStatusEnum} from "@/stores/models/Player";
 import {useGameStore} from "@/stores/GameStore";
 import {reject} from "lodash";
 
@@ -44,6 +45,7 @@ export const useEventStore = defineStore('events', () => {
             player.uuid
         )
         useGameStore().getGame.events.push(newEvent)
+        player.status = PlayerStatusEnum.playing
     }
 
     function sendPlayerToBench(on: Date, team: Team, player: Player): void {
@@ -54,6 +56,7 @@ export const useEventStore = defineStore('events', () => {
             player.uuid
         )
         useGameStore().getGame.events.push(newEvent)
+        player.status = PlayerStatusEnum.benching
     }
 
     function sendPlayerToGoal(on: Date, team: Team, player: Player): void {
@@ -64,6 +67,7 @@ export const useEventStore = defineStore('events', () => {
             player.uuid
         )
         useGameStore().getGame.events.push(newEvent)
+        player.status = PlayerStatusEnum.goaling
     }
 
     function addGoal(on: Date, forTeam: Team, byPlayer: Player, ): void {

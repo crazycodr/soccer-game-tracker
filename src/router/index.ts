@@ -6,6 +6,7 @@ import GameMenu from '@/views/GameMenu.vue'
 import PlayerRegistry from '@/views/PlayerRegistry.vue'
 import GameLog from "@/views/GameLog.vue";
 import GameRegistry from "@/views/GameRegistry.vue";
+import GameOperations from "@/views/GameOperations.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: GameView
+    },
+    {
+      path: '/game/operations',
+      name: 'game-operations',
+      component: GameOperations
     },
     {
       path: '/game/log',

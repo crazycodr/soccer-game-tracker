@@ -43,7 +43,7 @@ const playersPerTeam = computed((): {team: Team, players: Player[]}[] => {
       <div class="team-name" :style="{color: teamAndPlayersEntry.team.color, 'border-bottom-color': teamAndPlayersEntry.team.color}">{{ teamAndPlayersEntry.team.name }}</div>
       <div class="team-roster">
         <el-row :gutter="10">
-          <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="8"
+          <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
               v-for="player in teamAndPlayersEntry.players"
               :key="player.uuid">
             <GameRosterPlayer

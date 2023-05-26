@@ -1,20 +1,14 @@
 <script setup lang="ts">
 import {computed} from "vue";
-import {usePlayerStore} from "@/stores/PlayerStore";
-import {useGameStore} from "@/stores/GameStore";
 import {useI18n} from 'vue-i18n'
-import {filter} from "lodash";
+import {filter, first} from "lodash";
 import type {Event} from "@/stores/models/Event";
 import {EventEnum} from "@/stores/models/Event";
-import {
-  getBenchingDurationFromPlayerTimerEvents,
-  getFieldDurationFromPlayerTimerEvents,
-  getGoalingDurationFromPlayerTimerEvents
-} from "@/modules/time/TimeCalculation";
 import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 import {storeToRefs} from "pinia";
 import {useEventStore} from "@/stores/EventStore";
-import {PlayerStatusEnum} from "@/stores/models/Player";
+import {Player, PlayerStatusEnum} from "@/stores/models/Player";
+import {usePlayerStore} from "@/stores/PlayerStore";
 
 const {t} = useI18n({
   messages: {
@@ -51,52 +45,28 @@ const {t} = useI18n({
   }
 })
 
-const {
-  sendToField,
-  sendToBench,
-  sendToGoal,
-  increaseGoals,
-  increasePasses
-} = usePlayerStore()
-const {tickCounter, isTimerRunning} = storeToRefs(useGameStore())
 const {getEvents} = storeToRefs(useEventStore())
+const {getPlayers} = storeToRefs(usePlayerStore())
 
 const props = defineProps(['uuid', 'name', 'status', 'jersey'])
 
-const benchTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
-    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
+const player = computed(() => {
+  const matchingPlayers = filter(getPlayers.value, (player: Player) => {
+    return player.uuid === props.uuid
   })
-  const secondsBeforeCurrentEvent = getBenchingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
-  /**
-   * This strange +/- tickCounter is to stimulate redraw of the property because it is event based
-   * and would not change on tick.
-   */
-  return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
+  return <Player>first(matchingPlayers);
+})
+
+const benchTimeSince = computed(() => {
+  return formatTimeFromSeconds(player.value.benchingSeconds)
 })
 
 const playingTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
-    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
-  })
-  const secondsBeforeCurrentEvent = getFieldDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
-  /**
-   * This strange +/- tickCounter is to stimulate redraw of the property because it is event based
-   * and would not change on tick.
-   */
-  return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
+  return formatTimeFromSeconds(player.value.playingSeconds)
 })
 
 const goalingTimeSince = computed(() => {
-  const playerTimerEvents = filter(getEvents.value, (event: Event) => {
-    return event.references.playerUuid === props.uuid || event.references.playerUuid === null
-  })
-  const secondsBeforeCurrentEvent = getGoalingDurationFromPlayerTimerEvents(playerTimerEvents, new Date())
-  /**
-   * This strange +/- tickCounter is to stimulate redraw of the property because it is event based
-   * and would not change on tick.
-   */
-  return formatTimeFromSeconds(secondsBeforeCurrentEvent + tickCounter.value - tickCounter.value)
+  return formatTimeFromSeconds(player.value.goalingSeconds)
 })
 
 const playerGoals = computed(() => {
@@ -136,14 +106,6 @@ const isBenching = computed(() => {
 const isGoaling = computed(() => {
   return props.status === PlayerStatusEnum.goaling
 })
-
-function affectGoals(uuid: string) {
-  increaseGoals(uuid)
-}
-
-function affectPasses(uuid: string) {
-  increasePasses(uuid)
-}
 </script>
 <template>
   <el-card>
@@ -154,63 +116,25 @@ function affectPasses(uuid: string) {
       </div>
     </template>
     <template #default>
-      <el-row :gutter="20">
-        <el-col :span="14">
-          <el-row :class="{status: true, playing: isPlaying}">
-            <el-col class="label" :span="18">{{ playingStatus }}</el-col>
-            <el-col class="timer" :span="6">{{ playingTimeSince }}</el-col>
-          </el-row>
-          <el-row :class="{status: true, goaling: isGoaling}">
-            <el-col class="label" :span="18">{{ goalingStatus }}</el-col>
-            <el-col class="timer" :span="6">{{ goalingTimeSince }}</el-col>
-          </el-row>
-          <el-row :class="{status: true, benching: isBenching}">
-            <el-col class="label" :span="18">{{ benchingStatus }}</el-col>
-            <el-col class="timer" :span="6">{{ benchTimeSince }}</el-col>
-          </el-row>
-          <el-row class="statistic" style="margin-top: 0.5em">
-            <el-col class="label" :span="18">{{ t('goalsLabel') }}</el-col>
-            <el-col class="timer" :span="6">{{ playerGoals }}</el-col>
-          </el-row>
-          <el-row class="statistic">
-            <el-col class="label" :span="18">{{ t('passesLabel') }}</el-col>
-            <el-col class="timer" :span="6">{{ playerDecisivePasses }}</el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="10">
-          <el-row :gutter="10">
-            <el-col :span="12">
-              <el-button :disabled="!isTimerRunning || !(isPlaying || isGoaling)" class="status-button" @click="affectGoals(uuid)">{{playerGoals}} {{t('goalAbbreviation')}}</el-button>
-            </el-col>
-            <el-col :span="12">
-              <el-button :disabled="!isTimerRunning || !(isPlaying || isGoaling)" class="status-button" @click="affectPasses(uuid)">{{playerDecisivePasses}} {{t('passAbbreviation')}}</el-button>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top: 0.5em">
-            <el-col :span="24">
-              <el-button :disabled="!isTimerRunning || isBenching" class="status-button" @click="sendToBench(uuid)">{{
-                  t('benchAction')
-                }}
-              </el-button>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top: 0.5em">
-            <el-col :span="24">
-              <el-button :disabled="!isTimerRunning || isPlaying || isGoaling" class="status-button" @click="sendToField(uuid)">{{
-                  t('playAction')
-                }}
-              </el-button>
-            </el-col>
-          </el-row>
-          <el-row style="margin-top: 0.5em">
-            <el-col :span="24">
-              <el-button :disabled="!isTimerRunning || isPlaying || isGoaling" class="status-button" @click="sendToGoal(uuid)">{{
-                  t('goalAction')
-                }}
-              </el-button>
-            </el-col>
-          </el-row>
-        </el-col>
+      <el-row :class="{status: true, playing: isPlaying}">
+        <el-col class="label" :span="18">{{ playingStatus }}</el-col>
+        <el-col class="timer" :span="6">{{ playingTimeSince }}</el-col>
+      </el-row>
+      <el-row :class="{status: true, goaling: isGoaling}">
+        <el-col class="label" :span="18">{{ goalingStatus }}</el-col>
+        <el-col class="timer" :span="6">{{ goalingTimeSince }}</el-col>
+      </el-row>
+      <el-row :class="{status: true, benching: isBenching}">
+        <el-col class="label" :span="18">{{ benchingStatus }}</el-col>
+        <el-col class="timer" :span="6">{{ benchTimeSince }}</el-col>
+      </el-row>
+      <el-row class="statistic" style="margin-top: 0.5em">
+        <el-col class="label" :span="18">{{ t('goalsLabel') }}</el-col>
+        <el-col class="timer" :span="6">{{ playerGoals }}</el-col>
+      </el-row>
+      <el-row class="statistic">
+        <el-col class="label" :span="18">{{ t('passesLabel') }}</el-col>
+        <el-col class="timer" :span="6">{{ playerDecisivePasses }}</el-col>
       </el-row>
     </template>
   </el-card>

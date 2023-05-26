@@ -5,8 +5,9 @@ import {storeToRefs} from "pinia";
 import {formatTimeFromSeconds} from "@/modules/time/TimeFormatting";
 import {useEventStore} from "@/stores/EventStore";
 import {filter} from "lodash";
-import {EventEnum, Event} from "@/stores/models/Event";
+import {Event, EventEnum} from "@/stores/models/Event";
 import {getGameDurationFromGameTimerEvents} from "@/modules/time/TimeCalculation";
+import {GameStatusEnum} from "@/stores/models/Game";
 
 const {pauseGame, unpauseGame} = useGameStore();
 const {startTimer, stopTimer} = useEventStore();
@@ -27,10 +28,10 @@ const formattedTime = computed(() => {
 })
 
 function timerPress() {
-  if (getGame.value.status === 'playing') {
+  if (getGame.value.status === GameStatusEnum.PLAYING) {
     pauseGame()
     stopTimer(new Date())
-  } else {
+  } else if (getGame.value.status === GameStatusEnum.PAUSED) {
     unpauseGame()
     startTimer(new Date())
   }
@@ -39,7 +40,7 @@ function timerPress() {
 const timerClasses = computed(() => {
   return {
     timer: true,
-    playing: getGame.value.status === 'playing'
+    playing: getGame.value.status === GameStatusEnum.PLAYING
   }
 })
 </script>

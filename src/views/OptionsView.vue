@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n'
 import {computed, ref} from "vue"
-import {TrackingSortOptions, useOptionStore} from "@/stores/OptionStore"
+import {GamePlayersEnum, TrackingSortOptions, useOptionStore} from "@/stores/OptionStore"
 import {useRouter} from "vue-router";
-
-const {setLanguage, setTrackingSorting} = useOptionStore()
-
-const router = useRouter()
-
+import {useGameStore} from "@/stores/GameStore";
 function reloadPage() {
-  router.go(0)
+  useRouter().go(0)
 }
 
 const languageChanged = ref(false)
@@ -24,7 +20,15 @@ const {t} = useI18n({
       trackingViewSortingTitle: 'Tracking view sort order',
       trackingViewSortingBenchTime: 'Benching time',
       trackingViewSortingName: 'Name',
-      trackingViewSortingJersey: 'Jersey'
+      trackingViewSortingJersey: 'Jersey',
+      resetGameTitle: 'Erase current game',
+      resetGameButton: 'Erase',
+      gamePlayers: 'Configuration',
+      gamePlayers3x3: '3x3',
+      gamePlayers5x5: '5x5',
+      gamePlayers7x7: '7x7',
+      gamePlayers9x9: '9x9',
+      gamePlayers11x11: '11x11',
     },
     fr: {
       languageTitle: "Langue",
@@ -34,7 +38,15 @@ const {t} = useI18n({
       trackingViewSortingTitle: 'Ordre de tri dans suivi',
       trackingViewSortingBenchTime: 'Temps sur le banc',
       trackingViewSortingName: 'Nom',
-      trackingViewSortingJersey: 'Numéro'
+      trackingViewSortingJersey: 'Numéro',
+      resetGameTitle: 'Effacer la partie',
+      resetGameButton: 'Effacer',
+      gamePlayers: 'Configuration',
+      gamePlayers3x3: '3x3',
+      gamePlayers5x5: '5x5',
+      gamePlayers7x7: '7x7',
+      gamePlayers9x9: '9x9',
+      gamePlayers11x11: '11x11',
     }
   }
 })
@@ -45,7 +57,7 @@ const selectedLanguage = computed({
   },
   set(value: string) {
     languageChanged.value = true
-    setLanguage(value)
+    useOptionStore().setLanguage(value)
   }
 })
 
@@ -54,9 +66,22 @@ const selectedTrackingSorting = computed({
     return useOptionStore().getTrackingSorting
   },
   set(value: TrackingSortOptions) {
-    setTrackingSorting(value)
+    useOptionStore().setTrackingSorting(value)
   }
 })
+
+const selectedGamePlayers = computed({
+  get() {
+    return useOptionStore().getPlayersConfig
+  },
+  set(value: GamePlayersEnum) {
+    useOptionStore().setPlayersConfig(value)
+  }
+})
+
+function resetGame() {
+  useGameStore().resetGame()
+}
 </script>
 
 <template>
@@ -90,6 +115,24 @@ const selectedTrackingSorting = computed({
           <el-radio-button :label="TrackingSortOptions.TRACKING_SORT_NAME">{{ t('trackingViewSortingName') }}</el-radio-button>
           <el-radio-button :label="TrackingSortOptions.TRACKING_SORT_JERSEY">{{ t('trackingViewSortingJersey') }}</el-radio-button>
         </el-radio-group>
+      </el-col>
+    </el-row>
+    <el-row style="margin-top: 1em">
+      <el-col>
+        <h2 class="title">{{ t('gamePlayers') }}</h2>
+        <el-radio-group v-model="selectedGamePlayers">
+          <el-radio-button :label="GamePlayersEnum.PLAYERS_3_X_3">{{ t('gamePlayers3x3') }}</el-radio-button>
+          <el-radio-button :label="GamePlayersEnum.PLAYERS_5_X_5">{{ t('gamePlayers5x5') }}</el-radio-button>
+          <el-radio-button :label="GamePlayersEnum.PLAYERS_7_X_7">{{ t('gamePlayers7x7') }}</el-radio-button>
+          <el-radio-button :label="GamePlayersEnum.PLAYERS_9_X_9">{{ t('gamePlayers9x9') }}</el-radio-button>
+          <el-radio-button :label="GamePlayersEnum.PLAYERS_11_X_11">{{ t('gamePlayers11x11') }}</el-radio-button>
+        </el-radio-group>
+      </el-col>
+    </el-row>
+    <el-row style="margin-top: 1em">
+      <el-col>
+        <h2 class="title">{{ t('resetGameTitle') }}</h2>
+        <el-button @click="resetGame" type="danger">{{ t('resetGameButton') }}</el-button>
       </el-col>
     </el-row>
   </main>
